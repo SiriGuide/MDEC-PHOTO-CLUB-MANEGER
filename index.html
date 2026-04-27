@@ -87,7 +87,10 @@
                         } else {
                             await auth.signInAnonymously();
                         }
-                    } catch (error) { console.error("Auth Error:", error); }
+                    } catch (error) { 
+                        console.error("Auth Error:", error); 
+                        alert("⚠️ เชื่อมต่อระบบ Firebase ไม่สำเร็จ!\n\nโปรดตรวจสอบว่าได้เปิดใช้งานเมนู Authentication -> Anonymous ในเว็บ Firebase แล้วหรือยัง\n\nError: " + error.message);
+                    }
                 };
                 initAuth();
 
@@ -237,7 +240,12 @@
             const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
             const handleSubmit = async () => {
-                if (!photoData || !user) return;
+                if (!user) {
+                    alert("⚠️ เกิดข้อผิดพลาด: ยังไม่ได้เชื่อมต่อระบบสมาชิก\nกรุณาแจ้งอาจารย์ให้เปิดการตั้งค่า Authentication (Anonymous) ใน Firebase ครับ");
+                    return;
+                }
+                if (!photoData) return alert("กรุณาถ่ายรูปโปรไฟล์ก่อนครับ");
+
                 setIsSubmitting(true);
                 try {
                     await getStudentsRef().add({
@@ -247,7 +255,8 @@
                     });
                     setSuccess(true);
                 } catch (error) {
-                    console.error(error); alert("เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหม่");
+                    console.error(error); 
+                    alert("เกิดข้อผิดพลาดในการบันทึก: " + error.message + "\n\n(เช็คกฎ Firestore Rules ว่าอนุญาตให้เขียนแล้วหรือยัง)");
                 } finally {
                     setIsSubmitting(false);
                 }
@@ -401,14 +410,21 @@
             const [certTitle, setCertTitle] = useState('ช่างภาพกิจกรรมดีเด่น');
 
             useEffect(() => {
-                if (!user) return;
+                if (!user) {
+                    setLoadingData(false);
+                    return;
+                }
                 const unsubscribe = getStudentsRef().onSnapshot((snapshot) => {
                     const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                     setStudents(data);
                     setLoadingData(false);
+                }, (error) => {
+                    console.error("Error fetching snapshot:", error);
+                    alert("ไม่สามารถดึงข้อมูลได้: " + error.message + "\n\n(เช็คกฎ Firestore Rules ว่าอนุญาตให้เข้าถึงแล้วหรือยัง)");
+                    setLoadingData(false);
                 });
-                return () => unsubscribe();
+                return () => unsubscribe && unsubscribe();
             }, [user]);
 
             const confirmDelete = async () => {
@@ -475,6 +491,17 @@
             const currentCount = students.length;
             const usagePercentage = Math.min((currentCount / MAX_CAPACITY) * 100, 100);
             let barColor = usagePercentage >= 90 ? 'bg-red-500' : usagePercentage >= 70 ? 'bg-yellow-500' : 'bg-green-500';
+
+            if (!user) {
+                return (
+                    <div className="bg-white rounded-2xl shadow-xl border border-red-200 p-10 text-center max-w-lg mx-auto mt-10">
+                        <i className="ri-error-warning-fill text-6xl text-red-500 mb-4 block"></i>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-4">ไม่สามารถโหลดข้อมูลได้</h2>
+                        <p className="text-gray-600 mb-6">ระบบถูกตัดการเชื่อมต่อ กรุณาตรวจสอบว่าได้ตั้งค่า <strong>Authentication -> Anonymous</strong> ใน Firebase แล้วหรือยังครับ</p>
+                        <button onClick={() => setView('home')} className="px-6 py-3 bg-gray-200 hover:bg-gray-300 rounded-xl font-bold transition">กลับหน้าหลัก</button>
+                    </div>
+                );
+            }
 
             if (loadingData) return <div className="text-center py-20 text-gray-500">กำลังโหลดระบบจัดการ...</div>;
 
@@ -543,7 +570,9 @@
                                     <table className="w-full text-left text-sm">
                                         <thead className="bg-gray-100 text-gray-700"><tr><th className="p-3">รูป</th><th className="p-3">ข้อมูลนักศึกษา</th><th className="p-3">ปีการศึกษา</th><th className="p-3">สถานะ</th><th className="p-3 text-center">จัดการ</th></tr></thead>
                                         <tbody>
-                                            {filteredStudents.map(student => (
+                                            {filteredStudents.length === 0 ? (
+                                                <tr><td colSpan="5" className="p-10 text-center text-gray-500">ไม่มีข้อมูล หรือกำลังเชื่อมต่อฐานข้อมูล...</td></tr>
+                                            ) : filteredStudents.map(student => (
                                                 <tr key={student.id} className="border-t hover:bg-blue-50/50">
                                                     <td className="p-3"><img src={student.photo || 'https://via.placeholder.com/150'} className="w-12 h-12 rounded-lg object-cover border" /></td>
                                                     <td className="p-3"><div className="font-bold">{student.studentId} - {student.fullName}</div><div className="text-xs text-gray-500">สาขา: {student.major} | ฝ่าย: {student.interest}</div></td>
