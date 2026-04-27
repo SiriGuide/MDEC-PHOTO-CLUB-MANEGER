@@ -43,6 +43,7 @@
     <script type="text/babel">
         // ----------------------------------------------------------------------
         // จุดที่ต้องแก้ไข 1: นำโค้ดคอนฟิกจาก Firebase ของอาจารย์มาวางทับส่วนนี้
+        // (อัปเดตข้อมูลจากรูปภาพของอาจารย์ให้แล้วครับ!)
         // ----------------------------------------------------------------------
         const firebaseConfigString = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
         const firebaseConfig = firebaseConfigString ? JSON.parse(firebaseConfigString) : {
@@ -51,7 +52,8 @@
             projectId: "mdec-photoclub",
             storageBucket: "mdec-photoclub.firebasestorage.app",
             messagingSenderId: "139085705657",
-            appId: "1:139085705657:web:6ed339084a584a5f780668"
+            appId: "1:139085705657:web:6ed339084a584a5f780668",
+            measurementId: "G-DZGPXDE17D"
         };
 
         // ----------------------------------------------------------------------
