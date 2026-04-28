@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MDEC Photo Club - Command Center</title>
 
-    <!-- Tailwind CSS & Google Fonts -->
+    <!-- Tailwind CSS & Google Fonts ปรับลดความอ้วนของฟอนต์ -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet" />
 
     <!-- React & Babel -->
@@ -34,7 +34,6 @@
             from { opacity: 0; transform: translateY(15px); } 
             to { opacity: 1; transform: translateY(0); } 
         }
-        .glass-effect { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="bg-[#f8fafc] text-slate-800 selection:bg-blue-200">
@@ -42,7 +41,7 @@
 
     <script type="text/babel">
         // ----------------------------------------------------------------------
-        // Firebase Configuration (คงเดิมจากที่อาจารย์ให้มา)
+        // Firebase Configuration
         // ----------------------------------------------------------------------
         const firebaseConfig = {
             apiKey: "AIzaSyAoPSXB4qF2onYLtzhMR6U01JGko64C4lA",
@@ -58,7 +57,7 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        const appId = 'mdec-photo-club-v3'; // อัปเกรดเวอร์ชันโครงสร้างข้อมูล
+        const appId = 'mdec-photo-club-v3'; 
         const COLLECTION_NAME = 'students_registry';
         const SETTINGS_DOC = 'club_settings';
         
@@ -77,17 +76,13 @@
 
             useEffect(() => {
                 const initAuth = async () => {
-                    try {
-                        await auth.signInAnonymously();
-                    } catch (error) { alert("เชื่อมต่อฐานข้อมูลไม่สำเร็จ"); }
+                    try { await auth.signInAnonymously(); } 
+                    catch (error) { alert("เชื่อมต่อฐานข้อมูลไม่สำเร็จ"); }
                 };
                 initAuth();
                 
-                // โหลดการตั้งค่าสาขาจากฐานข้อมูล
                 const unsubSettings = getSettingsRef().onSnapshot(doc => {
-                    if (doc.exists && doc.data().majors) {
-                        setMajors(doc.data().majors);
-                    }
+                    if (doc.exists && doc.data().majors) setMajors(doc.data().majors);
                 });
 
                 const unsubscribeAuth = auth.onAuthStateChanged((u) => {
@@ -100,7 +95,7 @@
             if (loading) return (
                 <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 text-white font-sans">
                     <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-blue-400 font-bold tracking-widest">MDEC COMMAND CENTER LOADING...</p>
+                    <p className="text-blue-400 font-semibold tracking-widest">MDEC COMMAND CENTER LOADING...</p>
                 </div>
             );
 
@@ -113,8 +108,8 @@
                                     <i className="ri-camera-lens-fill text-slate-900 text-2xl"></i>
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-black tracking-tighter leading-none">MDEC PHOTOCLUB</h1>
-                                    <p className="text-[10px] text-yellow-500 font-bold tracking-widest uppercase">Official Management System</p>
+                                    <h1 className="text-xl font-bold tracking-tight leading-none">MDEC PHOTOCLUB</h1>
+                                    <p className="text-[10px] text-yellow-500 font-semibold tracking-widest uppercase">Official Management System</p>
                                 </div>
                             </div>
                             {view !== 'home' && (
@@ -136,33 +131,56 @@
         }
 
         // =======================================================
-        // หน้าแรก (Fix Logo)
+        // หน้าแรก (แก้ไขสมบูรณ์ โลโก้ 4 ฝ่าย)
         // =======================================================
         function HomeView({ setView }) {
             return (
                 <div className="flex flex-col items-center justify-center py-10 animate-fade-in">
-                    <div className="bg-white p-10 md:p-16 rounded-[2.5rem] shadow-2xl w-full max-w-4xl text-center border border-slate-100 relative overflow-hidden">
-                        {/* เอฟเฟกต์ตกแต่ง */}
+                    <div className="bg-white p-10 md:p-16 rounded-[2.5rem] shadow-xl w-full max-w-4xl text-center border border-slate-100 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16"></div>
                         <div className="absolute bottom-0 left-0 w-40 h-40 bg-yellow-500/5 rounded-full -ml-20 -mb-20"></div>
 
-                        <div className="flex justify-center mb-10">
-                            <div className="relative">
-                                <div className="w-32 h-32 bg-slate-900 rounded-[2rem] flex items-center justify-center shadow-2xl rotate-3">
-                                    <i className="ri-camera-3-fill text-yellow-500 text-6xl"></i>
+                        {/* โลโก้ 4 ฝ่ายที่ปรับปรุงใหม่เรียงกันแนวนอน */}
+                        <div className="flex justify-center items-center gap-3 sm:gap-6 mb-10 z-10 relative">
+                            {/* 1. ภาพนิ่ง */}
+                            <div className="flex flex-col items-center group">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border-b-4 border-yellow-500">
+                                    <i className="ri-camera-3-fill text-yellow-500 text-3xl sm:text-4xl group-hover:scale-110 transition-transform"></i>
                                 </div>
-                                <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg -rotate-12 border-4 border-white text-white">
-                                    <i className="ri-mic-2-fill text-xl"></i>
+                                <span className="text-[10px] sm:text-xs font-bold mt-3 text-slate-500 uppercase tracking-widest group-hover:text-yellow-600 transition-colors">ภาพนิ่ง</span>
+                            </div>
+                            
+                            {/* 2. วิดีโอไฮไลท์ */}
+                            <div className="flex flex-col items-center group">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border-b-4 border-blue-500">
+                                    <i className="ri-movie-2-fill text-blue-500 text-3xl sm:text-4xl group-hover:scale-110 transition-transform"></i>
                                 </div>
+                                <span className="text-[10px] sm:text-xs font-bold mt-3 text-slate-500 uppercase tracking-widest group-hover:text-blue-600 transition-colors">วิดีโอไฮไลท์</span>
+                            </div>
+
+                            {/* 3. เครื่องเสียง */}
+                            <div className="flex flex-col items-center group">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border-b-4 border-purple-500">
+                                    <i className="ri-speaker-3-fill text-purple-500 text-3xl sm:text-4xl group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <span className="text-[10px] sm:text-xs font-bold mt-3 text-slate-500 uppercase tracking-widest group-hover:text-purple-600 transition-colors">เครื่องเสียง</span>
+                            </div>
+
+                            {/* 4. ไลฟ์สด */}
+                            <div className="flex flex-col items-center group">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border-b-4 border-red-500">
+                                    <i className="ri-live-fill text-red-500 text-3xl sm:text-4xl group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <span className="text-[10px] sm:text-xs font-bold mt-3 text-slate-500 uppercase tracking-widest group-hover:text-red-600 transition-colors">ไลฟ์สด</span>
                             </div>
                         </div>
                         
-                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">
+                        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tighter z-10 relative">
                             MDEC <span className="text-blue-600">PHOTOCLUB</span>
                         </h2>
-                        <p className="text-xl text-slate-500 font-medium mb-12">ชมรมถ่ายภาพ วิดีโอ ตัดต่อ และโสตทัศนูปกรณ์ (อี.เทค)</p>
+                        <p className="text-xl text-slate-500 font-medium mb-12 z-10 relative">ชมรมถ่ายภาพ วิดีโอ ตัดต่อ และโสตทัศนูปกรณ์ (อี.เทค)</p>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 z-10 relative">
                             <button onClick={() => setView('register')} className="group flex flex-col items-center justify-center p-10 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] shadow-xl hover:shadow-blue-200 transition-all transform hover:-translate-y-2">
                                 <div className="bg-white/20 p-5 rounded-2xl mb-6 group-hover:scale-110 transition">
                                     <i className="ri-user-add-fill text-5xl"></i>
@@ -196,11 +214,11 @@
             };
             return (
                 <div className="flex justify-center items-center py-20 animate-fade-in">
-                    <div className="bg-white p-10 rounded-[2rem] shadow-2xl max-w-md w-full border text-center">
+                    <div className="bg-white p-10 rounded-[2rem] shadow-xl max-w-md w-full border text-center">
                         <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner">
                             <i className="ri-fingerprint-fill text-4xl"></i>
                         </div>
-                        <h2 className="text-3xl font-black mb-2 text-slate-900 tracking-tight">Security Access</h2>
+                        <h2 className="text-3xl font-bold mb-2 text-slate-900 tracking-tight">Security Access</h2>
                         <p className="text-slate-500 mb-8 font-medium">กรุณาระบุรหัสผ่านประจำศูนย์ควบคุม</p>
                         <form onSubmit={handleLogin} className="space-y-6">
                             <input 
@@ -208,7 +226,7 @@
                                 placeholder="••••" 
                                 value={pin} 
                                 onChange={(e) => setPin(e.target.value)} 
-                                className="w-full text-center text-5xl tracking-[0.5em] p-5 border-2 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition font-black bg-slate-50" 
+                                className="w-full text-center text-5xl tracking-[0.5em] p-5 border-2 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition font-bold bg-slate-50" 
                                 autoFocus 
                                 maxLength={4} 
                             />
@@ -220,7 +238,7 @@
         }
 
         // =======================================================
-        // สมัครสมาชิก (เพิ่มช่องข้อมูล เพศ, ไลน์ไอดี)
+        // สมัครสมาชิก (ดึงฟิลด์ที่หายไปกลับมาครบถ้วน และแก้หัวข้อ)
         // =======================================================
         function RegisterView({ setView, user, majors }) {
             const videoRef = useRef(null);
@@ -235,7 +253,7 @@
                 studentId: '', fullName: '', nickname: '', dob: '', phone: '', lineId: '', socialMedia: '',
                 gender: 'ชาย', major: majors[0] || 'ไม่ระบุ', level: 'ปวช.1', group: '', medicalCondition: '-', emergencyPhone: '',
                 academicYear: currentYear.toString(), status: 'active', statusReason: '',
-                interest: 'ถ่ายภาพนิ่ง', equipment: 'ใช้มือถือเป็นหลัก', experience: 'ระดับเริ่มต้น', reason: ''
+                interest: 'ฝ่ายภาพนิ่ง', equipment: 'ใช้มือถือเป็นหลัก', experience: 'ระดับเริ่มต้น', reason: ''
             });
 
             useEffect(() => {
@@ -273,20 +291,23 @@
             };
 
             if (success) return (
-                <div className="text-center bg-white p-16 rounded-[3rem] shadow-2xl max-w-xl mx-auto animate-fade-in border border-green-100">
+                <div className="text-center bg-white p-16 rounded-[3rem] shadow-xl max-w-xl mx-auto animate-fade-in border border-green-100">
                     <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
                         <i className="ri-check-double-line text-6xl"></i>
                     </div>
-                    <h2 className="text-4xl font-black mb-4 text-slate-900">สมัครสำเร็จแล้ว!</h2>
+                    <h2 className="text-4xl font-bold mb-4 text-slate-900">สมัครสำเร็จแล้ว!</h2>
                     <p className="text-slate-500 text-lg mb-10">เราได้รับข้อมูลของคุณเข้าสู่ระบบชมรม MDEC แล้ว</p>
                     <button onClick={() => setView('home')} className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg hover:bg-black transition">กลับสู่หน้าหลัก</button>
                 </div>
             );
 
             return (
-                <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden max-w-4xl mx-auto animate-fade-in border border-slate-100 mb-20">
+                <div className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden max-w-4xl mx-auto animate-fade-in border border-slate-100 mb-20">
                     <div className="bg-gradient-to-r from-blue-700 to-blue-900 p-8 text-white flex justify-between items-center">
-                        <div><h2 className="text-3xl font-black tracking-tight">ใบสมัครทีมโสตฯ (MDEC)</h2><p className="text-blue-300 font-medium">ปีการศึกษา {formData.academicYear}</p></div>
+                        <div>
+                            <h2 className="text-3xl font-bold tracking-tight">ใบสมัครเข้าชมรม MDEC PHOTO CLUB</h2>
+                            <p className="text-blue-300 font-medium">ปีการศึกษา {formData.academicYear}</p>
+                        </div>
                         <div className="bg-white/10 px-5 py-2 rounded-2xl font-bold text-sm backdrop-blur-md border border-white/20">Step {step} of 2</div>
                     </div>
                     <div className="p-8 md:p-12">
@@ -295,49 +316,84 @@
                                 <div>
                                     <h3 className="text-xl font-bold text-blue-800 mb-6 flex items-center"><i className="ri-bank-card-fill mr-2"></i> ข้อมูลการศึกษา</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">รหัสนักศึกษา *</label><input required name="studentId" value={formData.studentId} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50 focus:border-blue-500 outline-none transition" placeholder="ระบุรหัส 7 หลัก" /></div>
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">ระดับชั้น *</label><select name="level" value={formData.level} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50"><option value="ปวช.1">ปวช. 1</option><option value="ปวช.2">ปวช. 2</option><option value="ปวช.3">ปวช. 3</option><option value="ปวส.1">ปวส. 1</option><option value="ปวส.2">ปวส. 2</option></select></div>
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">สาขาวิชา *</label>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">รหัสนักศึกษา *</label><input required name="studentId" value={formData.studentId} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50 focus:border-blue-500 outline-none transition" placeholder="ระบุรหัส 7 หลัก" /></div>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">ระดับชั้น *</label><select name="level" value={formData.level} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50"><option value="ปวช.1">ปวช. 1</option><option value="ปวช.2">ปวช. 2</option><option value="ปวช.3">ปวช. 3</option><option value="ปวส.1">ปวส. 1</option><option value="ปวส.2">ปวส. 2</option></select></div>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">สาขาวิชา *</label>
                                             <select name="major" value={formData.major} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50 focus:border-blue-500 outline-none">
                                                 {majors.map(m => <option key={m} value={m}>{m}</option>)}
                                             </select>
                                         </div>
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">กลุ่มเรียน/ห้อง *</label><input required name="group" value={formData.group} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50 focus:border-blue-500 outline-none" placeholder="เช่น 1/1" /></div>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">กลุ่มเรียน/ห้อง *</label><input required name="group" value={formData.group} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50 focus:border-blue-500 outline-none" placeholder="เช่น 1/1" /></div>
                                     </div>
                                 </div>
 
                                 <div>
                                     <h3 className="text-xl font-bold text-blue-800 mb-6 flex items-center"><i className="ri-user-heart-fill mr-2"></i> ข้อมูลส่วนตัว</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="md:col-span-2"><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">ชื่อ - นามสกุล *</label><input required name="fullName" value={formData.fullName} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50 focus:border-blue-500 outline-none" placeholder="ไม่ต้องใส่คำนำหน้า" /></div>
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">ชื่อเล่น *</label><input required name="nickname" value={formData.nickname} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50" /></div>
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">เพศ *</label><select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50"><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option><option value="อื่นๆ">LGBTQ+</option></select></div>
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">วันเกิด *</label><input type="date" required name="dob" value={formData.dob} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50" /></div>
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2 text-blue-600">Line ID *</label><input required name="lineId" value={formData.lineId} onChange={handleChange} className="w-full p-4 border-2 border-blue-100 rounded-2xl bg-blue-50 focus:border-blue-500 outline-none" placeholder="ไอดีไลน์สำหรับดึงเข้ากลุ่ม" /></div>
+                                        <div className="md:col-span-2"><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">ชื่อ - นามสกุล *</label><input required name="fullName" value={formData.fullName} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50 focus:border-blue-500 outline-none" placeholder="ไม่ต้องใส่คำนำหน้า" /></div>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">ชื่อเล่น *</label><input required name="nickname" value={formData.nickname} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50" /></div>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">เพศ *</label><select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50"><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option><option value="อื่นๆ">LGBTQ+</option></select></div>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">วันเกิด *</label><input type="date" required name="dob" value={formData.dob} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50" /></div>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2 text-blue-600">Line ID *</label><input required name="lineId" value={formData.lineId} onChange={handleChange} className="w-full p-4 border-2 border-blue-100 bg-blue-50 focus:border-blue-500 outline-none" placeholder="ไอดีไลน์สำหรับติดต่อ" /></div>
                                     </div>
                                 </div>
 
                                 <div>
                                     <h3 className="text-xl font-bold text-blue-800 mb-6 flex items-center"><i className="ri-phone-fill mr-2"></i> การติดต่อและสุขภาพ</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">เบอร์โทรศัพท์ *</label><input required name="phone" value={formData.phone} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50" /></div>
-                                        <div><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2 text-orange-600 font-bold">เบอร์โทรฉุกเฉิน *</label><input required name="emergencyPhone" value={formData.emergencyPhone} onChange={handleChange} className="w-full p-4 border-2 border-orange-100 rounded-2xl bg-orange-50 focus:border-orange-500 outline-none" /></div>
-                                        <div className="md:col-span-2"><label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2 text-red-600 font-bold">โรคประจำตัว/แพ้อาหาร *</label><input required name="medicalCondition" value={formData.medicalCondition} onChange={handleChange} className="w-full p-4 border-2 border-red-100 rounded-2xl bg-red-50 focus:border-red-500 outline-none" placeholder="ไม่มีระบุ -" /></div>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">เบอร์โทรศัพท์ *</label><input required name="phone" value={formData.phone} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-slate-50" /></div>
+                                        <div><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2 text-orange-600">เบอร์โทรฉุกเฉิน *</label><input required name="emergencyPhone" value={formData.emergencyPhone} onChange={handleChange} className="w-full p-4 border-2 border-orange-100 bg-orange-50 focus:border-orange-500 outline-none" /></div>
+                                        <div className="md:col-span-2"><label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2 text-red-600">โรคประจำตัว/แพ้อาหาร *</label><input required name="medicalCondition" value={formData.medicalCondition} onChange={handleChange} className="w-full p-4 border-2 border-red-100 bg-red-50 focus:border-red-500 outline-none" placeholder="ไม่มีให้ระบุ -" /></div>
                                     </div>
                                 </div>
-                                <button type="submit" className="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-xl shadow-xl transition-all active:scale-95">ถัดไป: ถ่ายรูปโปรไฟล์</button>
+
+                                <div className="p-6 bg-slate-50 border border-slate-200 rounded-[2rem]">
+                                    <h3 className="text-xl font-bold text-blue-800 mb-6 flex items-center"><i className="ri-camera-fill mr-2"></i> ข้อมูลสำหรับชมรม</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div><label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">หน้าที่/ฝ่ายที่สนใจ *</label>
+                                            <select name="interest" value={formData.interest} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-white focus:border-blue-500 outline-none">
+                                                <option value="ฝ่ายภาพนิ่ง">📷 ฝ่ายภาพนิ่ง</option>
+                                                <option value="ฝ่ายวิดีโอไฮไลท์">🎥 ฝ่ายวิดีโอไฮไลท์</option>
+                                                <option value="ฝ่ายเครื่องเสียง">🎙️ ฝ่ายเครื่องเสียง</option>
+                                                <option value="ฝ่ายไลฟ์สดสตรีมมิ่ง">🔴 ฝ่ายไลฟ์สดสตรีมมิ่ง</option>
+                                                <option value="ทำได้หลายอย่าง">🔥 ทำได้หลายอย่าง (สายลุย)</option>
+                                            </select>
+                                        </div>
+                                        <div><label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">อุปกรณ์ส่วนตัวที่มี *</label>
+                                            <select name="equipment" value={formData.equipment} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-white focus:border-blue-500 outline-none">
+                                                <option value="ใช้มือถือเป็นหลัก">📱 ใช้มือถือเป็นหลัก</option>
+                                                <option value="มีกล้อง DSLR/Mirrorless">📸 มีกล้อง DSLR/Mirrorless</option>
+                                                <option value="มีโน้ตบุ๊กสำหรับตัดต่อ">💻 มีโน้ตบุ๊กสำหรับตัดต่อ</option>
+                                                <option value="ไม่มีอุปกรณ์เลย">❌ ไม่มีอุปกรณ์ (ขอยืมชมรม)</option>
+                                            </select>
+                                        </div>
+                                        <div><label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">ประสบการณ์ทำงาน *</label>
+                                            <select name="experience" value={formData.experience} onChange={handleChange} className="w-full p-4 border-2 rounded-2xl bg-white focus:border-blue-500 outline-none">
+                                                <option value="ระดับเริ่มต้น">🌱 เริ่มต้น (อยากมาฝึก)</option>
+                                                <option value="พอทำเป็นบ้าง">🌿 พอทำเป็นบ้าง</option>
+                                                <option value="ระดับกลาง">🌳 ระดับกลาง (รับงานได้)</option>
+                                                <option value="ระดับเซียน">⭐ ระดับเซียน (พร้อมลุยงานใหญ่)</option>
+                                            </select>
+                                        </div>
+                                        <div className="md:col-span-2"><label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">เหตุผลที่อยากเข้าชมรม / ฝากถึงรุ่นพี่ *</label>
+                                            <textarea required name="reason" value={formData.reason} onChange={handleChange} rows="2" className="w-full p-4 border-2 rounded-2xl bg-white focus:border-blue-500 outline-none resize-none" placeholder="พิมพ์บอกเราได้เลย..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" className="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-xl shadow-xl transition-all active:scale-95">ถัดไป: ถ่ายรูปโปรไฟล์</button>
                             </form>
                         ) : (
                             <div className="text-center animate-fade-in">
-                                <h3 className="text-2xl font-black text-slate-900 mb-8">ถ่ายภาพใบหน้าเพื่อใช้ทำประวัติ</h3>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-8">ถ่ายภาพใบหน้าเพื่อใช้ทำประวัติ</h3>
                                 <div className="relative w-full max-w-sm mx-auto aspect-square bg-slate-900 rounded-[3rem] overflow-hidden mb-8 border-8 border-white shadow-2xl">
                                     {photoData ? <img src={photoData} className="w-full h-full object-cover" /> : <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover transform scale-x-[-1]" />}
                                     <canvas ref={canvasRef} className="hidden" />
                                 </div>
                                 <div className="flex flex-col md:flex-row justify-center gap-4">
                                     <button onClick={() => setStep(1)} className="px-10 py-4 bg-slate-100 text-slate-600 rounded-2xl font-bold"><i className="ri-arrow-left-line"></i> แก้ข้อมูล</button>
-                                    {!photoData ? <button onClick={handleCapture} className="px-12 py-4 bg-blue-600 text-white rounded-2xl font-black text-lg shadow-xl"><i className="ri-camera-lens-fill mr-2"></i> กดถ่ายภาพ</button> : 
-                                    <><button onClick={() => setPhotoData(null)} className="px-10 py-4 bg-yellow-500 text-white rounded-2xl font-bold">ถ่ายใหม่</button><button onClick={handleSubmit} disabled={isSubmitting} className="px-12 py-4 bg-green-600 text-white rounded-2xl font-black text-lg shadow-xl transition-all active:scale-95">{isSubmitting ? 'กำลังส่ง...' : 'ยืนยันการสมัคร'}</button></>}
+                                    {!photoData ? <button onClick={handleCapture} className="px-12 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-xl"><i className="ri-camera-lens-fill mr-2"></i> กดถ่ายภาพ</button> : 
+                                    <><button onClick={() => setPhotoData(null)} className="px-10 py-4 bg-yellow-500 text-white rounded-2xl font-bold">ถ่ายใหม่</button><button onClick={handleSubmit} disabled={isSubmitting} className="px-12 py-4 bg-green-600 text-white rounded-2xl font-bold text-lg shadow-xl transition-all active:scale-95">{isSubmitting ? 'กำลังส่ง...' : 'ยืนยันการสมัคร'}</button></>}
                                 </div>
                             </div>
                         )}
@@ -347,7 +403,7 @@
         }
 
         // =======================================================
-        // Command Center (สถิติ + จัดการสาขา + สถิติเพศ/ชั้น)
+        // Command Center
         // =======================================================
         function AdminDashboard({ user, setView, majors, setMajors }) {
             const [students, setStudents] = useState([]);
@@ -355,10 +411,18 @@
             const [activeTab, setActiveTab] = useState('command');
             const [search, setSearch] = useState('');
             const [filterYear, setFilterYear] = useState('all');
-            const [displayMode, setDisplayMode] = useState('gallery');
+            const [displayMode, setDisplayMode] = useState('table');
             const [editingStudent, setEditingStudent] = useState(null);
             const [studentToDelete, setStudentToDelete] = useState(null);
             const [newMajor, setNewMajor] = useState('');
+            
+            // นำเข้าข้อมูล
+            const [bulkData, setBulkData] = useState('');
+            const [isImporting, setIsImporting] = useState(false);
+            
+            // เกียรติบัตร
+            const [selectedForCert, setSelectedForCert] = useState(null);
+            const [certTitle, setCertTitle] = useState('ช่างภาพกิจกรรมดีเด่น');
 
             useEffect(() => {
                 if (!user) return;
@@ -379,87 +443,183 @@
                 setMajors(newList);
             };
 
+            const handleBulkImport = async () => {
+                setIsImporting(true);
+                const rows = bulkData.trim().split('\n');
+                let successCount = 0;
+                for (let row of rows) {
+                    const c = row.split('\t');
+                    if (c[0]) {
+                        await getStudentsRef().add({ studentId:c[0], fullName:c[1], nickname:c[2], phone:c[3], level:c[4], group:c[5], major:c[6], academicYear:c[7], status:'active', photo:null, createdAt:new Date().toISOString() });
+                        successCount++;
+                    }
+                }
+                alert(`นำเข้าสำเร็จ ${successCount} รายการ!`); setBulkData(''); setIsImporting(false); setActiveTab('list');
+            };
+
             const yearsList = useMemo(() => [...new Set(students.map(s => s.academicYear))].sort().reverse(), [students]);
             const [statsYear, setStatsYear] = useState('all');
 
             const filtered = students.filter(s => (filterYear === 'all' || s.academicYear === filterYear) && ((s.fullName||'').includes(search) || (s.studentId||'').includes(search) || (s.nickname||'').includes(search)));
 
+            // สถิติ
             const stats = useMemo(() => {
                 const target = statsYear === 'all' ? students : students.filter(s => s.academicYear === statsYear);
-                const res = { total: target.length, active: 0, graduated: 0, male: 0, female: 0, lgbt: 0, levels: {}, majors: {} };
+                const res = { total: target.length, active: 0, graduated: 0, dismissed: 0, male: 0, female: 0, lgbt: 0, levels: {}, majors: {}, interests: {} };
                 target.forEach(s => {
                     if(s.status === 'active') res.active++;
                     if(s.status === 'graduated') res.graduated++;
+                    if(s.status === 'dismissed') res.dismissed++;
+                    
                     if(s.gender === 'ชาย') res.male++;
                     else if(s.gender === 'หญิง') res.female++;
                     else res.lgbt++;
-                    res.levels[s.level] = (res.levels[s.level] || 0) + 1;
-                    res.majors[s.major] = (res.majors[s.major] || 0) + 1;
+                    
+                    if(s.level) res.levels[s.level] = (res.levels[s.level] || 0) + 1;
+                    if(s.major) res.majors[s.major] = (res.majors[s.major] || 0) + 1;
+                    if(s.interest) res.interests[s.interest] = (res.interests[s.interest] || 0) + 1;
                 });
                 return res;
             }, [students, statsYear]);
 
+            // ส่งออก Excel พร้อมรูปถ่าย
+            const exportToExcelWithImages = () => {
+                if (filtered.length === 0) return alert('ไม่มีข้อมูลให้ส่งออก');
+                
+                let tableHtml = `
+                    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                    <head><meta charset="utf-8"></head>
+                    <body><table border="1" style="font-family: sans-serif;">
+                        <tr style="background-color: #f1f5f9; font-weight: bold; text-align: center;">
+                            <th style="width: 120px; height: 30px;">รูปภาพ</th><th>ปีการศึกษา</th><th>รหัส นศ.</th><th>ระดับชั้น</th><th>กลุ่ม</th><th>สาขา</th><th>ชื่อ-นามสกุล</th><th>ชื่อเล่น</th><th>เพศ</th><th>วันเกิด</th><th>สถานะ</th><th>เหตุผล(พ้นสภาพ)</th><th>เบอร์โทร</th><th>เบอร์ฉุกเฉิน</th><th>Line ID</th><th>โรคประจำตัว</th><th>ฝ่ายที่สนใจ</th><th>อุปกรณ์</th><th>ประสบการณ์</th><th>เหตุผล</th>
+                        </tr>
+                `;
+                
+                filtered.forEach(s => {
+                    let st = s.status === 'graduated' ? 'เรียนจบ' : s.status === 'dismissed' ? 'พ้นสภาพ' : 'สมาชิก';
+                    let imgTag = s.photo ? `<img src="${s.photo}" width="100" height="100" style="object-fit: cover; border-radius: 8px;" />` : 'ไม่มีรูป';
+                    tableHtml += `
+                        <tr>
+                            <td style="height: 110px; width: 110px; text-align: center; vertical-align: middle;">${imgTag}</td>
+                            <td style="vertical-align: middle; text-align: center;">${s.academicYear||'-'}</td>
+                            <td style="vertical-align: middle;">${s.studentId||'-'}</td>
+                            <td style="vertical-align: middle;">${s.level||'-'}</td>
+                            <td style="vertical-align: middle;">${s.group||'-'}</td>
+                            <td style="vertical-align: middle;">${s.major||'-'}</td>
+                            <td style="vertical-align: middle;">${s.fullName||'-'}</td>
+                            <td style="vertical-align: middle;">${s.nickname||'-'}</td>
+                            <td style="vertical-align: middle;">${s.gender||'-'}</td>
+                            <td style="vertical-align: middle;">${s.dob||'-'}</td>
+                            <td style="vertical-align: middle;">${st}</td>
+                            <td style="vertical-align: middle;">${s.statusReason||'-'}</td>
+                            <td style="vertical-align: middle;">${s.phone||'-'}</td>
+                            <td style="vertical-align: middle;">${s.emergencyPhone||'-'}</td>
+                            <td style="vertical-align: middle;">${s.lineId||'-'}</td>
+                            <td style="vertical-align: middle;">${s.medicalCondition||'-'}</td>
+                            <td style="vertical-align: middle;">${s.interest||'-'}</td>
+                            <td style="vertical-align: middle;">${s.equipment||'-'}</td>
+                            <td style="vertical-align: middle;">${s.experience||'-'}</td>
+                            <td style="vertical-align: middle;">${s.reason||'-'}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHtml += `</table></body></html>`;
+
+                const blob = new Blob([tableHtml], { type: 'application/vnd.ms-excel' });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `MDEC_Members_List.xls`;
+                link.click();
+            };
+
             return (
-                <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden animate-fade-in mb-20">
-                    <div className="bg-slate-900 text-white p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden animate-fade-in mb-20">
+                    {/* UI ปริ้นเกียรติบัตร */}
+                    {selectedForCert && activeTab === 'cert' && (
+                        <div className="print-only fixed inset-0 bg-white z-50 flex items-center justify-center p-10">
+                            <div className="w-full h-full border-[12px] border-double border-yellow-600 p-12 flex flex-col items-center justify-center text-center relative">
+                                <i className="ri-camera-fill absolute opacity-5 text-[500px]"></i>
+                                <div className="relative z-10 w-full">
+                                    <h1 className="text-4xl font-bold mb-12 text-slate-900">วิทยาลัยเทคโนโลยีภาคตะวันออก (อี.เทค)</h1>
+                                    <p className="text-xl mb-4 text-slate-700">เกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า</p>
+                                    <h2 className="text-5xl font-bold text-yellow-600 mb-8 pb-4 border-b-2 border-yellow-300 inline-block px-10">{selectedForCert.fullName}</h2>
+                                    <p className="text-xl text-slate-700 mb-6">ได้อุทิศตนปฏิบัติงานในตำแหน่ง</p>
+                                    <h4 className="text-3xl font-bold text-slate-800 mb-16">{certTitle}</h4>
+                                    <div className="flex justify-between px-20 w-full mt-10">
+                                        <div className="text-center"><div className="w-48 border-b border-slate-400 mb-2"></div><p className="text-slate-600">อาจารย์ที่ปรึกษาชมรม</p></div>
+                                        <div className="text-center"><div className="w-48 border-b border-slate-400 mb-2"></div><p className="text-slate-600">ผู้อำนวยการวิทยาลัย</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="bg-slate-900 text-white p-6 flex flex-col md:flex-row justify-between items-center gap-4 no-print">
                         <div className="flex items-center space-x-3">
-                            <div className="bg-blue-600 p-2 rounded-xl shadow-lg shadow-blue-500/20"><i className="ri-dashboard-3-fill text-2xl"></i></div>
-                            <h2 className="font-black text-2xl tracking-tighter uppercase">Command Center</h2>
+                            <div className="bg-blue-600 p-2 rounded-xl shadow-lg"><i className="ri-dashboard-3-fill text-2xl"></i></div>
+                            <h2 className="font-bold text-2xl tracking-tighter uppercase">Command Center</h2>
                         </div>
-                        <div className="flex bg-slate-800 p-1 rounded-2xl border border-slate-700">
-                            <button onClick={()=>setActiveTab('command')} className={`px-5 py-2 rounded-xl text-sm font-bold transition ${activeTab==='command'?'bg-blue-600 text-white shadow-lg':'text-slate-400'}`}>Summary</button>
-                            <button onClick={()=>setActiveTab('list')} className={`px-5 py-2 rounded-xl text-sm font-bold transition ${activeTab==='list'?'bg-blue-600 text-white shadow-lg':'text-slate-400'}`}>Database</button>
-                            <button onClick={()=>setActiveTab('settings')} className={`px-5 py-2 rounded-xl text-sm font-bold transition ${activeTab==='settings'?'bg-blue-600 text-white shadow-lg':'text-slate-400'}`}>Setup</button>
-                        </div>
+                        <button onClick={()=>setView('home')} className="px-6 py-2 bg-slate-800 hover:bg-red-600 rounded-xl transition font-bold">ออกจากระบบ</button>
                     </div>
 
-                    <div className="p-6 md:p-10">
+                    <div className="flex flex-wrap bg-slate-800 p-2 border-b border-slate-700 gap-1 justify-center md:justify-start no-print">
+                        <button onClick={()=>setActiveTab('command')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center ${activeTab==='command'?'bg-blue-600 text-white shadow-lg':'text-slate-400 hover:text-white'}`}><i className="ri-pie-chart-2-fill mr-2"></i> สรุปยอด</button>
+                        <button onClick={()=>setActiveTab('list')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center ${activeTab==='list'?'bg-blue-600 text-white shadow-lg':'text-slate-400 hover:text-white'}`}><i className="ri-folder-user-fill mr-2"></i> ฐานข้อมูล</button>
+                        <button onClick={()=>setActiveTab('legacy')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center ${activeTab==='legacy'?'bg-blue-600 text-white shadow-lg':'text-slate-400 hover:text-white'}`}><i className="ri-file-excel-2-fill mr-2"></i> นำเข้า Excel</button>
+                        <button onClick={()=>setActiveTab('cert')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center ${activeTab==='cert'?'bg-blue-600 text-white shadow-lg':'text-slate-400 hover:text-white'}`}><i className="ri-award-fill mr-2"></i> เกียรติบัตร</button>
+                        <button onClick={()=>setActiveTab('settings')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center ${activeTab==='settings'?'bg-blue-600 text-white shadow-lg':'text-slate-400 hover:text-white'}`}><i className="ri-settings-3-fill mr-2"></i> ตั้งค่าระบบ</button>
+                    </div>
+
+                    <div className="p-6 md:p-10 no-print">
+                        {/* Tab: Command Center */}
                         {activeTab === 'command' && (
                             <div className="space-y-10 animate-fade-in">
                                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
-                                    <div><h3 className="text-2xl font-black text-slate-800">สรุปข้อมูลประจำศูนย์ควบคุม</h3><p className="text-slate-500">เลือกปีการศึกษาเพื่อวิเคราะห์ข้อมูลเชิงสถิติ</p></div>
-                                    <select value={statsYear} onChange={e=>setStatsYear(e.target.value)} className="w-full md:w-64 p-4 border-2 border-slate-200 rounded-2xl font-bold bg-white outline-none focus:border-blue-500">
-                                        <option value="all">ดูทุกปีรวมกัน</option>
-                                        {yearsList.map(y => <option key={y} value={y}>ปีการศึกษา {y}</option>)}
-                                    </select>
+                                    <div><h3 className="text-2xl font-bold text-slate-800">ศูนย์วิเคราะห์ข้อมูลนักศึกษา</h3></div>
+                                    <div className="w-full md:w-64">
+                                        <select value={statsYear} onChange={e=>setStatsYear(e.target.value)} className="w-full p-3 border-2 border-blue-200 rounded-xl outline-none focus:border-blue-500 font-bold bg-white">
+                                            <option value="all">ดูทุกปีรวมกัน</option>
+                                            {yearsList.map(y => <option key={y} value={y}>ปีการศึกษา {y}</option>)}
+                                        </select>
+                                    </div>
                                 </div>
 
-                                {/* Stats Cards */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                    <div className="bg-blue-50 p-8 rounded-[2rem] border border-blue-100"><p className="text-blue-600 font-black text-xs uppercase tracking-widest mb-1">TOTAL MEMBERS</p><h4 className="text-4xl font-black text-blue-900">{stats.total} <small className="text-sm">คน</small></h4></div>
-                                    <div className="bg-green-50 p-8 rounded-[2rem] border border-green-100"><p className="text-green-600 font-black text-xs uppercase tracking-widest mb-1">ACTIVE</p><h4 className="text-4xl font-black text-green-900">{stats.active} <small className="text-sm">คน</small></h4></div>
-                                    <div className="bg-slate-900 p-8 rounded-[2rem] text-white"><p className="text-slate-400 font-black text-xs uppercase tracking-widest mb-1">GRADUATED</p><h4 className="text-4xl font-black text-yellow-500">{stats.graduated} <small className="text-sm">คน</small></h4></div>
-                                    <div className="bg-purple-50 p-8 rounded-[2rem] border border-purple-100"><p className="text-purple-600 font-black text-xs uppercase tracking-widest mb-1">MAJORS</p><h4 className="text-4xl font-black text-purple-900">{Object.keys(stats.majors).length} <small className="text-sm">สาขา</small></h4></div>
+                                    <div className="bg-blue-50 p-8 rounded-[2rem] border border-blue-100"><p className="text-blue-600 font-bold text-xs uppercase tracking-widest mb-1">สมาชิกทั้งหมด</p><h4 className="text-4xl font-bold text-blue-900">{stats.total}</h4></div>
+                                    <div className="bg-green-50 p-8 rounded-[2rem] border border-green-100"><p className="text-green-600 font-bold text-xs uppercase tracking-widest mb-1">กำลังศึกษา</p><h4 className="text-4xl font-bold text-green-900">{stats.active}</h4></div>
+                                    <div className="bg-slate-900 p-8 rounded-[2rem] text-white"><p className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-1">จบแล้ว</p><h4 className="text-4xl font-bold text-yellow-500">{stats.graduated}</h4></div>
+                                    <div className="bg-red-50 p-8 rounded-[2rem] border border-red-100"><p className="text-red-600 font-bold text-xs uppercase tracking-widest mb-1">พ้นสภาพ</p><h4 className="text-4xl font-bold text-red-900">{stats.dismissed}</h4></div>
                                 </div>
 
-                                {/* Gender & Level Charts */}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                     <div className="bg-white p-8 rounded-[2rem] border shadow-sm">
-                                        <h3 className="font-black text-lg mb-6 flex items-center"><i className="ri-user-voice-fill mr-2 text-blue-600 text-xl"></i> สัดส่วนเพศ (Gender Distribution)</h3>
+                                        <h3 className="font-bold text-lg mb-6 flex items-center"><i className="ri-user-voice-fill mr-2 text-blue-600"></i> สัดส่วนเพศ</h3>
                                         <div className="space-y-5">
                                             {[["ชาย", stats.male, "bg-blue-500"], ["หญิง", stats.female, "bg-pink-500"], ["LGBTQ+", stats.lgbt, "bg-purple-500"]].map(([name, count, color]) => (
                                                 <div key={name}>
                                                     <div className="flex justify-between mb-2 text-sm font-bold"><span>{name}</span><span>{count} คน</span></div>
-                                                    <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden"><div className={`${color} h-full transition-all duration-1000`} style={{width:`${stats.total ? (count/stats.total)*100 : 0}%`}}></div></div>
+                                                    <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden"><div className={`${color} h-full`} style={{width:`${stats.total ? (count/stats.total)*100 : 0}%`}}></div></div>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                     <div className="bg-white p-8 rounded-[2rem] border shadow-sm">
-                                        <h3 className="font-black text-lg mb-6 flex items-center"><i className="ri-stairs-fill mr-2 text-blue-600 text-xl"></i> ระดับชั้น (Levels)</h3>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            {Object.entries(stats.levels).sort().map(([level, count]) => (
-                                                <div key={level} className="p-4 bg-slate-50 rounded-2xl flex justify-between items-center border border-slate-100">
-                                                    <span className="font-bold text-slate-600">{level}</span>
-                                                    <span className="bg-white px-3 py-1 rounded-xl text-blue-600 font-black text-sm shadow-sm">{count}</span>
+                                        <h3 className="font-bold text-lg mb-6 flex items-center"><i className="ri-camera-lens-fill mr-2 text-blue-600"></i> ฝ่ายที่นักศึกษาสนใจ</h3>
+                                        <div className="space-y-5">
+                                            {Object.entries(stats.interests).length > 0 ? Object.entries(stats.interests).sort((a,b)=>b[1]-a[1]).map(([name, count]) => (
+                                                <div key={name}>
+                                                    <div className="flex justify-between mb-2 text-sm font-bold"><span>{name}</span><span className="text-blue-600">{count} คน</span></div>
+                                                    <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden"><div className="bg-yellow-500 h-full" style={{width:`${stats.total ? (count/stats.total)*100 : 0}%`}}></div></div>
                                                 </div>
-                                            ))}
+                                            )) : <div className="text-center text-slate-400 py-4">ไม่มีข้อมูล</div>}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         )}
 
+                        {/* Tab: ฐานข้อมูล */}
                         {activeTab === 'list' && (
                             <div className="animate-fade-in space-y-6">
                                 <div className="flex flex-col md:flex-row gap-4 justify-between">
@@ -467,9 +627,12 @@
                                         <i className="ri-search-2-line absolute left-4 top-4 text-slate-400"></i>
                                         <input type="text" placeholder="ค้นหาชื่อ, รหัส, ชื่อเล่น..." value={search} onChange={e=>setSearch(e.target.value)} className="w-full pl-12 pr-4 py-4 border-2 rounded-2xl focus:border-blue-500 outline-none transition bg-slate-50 font-bold" />
                                     </div>
-                                    <div className="flex gap-2 bg-slate-100 p-1 rounded-2xl border">
-                                        <button onClick={()=>setDisplayMode('gallery')} className={`px-6 py-2 rounded-xl text-sm font-bold transition ${displayMode==='gallery'?'bg-white text-blue-600 shadow-sm':'text-slate-500'}`}>ดูรูป</button>
-                                        <button onClick={()=>setDisplayMode('table')} className={`px-6 py-2 rounded-xl text-sm font-bold transition ${displayMode==='table'?'bg-white text-blue-600 shadow-sm':'text-slate-500'}`}>ตาราง</button>
+                                    <div className="flex gap-2">
+                                        <div className="flex bg-slate-100 p-1 rounded-2xl border">
+                                            <button onClick={()=>setDisplayMode('table')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition ${displayMode==='table'?'bg-white text-blue-600 shadow-sm':'text-slate-500'}`}>ตาราง</button>
+                                            <button onClick={()=>setDisplayMode('gallery')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition ${displayMode==='gallery'?'bg-white text-blue-600 shadow-sm':'text-slate-500'}`}>รูปภาพ</button>
+                                        </div>
+                                        <button onClick={exportToExcelWithImages} className="px-5 py-2.5 rounded-2xl text-sm font-bold bg-green-600 text-white shadow-md hover:bg-green-700 transition flex items-center"><i className="ri-file-excel-2-fill mr-2 text-lg"></i> โหลด Excel (พร้อมรูป)</button>
                                     </div>
                                 </div>
 
@@ -485,9 +648,9 @@
                                                     </div>
                                                 </div>
                                                 <div className="p-5 text-center">
-                                                    <div className="font-black text-lg text-slate-800 truncate leading-none mb-1">{s.nickname}</div>
+                                                    <div className="font-bold text-lg text-slate-800 truncate leading-none mb-1">{s.nickname}</div>
                                                     <div className="text-[10px] text-slate-400 font-bold truncate uppercase tracking-tighter">{s.major}</div>
-                                                    <div className="mt-3 inline-block px-3 py-1 rounded-lg text-[9px] font-black uppercase bg-blue-50 text-blue-600">{s.level}</div>
+                                                    <div className="mt-3 inline-block px-3 py-1 rounded-lg text-[9px] font-bold uppercase bg-blue-50 text-blue-600">{s.level}</div>
                                                 </div>
                                             </div>
                                         ))}
@@ -495,13 +658,13 @@
                                 ) : (
                                     <div className="overflow-x-auto rounded-3xl border border-slate-100">
                                         <table className="w-full text-left text-sm border-collapse bg-white">
-                                            <thead><tr className="bg-slate-50 border-b border-slate-100 text-slate-500 font-black uppercase text-[10px] tracking-widest"><th className="p-5">รูป</th><th className="p-5">นักศึกษา</th><th className="p-5">สาขา</th><th className="p-5 text-center">จัดการ</th></tr></thead>
+                                            <thead><tr className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase text-[10px] tracking-widest"><th className="p-5">รูป</th><th className="p-5">นักศึกษา</th><th className="p-5">สาขา</th><th className="p-5 text-center">จัดการ</th></tr></thead>
                                             <tbody>
                                                 {filtered.map(s => (
                                                     <tr key={s.id} className="border-b border-slate-50 hover:bg-blue-50/20 transition-colors">
-                                                        <td className="p-4"><img src={s.photo||'https://via.placeholder.com/150'} className="w-12 h-12 object-cover rounded-xl shadow-sm border border-white" /></td>
-                                                        <td className="p-4"><div className="font-black text-slate-900">{s.studentId} - {s.fullName}</div><div className="text-xs text-slate-500 font-medium">ชื่อเล่น: {s.nickname} | โทร: {s.phone}</div></td>
-                                                        <td className="p-4 font-bold text-slate-600">{s.major}</td>
+                                                        <td className="p-4"><img src={s.photo||'https://via.placeholder.com/150'} className="w-12 h-12 object-cover rounded-xl shadow-sm border border-slate-200" /></td>
+                                                        <td className="p-4"><div className="font-bold text-slate-900">{s.studentId} - {s.fullName}</div><div className="text-xs text-slate-500 font-medium">ชื่อเล่น: {s.nickname} | โทร: {s.phone}</div></td>
+                                                        <td className="p-4 font-bold text-slate-600">{s.major} <br/><span className="text-[10px] text-slate-400">{s.level}</span></td>
                                                         <td className="p-4 text-center">
                                                             <button onClick={()=>setEditingStudent(s)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition"><i className="ri-edit-box-line text-2xl"></i></button>
                                                             <button onClick={()=>setStudentToDelete(s)} className="p-2 text-red-500 hover:bg-red-50 rounded-xl transition"><i className="ri-delete-bin-line text-2xl"></i></button>
@@ -515,17 +678,74 @@
                             </div>
                         )}
 
+                        {/* Tab: นำเข้าข้อมูล */}
+                        {activeTab === 'legacy' && (
+                            <div className="animate-fade-in max-w-4xl mx-auto py-4">
+                                <div className="bg-slate-900 p-8 md:p-10 rounded-[2.5rem] shadow-xl text-white">
+                                    <div className="flex items-center space-x-3 mb-6">
+                                        <div className="bg-green-500 p-2 rounded-xl text-slate-900"><i className="ri-file-excel-2-fill text-2xl"></i></div>
+                                        <h3 className="text-2xl font-bold uppercase tracking-tight">นำเข้าข้อมูลจำนวนมาก</h3>
+                                    </div>
+                                    <p className="text-slate-400 text-sm mb-6 font-medium leading-relaxed">คัดลอกข้อมูลจากตาราง Excel โดยเรียงคอลัมน์จากซ้ายไปขวาดังนี้:<br/> <span className="text-yellow-400 font-bold">1.รหัส นศ. | 2.ชื่อ-สกุล | 3.ชื่อเล่น | 4.โทรศัพท์ | 5.ระดับชั้น | 6.กลุ่ม/ห้อง | 7.สาขาวิชา | 8.ปีการศึกษา</span></p>
+                                    <textarea value={bulkData} onChange={e=>setBulkData(e.target.value)} placeholder="คัดลอกรายชื่อจาก Excel มาวาง (Paste) ลงในช่องนี้..." className="w-full h-60 p-5 border-2 border-slate-700 rounded-2xl mb-6 font-mono text-sm bg-slate-800 text-white outline-none focus:border-green-500 transition"></textarea>
+                                    <button onClick={handleBulkImport} disabled={isImporting || !bulkData} className="w-full py-5 bg-green-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-green-900/50 hover:bg-green-500 transition active:scale-95 disabled:opacity-50">
+                                        {isImporting ? 'กำลังประมวลผลข้อมูลลงฐานข้อมูล...' : 'นำเข้าข้อมูลเข้าสู่ระบบ'}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Tab: ออกเกียรติบัตร */}
+                        {activeTab === 'cert' && (
+                            <div className="animate-fade-in grid grid-cols-1 lg:grid-cols-2 gap-8 py-4">
+                                <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col h-[600px]">
+                                    <h3 className="font-bold text-xl mb-4 text-slate-800">1. ค้นหาและเลือกนักศึกษา</h3>
+                                    <div className="relative mb-4">
+                                        <i className="ri-search-line absolute left-4 top-3.5 text-slate-400"></i>
+                                        <input type="text" placeholder="พิมพ์ชื่อหรือรหัส..." value={search} onChange={e=>setSearch(e.target.value)} className="w-full pl-12 pr-4 py-3 border-2 rounded-2xl outline-none focus:border-blue-500 bg-slate-50 font-bold" />
+                                    </div>
+                                    <div className="flex-1 overflow-y-auto space-y-2 pr-2">
+                                        {filtered.map(s=>(
+                                            <div key={s.id} onClick={()=>setSelectedForCert(s)} className={`p-4 border-2 cursor-pointer rounded-2xl flex items-center transition ${selectedForCert?.id===s.id?'border-yellow-500 bg-yellow-50 shadow-md':'border-slate-100 hover:border-slate-300 bg-white'}`}>
+                                                <img src={s.photo||'https://via.placeholder.com/150'} className="w-12 h-12 rounded-xl object-cover mr-4 shadow-sm" />
+                                                <div><div className="font-bold text-slate-800">{s.fullName}</div><div className="text-xs text-slate-500 font-medium">{s.studentId} - {s.major}</div></div>
+                                                {selectedForCert?.id===s.id && <i className="ri-checkbox-circle-fill ml-auto text-yellow-500 text-2xl"></i>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-center justify-center p-10 bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-200 h-[600px]">
+                                    {selectedForCert ? (
+                                        <div className="text-center w-full max-w-sm animate-fade-in">
+                                            <div className="w-28 h-28 bg-yellow-100 text-yellow-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner"><i className="ri-award-fill text-6xl"></i></div>
+                                            <h4 className="font-bold text-3xl mb-2 text-slate-800">{selectedForCert.fullName}</h4>
+                                            <input type="text" value={certTitle} onChange={e=>setCertTitle(e.target.value)} className="w-full text-center p-3 border border-slate-300 rounded-xl mb-8 font-bold text-slate-600 outline-none focus:border-yellow-500" placeholder="ตำแหน่ง/ชื่อรางวัลในเกียรติบัตร" />
+                                            <button onClick={()=>window.print()} className="w-full py-5 bg-slate-900 text-white rounded-2xl font-bold text-lg shadow-xl shadow-slate-900/20 hover:bg-black transition active:scale-95 flex items-center justify-center"><i className="ri-printer-fill mr-3 text-xl"></i> สั่งพิมพ์เกียรติบัตร</button>
+                                            <p className="text-xs font-bold text-slate-400 mt-6">* โปรดตั้งค่าหน้ากระดาษเป็นแนวนอน (Landscape) ก่อนพิมพ์</p>
+                                        </div>
+                                    ) : (
+                                        <div className="text-slate-400 text-center">
+                                            <i className="ri-id-card-fill text-8xl mb-6 block opacity-20"></i>
+                                            <p className="font-bold text-lg">โปรดเลือกรายชื่อที่เมนูด้านซ้าย</p>
+                                            <p className="text-sm">เพื่อเข้าสู่โหมดพิมพ์เกียรติบัตร</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Tab: ตั้งค่า */}
                         {activeTab === 'settings' && (
                             <div className="animate-fade-in max-w-2xl mx-auto space-y-8 py-4">
                                 <div className="bg-slate-900 p-8 rounded-[2.5rem] shadow-xl text-white">
                                     <div className="flex items-center space-x-3 mb-6">
                                         <div className="bg-yellow-500 p-2 rounded-xl text-slate-900"><i className="ri-settings-3-fill text-xl"></i></div>
-                                        <h3 className="text-xl font-black uppercase tracking-tight">ตั้งค่ารายชื่อสาขาวิชา</h3>
+                                        <h3 className="text-xl font-bold uppercase tracking-tight">ตั้งค่ารายชื่อสาขาวิชา</h3>
                                     </div>
                                     <p className="text-slate-400 text-sm mb-6 font-medium">เพิ่มหรือลบชื่อสาขาวิชาที่จะแสดงในหน้าใบสมัคร เพื่อความเป็นระเบียบของข้อมูล</p>
                                     <div className="flex gap-3 mb-8">
                                         <input type="text" value={newMajor} onChange={e=>setNewMajor(e.target.value)} placeholder="ชื่อสาขาใหม่..." className="flex-1 p-4 rounded-2xl bg-white/10 border border-white/20 outline-none focus:border-yellow-500 font-bold" />
-                                        <button onClick={()=>{ if(newMajor){ updateMajors([...majors, newMajor]); setNewMajor(''); } }} className="px-8 py-4 bg-yellow-500 text-slate-900 rounded-2xl font-black shadow-lg">เพิ่ม</button>
+                                        <button onClick={()=>{ if(newMajor){ updateMajors([...majors, newMajor]); setNewMajor(''); } }} className="px-8 py-4 bg-yellow-500 text-slate-900 rounded-2xl font-bold shadow-lg hover:bg-yellow-400 transition">เพิ่ม</button>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {majors.map((m, i) => (
@@ -540,17 +760,17 @@
                         )}
                     </div>
 
-                    {/* Modals: Edit/Delete... */}
+                    {/* Modals: Edit/Delete */}
                     {editingStudent && <EditStudentModal student={editingStudent} onClose={()=>setEditingStudent(null)} majors={majors} onSave={async (d)=>{ await getStudentsRef().doc(editingStudent.id).update(d); setEditingStudent(null); }} />}
                     {studentToDelete && (
-                        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+                        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in no-print">
                             <div className="bg-white p-10 rounded-[2.5rem] w-full max-w-sm text-center shadow-2xl border-4 border-red-50">
                                 <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6"><i className="ri-delete-bin-fill text-4xl"></i></div>
-                                <h3 className="text-2xl font-black text-slate-900 mb-2">ยืนยันการลบ?</h3>
-                                <p className="text-slate-500 mb-10 font-medium">คุณกำลังจะลบรายชื่อ <br/><span className="text-slate-900 font-black">{studentToDelete.fullName}</span><br/> การกระทำนี้ไม่สามารถกู้คืนได้</p>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-2">ยืนยันการลบ?</h3>
+                                <p className="text-slate-500 mb-10 font-medium">คุณกำลังจะลบรายชื่อ <br/><span className="text-slate-900 font-bold">{studentToDelete.fullName}</span><br/> การกระทำนี้ไม่สามารถกู้คืนได้</p>
                                 <div className="flex gap-4">
-                                    <button onClick={()=>setStudentToDelete(null)} className="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-bold">ยกเลิก</button>
-                                    <button onClick={deleteStudent} className="flex-1 py-4 bg-red-600 text-white rounded-2xl font-black shadow-lg shadow-red-200">ยืนยันการลบ</button>
+                                    <button onClick={()=>setStudentToDelete(null)} className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold transition">ยกเลิก</button>
+                                    <button onClick={deleteStudent} className="flex-1 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold shadow-lg shadow-red-200 transition">ยืนยันการลบ</button>
                                 </div>
                             </div>
                         </div>
@@ -572,41 +792,41 @@
                                 <img src={student.photo || 'https://via.placeholder.com/400'} className="w-full h-full object-cover" />
                             </div>
                             <div className="text-center">
-                                <div className="text-white font-black text-xl tracking-tight leading-none mb-2">{student.studentId}</div>
+                                <div className="text-white font-bold text-xl tracking-tight leading-none mb-2">{student.studentId}</div>
                                 <div className="text-blue-400 text-xs font-bold uppercase tracking-widest">{student.interest}</div>
                             </div>
                         </div>
                         <div className="md:w-2/3 flex flex-col max-h-[85vh]">
                             <div className="p-6 bg-slate-50 border-b flex justify-between items-center">
-                                <h3 className="font-black text-xl text-slate-800 uppercase tracking-tight">แก้ไขข้อมูลส่วนตัว</h3>
+                                <h3 className="font-bold text-xl text-slate-800 uppercase tracking-tight">แก้ไขข้อมูลส่วนตัว</h3>
                                 <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-200 transition">✕</button>
                             </div>
                             <div className="p-8 space-y-6 overflow-y-auto">
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="col-span-2"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">ชื่อ - นามสกุลจริง</label><input value={formData.fullName} onChange={e=>setFormData({...formData, fullName:e.target.value})} className="w-full p-4 border-2 rounded-2xl focus:border-blue-500 outline-none font-bold" /></div>
-                                    <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">ชื่อเล่น</label><input value={formData.nickname} onChange={e=>setFormData({...formData, nickname:e.target.value})} className="w-full p-4 border-2 rounded-2xl" /></div>
-                                    <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">เพศ</label><select value={formData.gender} onChange={e=>setFormData({...formData, gender:e.target.value})} className="w-full p-4 border-2 rounded-2xl"><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option><option value="อื่นๆ">LGBTQ+</option></select></div>
-                                    <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">ปีการศึกษา</label><input value={formData.academicYear} onChange={e=>setFormData({...formData, academicYear:e.target.value})} className="w-full p-4 border-2 rounded-2xl" /></div>
-                                    <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">สาขาวิชา</label>
+                                    <div className="col-span-2"><label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">ชื่อ - นามสกุลจริง</label><input value={formData.fullName} onChange={e=>setFormData({...formData, fullName:e.target.value})} className="w-full p-4 border-2 rounded-2xl focus:border-blue-500 outline-none font-bold" /></div>
+                                    <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">ชื่อเล่น</label><input value={formData.nickname} onChange={e=>setFormData({...formData, nickname:e.target.value})} className="w-full p-4 border-2 rounded-2xl" /></div>
+                                    <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">เพศ</label><select value={formData.gender} onChange={e=>setFormData({...formData, gender:e.target.value})} className="w-full p-4 border-2 rounded-2xl"><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option><option value="อื่นๆ">LGBTQ+</option></select></div>
+                                    <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">ปีการศึกษา</label><input value={formData.academicYear} onChange={e=>setFormData({...formData, academicYear:e.target.value})} className="w-full p-4 border-2 rounded-2xl" /></div>
+                                    <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">สาขาวิชา</label>
                                         <select value={formData.major} onChange={e=>setFormData({...formData, major:e.target.value})} className="w-full p-4 border-2 rounded-2xl">
                                             {majors.map(m => <option key={m} value={m}>{m}</option>)}
                                         </select>
                                     </div>
-                                    <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block text-blue-600">Line ID</label><input value={formData.lineId} onChange={e=>setFormData({...formData, lineId:e.target.value})} className="w-full p-4 border-2 border-blue-100 bg-blue-50 rounded-2xl" /></div>
-                                    <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">ระดับชั้น</label><input value={formData.level} onChange={e=>setFormData({...formData, level:e.target.value})} className="w-full p-4 border-2 rounded-2xl" /></div>
+                                    <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block text-blue-600">Line ID</label><input value={formData.lineId} onChange={e=>setFormData({...formData, lineId:e.target.value})} className="w-full p-4 border-2 border-blue-100 bg-blue-50 rounded-2xl" /></div>
+                                    <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">ระดับชั้น</label><input value={formData.level} onChange={e=>setFormData({...formData, level:e.target.value})} className="w-full p-4 border-2 rounded-2xl" /></div>
                                 </div>
                                 <div className="p-6 bg-slate-900 rounded-[2rem] text-white">
-                                    <label className="block text-sm font-black mb-4 uppercase tracking-widest text-slate-400">สถานะความเป็นสมาชิก</label>
+                                    <label className="block text-sm font-bold mb-4 uppercase tracking-widest text-slate-400">สถานะความเป็นสมาชิก</label>
                                     <select value={formData.status} onChange={e=>setFormData({...formData, status:e.target.value})} className="w-full p-4 border border-slate-700 bg-slate-800 rounded-2xl mb-4 font-bold outline-none focus:border-blue-500 transition">
                                         <option value="active">🟢 กำลังเป็นสมาชิก (Active)</option>
                                         <option value="graduated">🎓 เรียนจบแล้ว (Graduated)</option>
                                         <option value="dismissed">🔴 พ้นสภาพ (Dismissed)</option>
                                     </select>
-                                    {formData.status === 'dismissed' && <textarea placeholder="ระบุเหตุผลที่พ้นสภาพ..." value={formData.statusReason} onChange={e=>setFormData({...formData, statusReason:e.target.value})} className="w-full p-4 border border-slate-700 bg-slate-800 rounded-2xl text-sm" rows="2"></textarea>}
+                                    {formData.status === 'dismissed' && <textarea placeholder="ระบุเหตุผลที่พ้นสภาพ..." value={formData.statusReason} onChange={e=>setFormData({...formData, statusReason:e.target.value})} className="w-full p-4 border border-slate-700 bg-slate-800 rounded-2xl text-sm outline-none focus:border-red-500" rows="2"></textarea>}
                                 </div>
                                 <div className="flex gap-4 pt-4 border-t">
-                                    <button onClick={onClose} className="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-bold">ปิดหน้าต่าง</button>
-                                    <button onClick={()=>onSave(formData)} className="flex-1 py-4 bg-blue-600 text-white font-black rounded-2xl shadow-xl shadow-blue-100 hover:bg-blue-700 transition active:scale-95">บันทึกข้อมูลทั้งหมด</button>
+                                    <button onClick={onClose} className="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-bold hover:bg-slate-200 transition">ปิดหน้าต่าง</button>
+                                    <button onClick={()=>onSave(formData)} className="flex-1 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-100 hover:bg-blue-700 transition active:scale-95">บันทึกข้อมูลทั้งหมด</button>
                                 </div>
                             </div>
                         </div>
