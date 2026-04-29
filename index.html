@@ -517,38 +517,38 @@
                     
                     {/* UI ปริ้นรายงานพร้อมรูปถ่าย (Roster) */}
                     {isPrintingRoster && (
-                        <div className="print-only fixed inset-0 bg-white z-[100] p-10 overflow-y-auto">
-                            <div className="no-print flex justify-between items-center mb-8 border-b pb-4">
+                        <div className="fixed inset-0 bg-white z-[100] p-4 md:p-10 overflow-y-auto print:static print:p-0 print:overflow-visible animate-fade-in">
+                            <div className="no-print flex flex-col md:flex-row justify-between items-center mb-8 border-b pb-4 gap-4">
                                 <h2 className="text-2xl font-bold">โหมดพิมพ์ทำเนียบสมาชิกชมรม (Roster)</h2>
                                 <div className="flex gap-4">
-                                    <button onClick={()=>window.print()} className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold">ปริ้น / Save PDF</button>
-                                    <button onClick={()=>setIsPrintingRoster(false)} className="px-6 py-2 bg-gray-200 rounded-xl font-bold">ปิดหน้าต่าง</button>
+                                    <button onClick={()=>window.print()} className="px-6 py-3 bg-blue-600 hover:bg-blue-700 transition text-white rounded-xl font-bold shadow-lg flex items-center"><i className="ri-printer-fill mr-2"></i> ปริ้น / Save PDF</button>
+                                    <button onClick={()=>setIsPrintingRoster(false)} className="px-6 py-3 bg-slate-200 hover:bg-slate-300 transition rounded-xl font-bold">ปิดหน้าต่าง</button>
                                 </div>
                             </div>
                             <div className="text-center mb-6">
                                 <h1 className="text-2xl font-bold mb-2">ทำเนียบสมาชิกชมรม MDEC PHOTO CLUB</h1>
-                                <p className="text-gray-600">ข้อมูลอัปเดตล่าสุด: {new Date().toLocaleDateString('th-TH')}</p>
+                                <p className="text-gray-600 font-medium">ข้อมูลอัปเดตล่าสุด: {new Date().toLocaleDateString('th-TH')}</p>
                             </div>
-                            <table className="print-table">
+                            <table className="print-table w-full border-collapse text-sm">
                                 <thead>
-                                    <tr>
-                                        <th style={{width:'80px', textAlign:'center'}}>รูปถ่าย</th>
-                                        <th style={{width:'100px'}}>รหัส นศ.</th>
-                                        <th style={{width:'200px'}}>ชื่อ - นามสกุล (ชื่อเล่น)</th>
-                                        <th>ระดับชั้น / สาขา</th>
-                                        <th>เบอร์โทร / Line</th>
-                                        <th>ฝ่ายที่สนใจ</th>
+                                    <tr className="bg-slate-100 text-slate-800">
+                                        <th style={{width:'80px', textAlign:'center', border: '1px solid #ccc', padding: '8px'}}>รูปถ่าย</th>
+                                        <th style={{width:'100px', border: '1px solid #ccc', padding: '8px'}}>รหัส นศ.</th>
+                                        <th style={{width:'200px', border: '1px solid #ccc', padding: '8px'}}>ชื่อ - นามสกุล (ชื่อเล่น)</th>
+                                        <th style={{border: '1px solid #ccc', padding: '8px'}}>ระดับชั้น / สาขา</th>
+                                        <th style={{border: '1px solid #ccc', padding: '8px'}}>เบอร์โทร / Line</th>
+                                        <th style={{border: '1px solid #ccc', padding: '8px'}}>ฝ่ายที่สนใจ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filtered.map(s => (
-                                        <tr key={s.id}>
-                                            <td style={{textAlign:'center', verticalAlign:'middle'}}><img src={s.photo || 'https://via.placeholder.com/100'} className="print-img mx-auto" /></td>
-                                            <td style={{verticalAlign:'middle'}}>{s.studentId}</td>
-                                            <td style={{verticalAlign:'middle'}}><strong>{s.fullName}</strong><br/>({s.nickname})</td>
-                                            <td style={{verticalAlign:'middle'}}>{s.level} - {s.group}<br/>{s.major}</td>
-                                            <td style={{verticalAlign:'middle'}}>{s.phone}<br/>Line: {s.lineId}</td>
-                                            <td style={{verticalAlign:'middle'}}>{s.interest}</td>
+                                        <tr key={s.id} className="border-b border-slate-200">
+                                            <td style={{textAlign:'center', verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}}><img src={s.photo || 'https://via.placeholder.com/100'} className="print-img mx-auto" /></td>
+                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}} className="font-medium">{s.studentId}</td>
+                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}}><strong>{s.fullName}</strong><br/><span className="text-slate-500">({s.nickname})</span></td>
+                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}} className="font-medium">{s.level} - {s.group}<br/>{s.major}</td>
+                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}} className="font-medium">{s.phone}<br/>Line: {s.lineId}</td>
+                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}} className="font-bold text-blue-600">{s.interest}</td>
                                         </tr>
                                     ))}
                                 </tbody>
