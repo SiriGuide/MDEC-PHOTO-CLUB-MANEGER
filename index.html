@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MDEC Photo Club - Command Center</title>
 
-    <!-- Tailwind CSS & Google Fonts ปรับลดความอ้วนของฟอนต์ -->
+    <!-- Tailwind CSS & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet" />
@@ -26,7 +26,11 @@
             .no-print { display: none !important; }
             .print-only { display: block !important; }
             body { background: white; margin: 0; padding: 0; }
-            @page { size: A4 landscape; margin: 0; }
+            @page { size: A4 portrait; margin: 1cm; }
+            .print-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+            .print-table th, .print-table td { border: 1px solid #000; padding: 8px; text-align: left; }
+            .print-table th { background-color: #f1f5f9; }
+            .print-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
         }
         .print-only { display: none; }
         .animate-fade-in { animation: fadeIn 0.4s ease-out; }
@@ -131,7 +135,7 @@
         }
 
         // =======================================================
-        // หน้าแรก (แก้ไขสมบูรณ์ โลโก้ 4 ฝ่าย)
+        // หน้าแรก
         // =======================================================
         function HomeView({ setView }) {
             return (
@@ -140,33 +144,26 @@
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16"></div>
                         <div className="absolute bottom-0 left-0 w-40 h-40 bg-yellow-500/5 rounded-full -ml-20 -mb-20"></div>
 
-                        {/* โลโก้ 4 ฝ่ายที่ปรับปรุงใหม่เรียงกันแนวนอน */}
+                        {/* โลโก้ 4 ฝ่าย */}
                         <div className="flex justify-center items-center gap-3 sm:gap-6 mb-10 z-10 relative">
-                            {/* 1. ภาพนิ่ง */}
                             <div className="flex flex-col items-center group">
                                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border-b-4 border-yellow-500">
                                     <i className="ri-camera-3-fill text-yellow-500 text-3xl sm:text-4xl group-hover:scale-110 transition-transform"></i>
                                 </div>
                                 <span className="text-[10px] sm:text-xs font-bold mt-3 text-slate-500 uppercase tracking-widest group-hover:text-yellow-600 transition-colors">ภาพนิ่ง</span>
                             </div>
-                            
-                            {/* 2. วิดีโอไฮไลท์ */}
                             <div className="flex flex-col items-center group">
                                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border-b-4 border-blue-500">
                                     <i className="ri-movie-2-fill text-blue-500 text-3xl sm:text-4xl group-hover:scale-110 transition-transform"></i>
                                 </div>
                                 <span className="text-[10px] sm:text-xs font-bold mt-3 text-slate-500 uppercase tracking-widest group-hover:text-blue-600 transition-colors">วิดีโอไฮไลท์</span>
                             </div>
-
-                            {/* 3. เครื่องเสียง */}
                             <div className="flex flex-col items-center group">
                                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border-b-4 border-purple-500">
                                     <i className="ri-speaker-3-fill text-purple-500 text-3xl sm:text-4xl group-hover:scale-110 transition-transform"></i>
                                 </div>
                                 <span className="text-[10px] sm:text-xs font-bold mt-3 text-slate-500 uppercase tracking-widest group-hover:text-purple-600 transition-colors">เครื่องเสียง</span>
                             </div>
-
-                            {/* 4. ไลฟ์สด */}
                             <div className="flex flex-col items-center group">
                                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border-b-4 border-red-500">
                                     <i className="ri-live-fill text-red-500 text-3xl sm:text-4xl group-hover:scale-110 transition-transform"></i>
@@ -238,7 +235,7 @@
         }
 
         // =======================================================
-        // สมัครสมาชิก (ดึงฟิลด์ที่หายไปกลับมาครบถ้วน และแก้หัวข้อ)
+        // สมัครสมาชิก
         // =======================================================
         function RegisterView({ setView, user, majors }) {
             const videoRef = useRef(null);
@@ -420,9 +417,10 @@
             const [bulkData, setBulkData] = useState('');
             const [isImporting, setIsImporting] = useState(false);
             
-            // เกียรติบัตร
+            // เกียรติบัตร และ ปริ้นรายงาน
             const [selectedForCert, setSelectedForCert] = useState(null);
             const [certTitle, setCertTitle] = useState('ช่างภาพกิจกรรมดีเด่น');
+            const [isPrintingRoster, setIsPrintingRoster] = useState(false);
 
             useEffect(() => {
                 if (!user) return;
@@ -482,61 +480,84 @@
                 return res;
             }, [students, statsYear]);
 
-            // ส่งออก Excel พร้อมรูปถ่าย
-            const exportToExcelWithImages = () => {
+            // ฟังก์ชันส่งออก CSV ที่แก้ปัญหาข้อมูลตัวเลขเพี้ยน
+            const exportToCSV = () => {
                 if (filtered.length === 0) return alert('ไม่มีข้อมูลให้ส่งออก');
+                const headers = ['ปีการศึกษา', 'รหัส นศ.', 'ระดับชั้น', 'กลุ่ม', 'สาขา', 'ชื่อ-นามสกุล', 'ชื่อเล่น', 'เพศ', 'วันเกิด', 'สถานะ', 'เหตุผล(พ้นสภาพ)', 'เบอร์โทร', 'เบอร์ฉุกเฉิน', 'Line ID', 'โรคประจำตัว', 'ฝ่ายที่สนใจ', 'อุปกรณ์', 'ประสบการณ์', 'เหตุผล'];
                 
-                let tableHtml = `
-                    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-                    <head><meta charset="utf-8"></head>
-                    <body><table border="1" style="font-family: sans-serif;">
-                        <tr style="background-color: #f1f5f9; font-weight: bold; text-align: center;">
-                            <th style="width: 120px; height: 30px;">รูปภาพ</th><th>ปีการศึกษา</th><th>รหัส นศ.</th><th>ระดับชั้น</th><th>กลุ่ม</th><th>สาขา</th><th>ชื่อ-นามสกุล</th><th>ชื่อเล่น</th><th>เพศ</th><th>วันเกิด</th><th>สถานะ</th><th>เหตุผล(พ้นสภาพ)</th><th>เบอร์โทร</th><th>เบอร์ฉุกเฉิน</th><th>Line ID</th><th>โรคประจำตัว</th><th>ฝ่ายที่สนใจ</th><th>อุปกรณ์</th><th>ประสบการณ์</th><th>เหตุผล</th>
-                        </tr>
-                `;
-                
-                filtered.forEach(s => {
-                    let st = s.status === 'graduated' ? 'เรียนจบ' : s.status === 'dismissed' ? 'พ้นสภาพ' : 'สมาชิก';
-                    let imgTag = s.photo ? `<img src="${s.photo}" width="100" height="100" style="object-fit: cover; border-radius: 8px;" />` : 'ไม่มีรูป';
-                    tableHtml += `
-                        <tr>
-                            <td style="height: 110px; width: 110px; text-align: center; vertical-align: middle;">${imgTag}</td>
-                            <td style="vertical-align: middle; text-align: center;">${s.academicYear||'-'}</td>
-                            <td style="vertical-align: middle;">${s.studentId||'-'}</td>
-                            <td style="vertical-align: middle;">${s.level||'-'}</td>
-                            <td style="vertical-align: middle;">${s.group||'-'}</td>
-                            <td style="vertical-align: middle;">${s.major||'-'}</td>
-                            <td style="vertical-align: middle;">${s.fullName||'-'}</td>
-                            <td style="vertical-align: middle;">${s.nickname||'-'}</td>
-                            <td style="vertical-align: middle;">${s.gender||'-'}</td>
-                            <td style="vertical-align: middle;">${s.dob||'-'}</td>
-                            <td style="vertical-align: middle;">${st}</td>
-                            <td style="vertical-align: middle;">${s.statusReason||'-'}</td>
-                            <td style="vertical-align: middle;">${s.phone||'-'}</td>
-                            <td style="vertical-align: middle;">${s.emergencyPhone||'-'}</td>
-                            <td style="vertical-align: middle;">${s.lineId||'-'}</td>
-                            <td style="vertical-align: middle;">${s.medicalCondition||'-'}</td>
-                            <td style="vertical-align: middle;">${s.interest||'-'}</td>
-                            <td style="vertical-align: middle;">${s.equipment||'-'}</td>
-                            <td style="vertical-align: middle;">${s.experience||'-'}</td>
-                            <td style="vertical-align: middle;">${s.reason||'-'}</td>
-                        </tr>
-                    `;
-                });
-                
-                tableHtml += `</table></body></html>`;
+                const escapeCSV = (val) => {
+                    if (val === null || val === undefined) return '""';
+                    let str = val.toString();
+                    // แก้ปัญหารหัส นศ. และเบอร์โทรที่ขึ้นต้นด้วย 0 หายเมื่อเปิดใน Excel
+                    if (/^[0-9]+$/.test(str) && str.length > 5) {
+                        return `="""${str}"""`; 
+                    }
+                    str = str.replace(/"/g, '""');
+                    return `"${str}"`;
+                };
 
-                const blob = new Blob([tableHtml], { type: 'application/vnd.ms-excel' });
+                const csvRows = filtered.map(s => {
+                    let st = s.status === 'graduated' ? 'เรียนจบ' : s.status === 'dismissed' ? 'พ้นสภาพ' : 'สมาชิก';
+                    return [
+                        s.academicYear, s.studentId, s.level, s.group, s.major, 
+                        s.fullName, s.nickname, s.gender, s.dob, st, s.statusReason, 
+                        s.phone, s.emergencyPhone, s.lineId, s.medicalCondition,
+                        s.interest, s.equipment, s.experience, s.reason
+                    ].map(escapeCSV).join(',');
+                });
+
+                const csvContent = "\uFEFF" + headers.map(escapeCSV).join(',') + '\n' + csvRows.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = `MDEC_Members_List.xls`;
-                link.click();
+                link.href = URL.createObjectURL(blob); link.download = `MDEC_Members_List.csv`; link.click();
             };
 
             return (
                 <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden animate-fade-in mb-20">
+                    
+                    {/* UI ปริ้นรายงานพร้อมรูปถ่าย (Roster) */}
+                    {isPrintingRoster && (
+                        <div className="print-only fixed inset-0 bg-white z-[100] p-10 overflow-y-auto">
+                            <div className="no-print flex justify-between items-center mb-8 border-b pb-4">
+                                <h2 className="text-2xl font-bold">โหมดพิมพ์ทำเนียบสมาชิกชมรม (Roster)</h2>
+                                <div className="flex gap-4">
+                                    <button onClick={()=>window.print()} className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold">ปริ้น / Save PDF</button>
+                                    <button onClick={()=>setIsPrintingRoster(false)} className="px-6 py-2 bg-gray-200 rounded-xl font-bold">ปิดหน้าต่าง</button>
+                                </div>
+                            </div>
+                            <div className="text-center mb-6">
+                                <h1 className="text-2xl font-bold mb-2">ทำเนียบสมาชิกชมรม MDEC PHOTO CLUB</h1>
+                                <p className="text-gray-600">ข้อมูลอัปเดตล่าสุด: {new Date().toLocaleDateString('th-TH')}</p>
+                            </div>
+                            <table className="print-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{width:'80px', textAlign:'center'}}>รูปถ่าย</th>
+                                        <th style={{width:'100px'}}>รหัส นศ.</th>
+                                        <th style={{width:'200px'}}>ชื่อ - นามสกุล (ชื่อเล่น)</th>
+                                        <th>ระดับชั้น / สาขา</th>
+                                        <th>เบอร์โทร / Line</th>
+                                        <th>ฝ่ายที่สนใจ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filtered.map(s => (
+                                        <tr key={s.id}>
+                                            <td style={{textAlign:'center', verticalAlign:'middle'}}><img src={s.photo || 'https://via.placeholder.com/100'} className="print-img mx-auto" /></td>
+                                            <td style={{verticalAlign:'middle'}}>{s.studentId}</td>
+                                            <td style={{verticalAlign:'middle'}}><strong>{s.fullName}</strong><br/>({s.nickname})</td>
+                                            <td style={{verticalAlign:'middle'}}>{s.level} - {s.group}<br/>{s.major}</td>
+                                            <td style={{verticalAlign:'middle'}}>{s.phone}<br/>Line: {s.lineId}</td>
+                                            <td style={{verticalAlign:'middle'}}>{s.interest}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+
                     {/* UI ปริ้นเกียรติบัตร */}
-                    {selectedForCert && activeTab === 'cert' && (
+                    {selectedForCert && activeTab === 'cert' && !isPrintingRoster && (
                         <div className="print-only fixed inset-0 bg-white z-50 flex items-center justify-center p-10">
                             <div className="w-full h-full border-[12px] border-double border-yellow-600 p-12 flex flex-col items-center justify-center text-center relative">
                                 <i className="ri-camera-fill absolute opacity-5 text-[500px]"></i>
@@ -627,12 +648,13 @@
                                         <i className="ri-search-2-line absolute left-4 top-4 text-slate-400"></i>
                                         <input type="text" placeholder="ค้นหาชื่อ, รหัส, ชื่อเล่น..." value={search} onChange={e=>setSearch(e.target.value)} className="w-full pl-12 pr-4 py-4 border-2 rounded-2xl focus:border-blue-500 outline-none transition bg-slate-50 font-bold" />
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-wrap gap-2">
                                         <div className="flex bg-slate-100 p-1 rounded-2xl border">
                                             <button onClick={()=>setDisplayMode('table')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition ${displayMode==='table'?'bg-white text-blue-600 shadow-sm':'text-slate-500'}`}>ตาราง</button>
                                             <button onClick={()=>setDisplayMode('gallery')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition ${displayMode==='gallery'?'bg-white text-blue-600 shadow-sm':'text-slate-500'}`}>รูปภาพ</button>
                                         </div>
-                                        <button onClick={exportToExcelWithImages} className="px-5 py-2.5 rounded-2xl text-sm font-bold bg-green-600 text-white shadow-md hover:bg-green-700 transition flex items-center"><i className="ri-file-excel-2-fill mr-2 text-lg"></i> โหลด Excel (พร้อมรูป)</button>
+                                        <button onClick={()=>setIsPrintingRoster(true)} className="px-5 py-2.5 rounded-2xl text-sm font-bold bg-blue-600 text-white shadow-md hover:bg-blue-700 transition flex items-center"><i className="ri-printer-fill mr-2 text-lg"></i> พิมพ์รายงาน + รูปถ่าย</button>
+                                        <button onClick={exportToCSV} className="px-5 py-2.5 rounded-2xl text-sm font-bold bg-green-600 text-white shadow-md hover:bg-green-700 transition flex items-center"><i className="ri-file-excel-2-fill mr-2 text-lg"></i> โหลด Excel</button>
                                     </div>
                                 </div>
 
