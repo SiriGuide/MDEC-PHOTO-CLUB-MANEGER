@@ -22,16 +22,21 @@
 
     <style>
         body { font-family: 'Kanit', sans-serif; }
+        
+        /* ตั้งค่าสำหรับตอนสั่งปริ้น (Print) */
         @media print {
             .no-print { display: none !important; }
             .print-only { display: block !important; }
-            body { background: white; margin: 0; padding: 0; }
-            @page { size: A4 portrait; margin: 1cm; }
-            .print-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-            .print-table th, .print-table td { border: 1px solid #000; padding: 8px; text-align: left; }
-            .print-table th { background-color: #f1f5f9; }
-            .print-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
+            body { background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            @page { size: A4 portrait; margin: 10mm; }
+            
+            /* ตารางรายงาน */
+            .print-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+            .print-table th, .print-table td { border: 1px solid #333; padding: 8px; text-align: left; page-break-inside: avoid; }
+            .print-table th { background-color: #f1f5f9 !important; font-weight: bold; }
+            .print-img { width: 70px; height: 70px; object-fit: cover; border-radius: 4px; }
         }
+        
         .print-only { display: none; }
         .animate-fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { 
@@ -124,7 +129,8 @@
                             )}
                         </div>
                     </header>
-                    <main className="max-w-7xl mx-auto px-4 py-6 no-print">
+                    {/* เอาคลาส no-print ออกจาก main เพื่อให้ปริ้นทะลุได้ */}
+                    <main className="max-w-7xl mx-auto px-4 py-6 print:m-0 print:p-0 print:max-w-none">
                         {view === 'home' && <HomeView setView={setView} />}
                         {view === 'register' && <RegisterView setView={setView} user={user} majors={majors} />}
                         {view === 'adminLogin' && <AdminLoginView setView={setView} />}
@@ -139,7 +145,7 @@
         // =======================================================
         function HomeView({ setView }) {
             return (
-                <div className="flex flex-col items-center justify-center py-10 animate-fade-in">
+                <div className="flex flex-col items-center justify-center py-10 animate-fade-in no-print">
                     <div className="bg-white p-10 md:p-16 rounded-[2.5rem] shadow-xl w-full max-w-4xl text-center border border-slate-100 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16"></div>
                         <div className="absolute bottom-0 left-0 w-40 h-40 bg-yellow-500/5 rounded-full -ml-20 -mb-20"></div>
@@ -210,7 +216,7 @@
                 else { alert('รหัสผ่านไม่ถูกต้อง'); setPin(''); }
             };
             return (
-                <div className="flex justify-center items-center py-20 animate-fade-in">
+                <div className="flex justify-center items-center py-20 animate-fade-in no-print">
                     <div className="bg-white p-10 rounded-[2rem] shadow-xl max-w-md w-full border text-center">
                         <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner">
                             <i className="ri-fingerprint-fill text-4xl"></i>
@@ -288,7 +294,7 @@
             };
 
             if (success) return (
-                <div className="text-center bg-white p-16 rounded-[3rem] shadow-xl max-w-xl mx-auto animate-fade-in border border-green-100">
+                <div className="text-center bg-white p-16 rounded-[3rem] shadow-xl max-w-xl mx-auto animate-fade-in border border-green-100 no-print">
                     <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
                         <i className="ri-check-double-line text-6xl"></i>
                     </div>
@@ -299,7 +305,7 @@
             );
 
             return (
-                <div className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden max-w-4xl mx-auto animate-fade-in border border-slate-100 mb-20">
+                <div className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden max-w-4xl mx-auto animate-fade-in border border-slate-100 mb-20 no-print">
                     <div className="bg-gradient-to-r from-blue-700 to-blue-900 p-8 text-white flex justify-between items-center">
                         <div>
                             <h2 className="text-3xl font-bold tracking-tight">ใบสมัครเข้าชมรม MDEC PHOTO CLUB</h2>
@@ -488,10 +494,7 @@
                 const escapeCSV = (val) => {
                     if (val === null || val === undefined) return '""';
                     let str = val.toString();
-                    // แก้ปัญหารหัส นศ. และเบอร์โทรที่ขึ้นต้นด้วย 0 หายเมื่อเปิดใน Excel
-                    if (/^[0-9]+$/.test(str) && str.length > 5) {
-                        return `="""${str}"""`; 
-                    }
+                    if (/^[0-9]+$/.test(str) && str.length > 5) { return `="""${str}"""`; }
                     str = str.replace(/"/g, '""');
                     return `"${str}"`;
                 };
@@ -517,38 +520,44 @@
                     
                     {/* UI ปริ้นรายงานพร้อมรูปถ่าย (Roster) */}
                     {isPrintingRoster && (
-                        <div className="fixed inset-0 bg-white z-[100] p-4 md:p-10 overflow-y-auto print:static print:p-0 print:overflow-visible animate-fade-in">
+                        <div className="fixed inset-0 bg-white z-[100] p-4 md:p-10 overflow-y-auto print:static print:p-0 print:overflow-visible animate-fade-in print:block">
                             <div className="no-print flex flex-col md:flex-row justify-between items-center mb-8 border-b pb-4 gap-4">
-                                <h2 className="text-2xl font-bold">โหมดพิมพ์ทำเนียบสมาชิกชมรม (Roster)</h2>
+                                <h2 className="text-2xl font-bold text-slate-800">โหมดพิมพ์ทำเนียบสมาชิกชมรม (Roster)</h2>
                                 <div className="flex gap-4">
                                     <button onClick={()=>window.print()} className="px-6 py-3 bg-blue-600 hover:bg-blue-700 transition text-white rounded-xl font-bold shadow-lg flex items-center"><i className="ri-printer-fill mr-2"></i> ปริ้น / Save PDF</button>
-                                    <button onClick={()=>setIsPrintingRoster(false)} className="px-6 py-3 bg-slate-200 hover:bg-slate-300 transition rounded-xl font-bold">ปิดหน้าต่าง</button>
+                                    <button onClick={()=>setIsPrintingRoster(false)} className="px-6 py-3 bg-slate-200 hover:bg-slate-300 transition text-slate-800 rounded-xl font-bold">ปิดหน้าต่าง</button>
                                 </div>
                             </div>
+                            
+                            {/* แจ้งเตือนทริคการปริ้น */}
+                            <div className="no-print bg-yellow-50 text-yellow-800 p-4 rounded-xl mb-6 text-sm">
+                                <i className="ri-lightbulb-flash-fill mr-2"></i> <strong>เคล็ดลับ:</strong> ตอนที่หน้าต่าง Print ของเบราว์เซอร์เด้งขึ้นมา ให้ติ๊กเลือก <b>Background graphics (กราฟิกพื้นหลัง)</b> ด้วยนะครับ เพื่อให้สีตารางสวยงาม
+                            </div>
+
                             <div className="text-center mb-6">
-                                <h1 className="text-2xl font-bold mb-2">ทำเนียบสมาชิกชมรม MDEC PHOTO CLUB</h1>
-                                <p className="text-gray-600 font-medium">ข้อมูลอัปเดตล่าสุด: {new Date().toLocaleDateString('th-TH')}</p>
+                                <h1 className="text-2xl font-bold mb-2 text-slate-900">ทำเนียบสมาชิกชมรม MDEC PHOTO CLUB</h1>
+                                <p className="text-slate-600 font-medium">ข้อมูลอัปเดตล่าสุด: {new Date().toLocaleDateString('th-TH')}</p>
                             </div>
                             <table className="print-table w-full border-collapse text-sm">
                                 <thead>
                                     <tr className="bg-slate-100 text-slate-800">
-                                        <th style={{width:'80px', textAlign:'center', border: '1px solid #ccc', padding: '8px'}}>รูปถ่าย</th>
-                                        <th style={{width:'100px', border: '1px solid #ccc', padding: '8px'}}>รหัส นศ.</th>
-                                        <th style={{width:'200px', border: '1px solid #ccc', padding: '8px'}}>ชื่อ - นามสกุล (ชื่อเล่น)</th>
-                                        <th style={{border: '1px solid #ccc', padding: '8px'}}>ระดับชั้น / สาขา</th>
-                                        <th style={{border: '1px solid #ccc', padding: '8px'}}>เบอร์โทร / Line</th>
-                                        <th style={{border: '1px solid #ccc', padding: '8px'}}>ฝ่ายที่สนใจ</th>
+                                        <th style={{width:'80px', textAlign:'center'}}>รูปถ่าย</th>
+                                        <th style={{width:'100px'}}>รหัส นศ.</th>
+                                        <th style={{width:'200px'}}>ชื่อ - นามสกุล (ชื่อเล่น)</th>
+                                        <th>ระดับชั้น / สาขา</th>
+                                        <th>เบอร์โทร / Line</th>
+                                        <th>ฝ่ายที่สนใจ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filtered.map(s => (
                                         <tr key={s.id} className="border-b border-slate-200">
-                                            <td style={{textAlign:'center', verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}}><img src={s.photo || 'https://via.placeholder.com/100'} className="print-img mx-auto" /></td>
-                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}} className="font-medium">{s.studentId}</td>
-                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}}><strong>{s.fullName}</strong><br/><span className="text-slate-500">({s.nickname})</span></td>
-                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}} className="font-medium">{s.level} - {s.group}<br/>{s.major}</td>
-                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}} className="font-medium">{s.phone}<br/>Line: {s.lineId}</td>
-                                            <td style={{verticalAlign:'middle', border: '1px solid #ccc', padding: '8px'}} className="font-bold text-blue-600">{s.interest}</td>
+                                            <td style={{textAlign:'center', verticalAlign:'middle'}}><img src={s.photo || 'https://via.placeholder.com/100'} className="print-img mx-auto" /></td>
+                                            <td style={{verticalAlign:'middle'}} className="font-medium">{s.studentId}</td>
+                                            <td style={{verticalAlign:'middle'}}><strong>{s.fullName}</strong><br/><span className="text-slate-500">({s.nickname})</span></td>
+                                            <td style={{verticalAlign:'middle'}} className="font-medium">{s.level} - {s.group}<br/>{s.major}</td>
+                                            <td style={{verticalAlign:'middle'}} className="font-medium">{s.phone}<br/>Line: {s.lineId}</td>
+                                            <td style={{verticalAlign:'middle'}} className="font-bold text-blue-600">{s.interest}</td>
                                         </tr>
                                     ))}
                                 </tbody>
