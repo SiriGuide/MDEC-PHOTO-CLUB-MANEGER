@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Registry v8 Upload Photo</title>
+  <title>MDEC Photo Club Registry v8 Dark Only</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -318,6 +318,112 @@
       }
 
       .theme-toggle-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+
+
+      /* Extra Dark Mode contrast audit fixes */
+      body.dark-mode .text-slate-300,
+      body.dark-mode .text-slate-200,
+      body.dark-mode .text-slate-100 { color: #dbe7f5 !important; }
+      body.dark-mode .text-blue-400,
+      body.dark-mode .text-blue-300,
+      body.dark-mode .text-blue-200,
+      body.dark-mode .text-sky-400,
+      body.dark-mode .text-sky-300,
+      body.dark-mode .text-cyan-500,
+      body.dark-mode .text-cyan-400,
+      body.dark-mode .text-cyan-300,
+      body.dark-mode .text-cyan-200 { color: #bfdbfe !important; }
+      body.dark-mode .text-emerald-500,
+      body.dark-mode .text-emerald-400,
+      body.dark-mode .text-emerald-300,
+      body.dark-mode .text-green-500,
+      body.dark-mode .text-green-400,
+      body.dark-mode .text-green-300 { color: #bbf7d0 !important; }
+      body.dark-mode .text-red-500,
+      body.dark-mode .text-red-400,
+      body.dark-mode .text-red-300,
+      body.dark-mode .text-orange-500,
+      body.dark-mode .text-orange-400,
+      body.dark-mode .text-orange-300,
+      body.dark-mode .text-rose-500,
+      body.dark-mode .text-rose-400 { color: #fecaca !important; }
+      body.dark-mode .text-yellow-500,
+      body.dark-mode .text-yellow-400,
+      body.dark-mode .text-yellow-300,
+      body.dark-mode .text-amber-500,
+      body.dark-mode .text-amber-400,
+      body.dark-mode .text-amber-300 { color: #fde68a !important; }
+      body.dark-mode .text-purple-500,
+      body.dark-mode .text-purple-400,
+      body.dark-mode .text-purple-300,
+      body.dark-mode .text-indigo-500,
+      body.dark-mode .text-indigo-400,
+      body.dark-mode .text-indigo-300 { color: #d8b4fe !important; }
+
+      body.dark-mode .bg-slate-100.text-slate-600,
+      body.dark-mode .bg-slate-100.text-slate-700,
+      body.dark-mode .bg-slate-50.text-slate-500,
+      body.dark-mode .bg-white.text-slate-700,
+      body.dark-mode .bg-white.text-slate-600 {
+        background-color: rgba(30, 41, 59, .95) !important;
+        color: #e2e8f0 !important;
+        border-color: rgba(71, 85, 105, .85) !important;
+      }
+      body.dark-mode .bg-blue-50.text-blue-700,
+      body.dark-mode .bg-blue-50.text-blue-800,
+      body.dark-mode .bg-cyan-50.text-cyan-700,
+      body.dark-mode .bg-emerald-50.text-emerald-700,
+      body.dark-mode .bg-orange-50.text-orange-700,
+      body.dark-mode .bg-red-50.text-red-700,
+      body.dark-mode .bg-yellow-50.text-yellow-700 {
+        background-color: rgba(30, 41, 59, .95) !important;
+        border-color: rgba(71, 85, 105, .85) !important;
+      }
+      body.dark-mode .bg-blue-50.text-blue-700,
+      body.dark-mode .bg-blue-50.text-blue-800 { color: #93c5fd !important; }
+      body.dark-mode .bg-cyan-50.text-cyan-700 { color: #a5f3fc !important; }
+      body.dark-mode .bg-emerald-50.text-emerald-700 { color: #86efac !important; }
+      body.dark-mode .bg-orange-50.text-orange-700,
+      body.dark-mode .bg-red-50.text-red-700 { color: #fca5a5 !important; }
+      body.dark-mode .bg-yellow-50.text-yellow-700 { color: #fde68a !important; }
+
+      body.dark-mode .hover\:bg-slate-100:hover,
+      body.dark-mode .hover\:bg-blue-50:hover,
+      body.dark-mode .hover\:bg-red-50:hover,
+      body.dark-mode .hover\:bg-white:hover {
+        background-color: rgba(51, 65, 85, .92) !important;
+      }
+      body.dark-mode .hover\:text-blue-700:hover { color: #93c5fd !important; }
+      body.dark-mode .focus\:border-blue-500:focus,
+      body.dark-mode .focus\:border-blue-500:focus-visible { border-color: #60a5fa !important; }
+
+      body.dark-mode .bg-blue-600,
+      body.dark-mode .bg-blue-700,
+      body.dark-mode .hover\:bg-blue-700:hover,
+      body.dark-mode .hover\:bg-blue-800:hover {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+      }
+      body.dark-mode .bg-emerald-600,
+      body.dark-mode .hover\:bg-emerald-700:hover {
+        background-color: #059669 !important;
+        color: #ffffff !important;
+      }
+      body.dark-mode .bg-red-600,
+      body.dark-mode .hover\:bg-red-700:hover {
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+      }
+
+      body.dark-mode .bg-blue-200\/50,
+      body.dark-mode .bg-blue-500\/25,
+      body.dark-mode .bg-cyan-200\/40 { opacity: .55; }
+      body.dark-mode .shadow-inner { box-shadow: inset 0 2px 10px rgba(15, 23, 42, .45) !important; }
+
+      body.dark-mode .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+      body.dark-mode .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+        border-color: rgba(71, 85, 105, .6) !important;
+      }
     }
 
 
@@ -592,14 +698,14 @@
       const [isStaff, setIsStaff] = useState(false);
       const [majors, setMajors] = useState(defaultMajors);
       const [currentAcademicYear, setCurrentAcademicYear] = useState(thaiAcademicYearNow());
-      const [theme, setTheme] = useState(() => localStorage.getItem('mdecRegistryTheme') || 'light');
+      const [theme] = useState('dark');
 
       useEffect(() => {
-        document.body.classList.toggle('dark-mode', theme === 'dark');
-        localStorage.setItem('mdecRegistryTheme', theme);
-      }, [theme]);
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('mdecRegistryTheme', 'dark');
+      }, []);
 
-      const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+      const toggleTheme = () => {};
 
       useEffect(() => {
         auth.signInAnonymously().catch(() => alert('เชื่อมต่อ Firebase ไม่สำเร็จ'));
@@ -637,10 +743,6 @@
       };
       return (
         <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-950 via-slate-950 to-blue-800 flex items-center justify-center p-4">
-          <button type="button" onClick={toggleTheme} className="theme-toggle-btn no-print fixed top-4 right-4 z-20 px-4 py-2 rounded-2xl bg-white/12 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md font-bold transition">
-            <i className={theme === 'dark' ? 'ri-sun-line text-lg' : 'ri-moon-clear-line text-lg'}></i>
-            <span className="hidden sm:inline">{theme === 'dark' ? 'Light' : 'Dark'}</span>
-          </button>
           <div className="absolute top-[-120px] right-[-120px] w-96 h-96 bg-blue-500/25 rounded-full blur-3xl"></div>
           <div className="absolute bottom-[-120px] left-[-120px] w-96 h-96 bg-cyan-400/15 rounded-full blur-3xl"></div>
 
@@ -811,10 +913,6 @@
                     <p className="text-xs text-slate-400">ปีการศึกษาปัจจุบัน</p>
                     <p className="text-3xl font-extrabold text-blue-300">{currentAcademicYear}</p>
                   </div>
-                  <button type="button" onClick={toggleTheme} className="theme-toggle-btn w-full justify-center px-4 py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 font-bold transition mb-5">
-                    <i className={theme === 'dark' ? 'ri-sun-line text-xl text-yellow-300' : 'ri-moon-clear-line text-xl text-blue-300'}></i>
-                    <span>{theme === 'dark' ? 'โหมดสว่าง' : 'โหมดมืด'}</span>
-                  </button>
                 </div>
 
                 <nav className="flex lg:flex-col gap-2 overflow-x-auto no-scrollbar w-full">
@@ -910,9 +1008,6 @@
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button type="button" onClick={toggleTheme} className="theme-toggle-btn lg:hidden px-4 py-3 rounded-2xl bg-slate-900 text-white font-bold border border-slate-700">
-              <i className={theme === 'dark' ? 'ri-sun-line text-yellow-300' : 'ri-moon-clear-line text-blue-300'}></i>
-            </button>
             <div className="px-4 py-3 rounded-2xl bg-blue-50 text-blue-700 font-bold border border-blue-100">
               <i className="ri-calendar-line mr-2"></i>ปี {currentAcademicYear}
             </div>
