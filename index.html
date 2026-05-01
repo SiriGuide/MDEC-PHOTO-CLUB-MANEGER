@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Registry v8 Dark Only</title>
+  <title>MDEC Photo Club Registry v19 TV Mode Color Coded</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -530,6 +530,8 @@
 
     const { useEffect, useMemo, useRef, useState } = React;
     const getStudentsRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection(COLLECTION_NAME);
+    const getDutyRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('duty_rosters');
+    const getDutyTemplatesRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('duty_templates');
     const getSettingsRef = () => db.collection('artifacts').doc(appId).collection('public').doc('settings');
 
     const defaultMajors = ["คอมพิวเตอร์ธุรกิจ", "เทคโนโลยีสารสนเทศ", "ไฟฟ้ากำลัง", "ช่างยนต์", "บัญชี", "การตลาด"];
@@ -540,6 +542,7 @@
       { value: 'graduated', label: 'จบแล้ว' },
       { value: 'dismissed', label: 'พ้นสภาพ' }
     ];
+
 
     function thaiAcademicYearNow() {
       return String(new Date().getFullYear() + 543);
@@ -583,6 +586,187 @@
         s.medicalCondition, s.interest, s.actualInterest || s.interest || '', s.equipment, s.experience, s.reason, s.staffNotes || '',
         s.createdBy || s.entryMode || '-', s.createdAt || '-'
       ].map(escapeCSV).join(','));
+      return '\uFEFF' + headers.map(escapeCSV).join(',') + '\n' + rows.join('\n');
+    }
+
+
+    const dutyRoles = [
+      { key: 'flag', title: 'เชิญธงชาติ', shortTitle: 'ธงชาติ', icon: 'ri-flag-2-fill', slots: 2, tone: 'blue' },
+      { key: 'audio', title: 'คุมเครื่องเสียง', shortTitle: 'เครื่องเสียง', icon: 'ri-volume-up-fill', slots: 1, tone: 'cyan' },
+      { key: 'photo', title: 'ถ่ายภาพ', shortTitle: 'ถ่ายภาพ', icon: 'ri-camera-3-fill', slots: 1, tone: 'emerald' },
+      { key: 'respect', title: 'พูดทำความเคารพ', shortTitle: 'ทำความเคารพ', icon: 'ri-mic-fill', slots: 1, tone: 'purple' },
+      { key: 'cleaning', title: 'เวรทำความสะอาดห้อง', shortTitle: 'ทำความสะอาด', icon: 'ri-brush-3-fill', slots: 3, tone: 'orange' }
+    ];
+
+    const dutyDays = [
+      { key: 'mon', label: 'วันจันทร์', shortLabel: 'จันทร์', offset: 0 },
+      { key: 'tue', label: 'วันอังคาร', shortLabel: 'อังคาร', offset: 1 },
+      { key: 'wed', label: 'วันพุธ', shortLabel: 'พุธ', offset: 2 },
+      { key: 'thu', label: 'วันพฤหัสบดี', shortLabel: 'พฤหัสฯ', offset: 3 },
+      { key: 'fri', label: 'วันศุกร์', shortLabel: 'ศุกร์', offset: 4 },
+      { key: 'sat', label: 'วันเสาร์', shortLabel: 'เสาร์', offset: 5 }
+    ];
+
+    const dutyTableTypes = [
+      { key: 'A', label: 'ตาราง A', tone: 'blue' },
+      { key: 'B', label: 'ตาราง B', tone: 'emerald' }
+    ];
+
+    function dutyTableLabel(type) {
+      return type === 'B' ? 'ตาราง B' : 'ตาราง A';
+    }
+
+    function dutyTemplateDocId(year, type) {
+      return `${year || 'unknown'}_${type === 'B' ? 'B' : 'A'}`;
+    }
+
+    function emptyDutyAssignments() {
+      return dutyRoles.reduce((acc, role) => {
+        acc[role.key] = Array(role.slots).fill('');
+        return acc;
+      }, {});
+    }
+
+    function emptyWeeklyDutyAssignments() {
+      return dutyDays.reduce((acc, day) => {
+        acc[day.key] = emptyDutyAssignments();
+        return acc;
+      }, {});
+    }
+
+    function createDutyForm(year) {
+      return { date: getWeekStartDate(todayFileDate()), academicYear: year, scheduleType: 'A', note: '', weeklyAssignments: emptyWeeklyDutyAssignments() };
+    }
+
+    function studentDutyName(s) {
+      if (!s) return '-';
+      const nick = s.nickname ? ` (${s.nickname})` : '';
+      const level = s.level || s.group ? ` · ${s.level || '-'} / ${s.group || '-'}` : '';
+      return `${s.fullName || '-'}${nick}${level}`;
+    }
+
+    function dutyPersonText(p) {
+      if (!p) return '-';
+      const nick = p.nickname ? ` (${p.nickname})` : '';
+      const group = p.level || p.group ? ` · ${p.level || '-'} / ${p.group || '-'}` : '';
+      return `${p.fullName || '-'}${nick}${group}`;
+    }
+
+    function dutyRoleText(assignments, key) {
+      const people = (assignments && assignments[key]) || [];
+      return people.length ? people.map(dutyPersonText).join(' / ') : '-';
+    }
+
+    function dailyDutyRoleText(weeklyAssignments, dayKey, roleKey) {
+      const dayAssignments = (weeklyAssignments && weeklyAssignments[dayKey]) || {};
+      return dutyRoleText(dayAssignments, roleKey);
+    }
+
+    function getDutyWeeklyAssignments(duty) {
+      if (duty?.weeklyAssignments) return duty.weeklyAssignments;
+      const weekly = emptyWeeklyDutyAssignments();
+      if (duty?.assignments) weekly.mon = duty.assignments;
+      return weekly;
+    }
+
+    function dutyDayText(duty, dayKey) {
+      const weekly = getDutyWeeklyAssignments(duty);
+      return dutyRoles.map(role => dailyDutyRoleText(weekly, dayKey, role.key)).join(' | ');
+    }
+
+    function formatThaiDate(dateStr) {
+      if (!dateStr) return '-';
+      const d = new Date(`${dateStr}T00:00:00`);
+      if (Number.isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString('th-TH', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function dateInputString(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function localDateFromInput(dateStr) {
+      if (!dateStr) return new Date();
+      const [y, m, d] = String(dateStr).split('-').map(Number);
+      const date = new Date(y || new Date().getFullYear(), (m || 1) - 1, d || 1);
+      return Number.isNaN(date.getTime()) ? new Date() : date;
+    }
+
+    function getWeekStartDate(dateStr) {
+      const d = localDateFromInput(dateStr);
+      const day = d.getDay();
+      const diff = day === 0 ? -6 : 1 - day; // Monday start
+      d.setDate(d.getDate() + diff);
+      return dateInputString(d);
+    }
+
+    function getWeekEndDate(dateStr) {
+      const d = localDateFromInput(getWeekStartDate(dateStr));
+      d.setDate(d.getDate() + 5); // Monday-Saturday morning duty week
+      return dateInputString(d);
+    }
+
+    function getDutyDayDate(weekStartDate, dayKey) {
+      const day = dutyDays.find(d => d.key === dayKey) || dutyDays[0];
+      const d = localDateFromInput(getWeekStartDate(weekStartDate));
+      d.setDate(d.getDate() + day.offset);
+      return dateInputString(d);
+    }
+
+    function formatThaiWeekRange(dateStr) {
+      if (!dateStr) return '-';
+      const start = localDateFromInput(getWeekStartDate(dateStr));
+      const end = localDateFromInput(getWeekEndDate(dateStr));
+      if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return dateStr;
+      const s = start.toLocaleDateString('th-TH', { weekday: 'short', day: 'numeric', month: 'short' });
+      const e = end.toLocaleDateString('th-TH', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+      return `สัปดาห์ ${s} - ${e}`;
+    }
+
+    function normalizeWeeklyAssignmentIds(source) {
+      const weekly = emptyWeeklyDutyAssignments();
+      const sourceWeekly = source?.weeklyAssignments || source;
+      dutyDays.forEach(day => {
+        const daySource = sourceWeekly?.[day.key] || (day.key === 'mon' ? source?.assignments : null) || {};
+        dutyRoles.forEach(role => {
+          const ids = (daySource?.[role.key] || []).map(p => typeof p === 'string' ? p : (p?.id || '')).filter(Boolean);
+          weekly[day.key][role.key] = [...ids, ...Array(role.slots).fill('')].slice(0, role.slots);
+        });
+      });
+      return weekly;
+    }
+
+    function countAssignedInWeekly(weeklyAssignments) {
+      return dutyDays.reduce((sum, day) => sum + dutyRoles.reduce((daySum, role) => {
+        const ids = (weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean);
+        return daySum + ids.length;
+      }, 0), 0);
+    }
+
+    function duplicateStudentIdsInWeekly(weeklyAssignments) {
+      const counts = {};
+      dutyDays.forEach(day => dutyRoles.forEach(role => {
+        (weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean).forEach(id => {
+          counts[id] = (counts[id] || 0) + 1;
+        });
+      }));
+      return Object.entries(counts).filter(([, count]) => count > 1).map(([id]) => id);
+    }
+
+    function dutiesToCSV(duties) {
+      const headers = ['สัปดาห์', 'วันที่', 'ปีการศึกษา', 'ตาราง', 'วัน', ...dutyRoles.map(r => r.title), 'หมายเหตุ', 'วันที่บันทึก'];
+      const rows = [];
+      duties.forEach(d => {
+        const weekly = getDutyWeeklyAssignments(d);
+        dutyDays.forEach(day => rows.push([
+          formatThaiWeekRange(d.date), formatThaiDate(getDutyDayDate(d.date, day.key)), d.academicYear, dutyTableLabel(d.scheduleType), day.label,
+          ...dutyRoles.map(r => dailyDutyRoleText(weekly, day.key, r.key)),
+          d.note || '', d.createdAt || ''
+        ].map(escapeCSV).join(',')));
+      });
       return '\uFEFF' + headers.map(escapeCSV).join(',') + '\n' + rows.join('\n');
     }
 
@@ -767,7 +951,7 @@
               </div>
 
               <div className="rounded-3xl bg-white/10 border border-white/15 p-5 text-sm text-blue-50 leading-relaxed">
-                <strong className="text-white">v7 Internal:</strong> เพิ่มรายละเอียดสมาชิก หมายเหตุเจ้าหน้าที่ ใบเซ็นชื่อ Backup Log และคู่มือใช้งาน เหมาะกับระบบภายในที่รันบน Vercel
+                <strong className="text-white">v9 Internal:</strong> เพิ่มตารางเวรตอนเช้าแบบรายสัปดาห์ จันทร์–เสาร์ แยกเวรรายวัน พร้อมจอแสดงเวรสำหรับนักศึกษา ถ่ายรูป/อัปโหลดรูปสมาชิก ใบเซ็นชื่อ Backup Log และคู่มือใช้งาน
               </div>
               <div className="mt-4 grid sm:grid-cols-3 gap-3">
                 <div className="rounded-2xl bg-white/10 border border-white/15 p-4"><p className="text-xs text-blue-100">ปีการศึกษาปัจจุบัน</p><p className="text-2xl font-extrabold text-white">{currentAcademicYear}</p></div>
@@ -884,6 +1068,8 @@
       const navItems = [
         { id:'add', label:'เพิ่มสมาชิก', icon:'ri-user-add-fill' },
         { id:'members', label:'ฐานข้อมูล', icon:'ri-folder-user-fill' },
+        { id:'duty', label:'ตารางเวรตอนเช้า', icon:'ri-calendar-schedule-fill' },
+        { id:'dutyDisplay', label:'จอแสดงเวรเช้า', icon:'ri-tv-2-fill' },
         { id:'dashboard', label:'สรุปยอด', icon:'ri-pie-chart-2-fill' },
         { id:'year', label:'จัดการปี', icon:'ri-calendar-check-fill' },
         { id:'import', label:'นำเข้า Excel', icon:'ri-file-excel-2-fill' },
@@ -898,88 +1084,102 @@
             <div className="absolute bottom-[-160px] left-[-140px] w-[480px] h-[480px] bg-cyan-100/70 rounded-full blur-3xl"></div>
           </div>
 
-          <div className="relative z-10 max-w-[1500px] mx-auto p-3 md:p-6">
-            <div className="grid lg:grid-cols-[280px_1fr] gap-5">
-              <aside className="no-print lg:sticky lg:top-6 lg:h-[calc(100vh-48px)] rounded-[2rem] bg-slate-950 text-white p-5 soft-shadow flex lg:flex-col overflow-hidden">
-                <div className="hidden lg:block">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="brand-logo-compact"><img src={MDEC_LOGO} alt="MDEC" /></div>
-                    <div>
-                      <h1 className="font-extrabold leading-none">MDEC REGISTRY</h1>
-                      <p className="text-[10px] tracking-widest text-blue-300 mt-1">STAFF CONTROL • MDEC</p>
+          <div className="relative z-10 w-full max-w-none mx-auto p-3 md:p-5 xl:p-6">
+            {activeTab === 'dutyDisplay' ? (
+              loadingData ? (
+                <div className="bg-white rounded-[2rem] p-12 text-center soft-shadow">
+                  <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="font-bold text-slate-500">กำลังโหลดข้อมูลสมาชิก...</p>
+                </div>
+              ) : (
+                <div className="animate-fade-in">
+                  <DutyDisplayPage currentAcademicYear={currentAcademicYear} yearsList={yearsList} onBack={() => setActiveTab('duty')} />
+                </div>
+              )
+            ) : (
+              <div className="grid lg:grid-cols-[280px_minmax(0,1fr)] gap-5 xl:gap-6">
+                <aside className="no-print lg:sticky lg:top-6 lg:h-[calc(100vh-48px)] rounded-[2rem] bg-slate-950 text-white p-5 soft-shadow flex lg:flex-col overflow-hidden">
+                  <div className="hidden lg:block">
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="brand-logo-compact"><img src={MDEC_LOGO} alt="MDEC" /></div>
+                      <div>
+                        <h1 className="font-extrabold leading-none">MDEC REGISTRY</h1>
+                        <p className="text-[10px] tracking-widest text-blue-300 mt-1">STAFF CONTROL • MDEC</p>
+                      </div>
+                    </div>
+                    <div className="rounded-3xl bg-white/5 border border-white/10 p-4 mb-4">
+                      <p className="text-xs text-slate-400">ปีการศึกษาปัจจุบัน</p>
+                      <p className="text-3xl font-extrabold text-blue-300">{currentAcademicYear}</p>
                     </div>
                   </div>
-                  <div className="rounded-3xl bg-white/5 border border-white/10 p-4 mb-4">
-                    <p className="text-xs text-slate-400">ปีการศึกษาปัจจุบัน</p>
-                    <p className="text-3xl font-extrabold text-blue-300">{currentAcademicYear}</p>
-                  </div>
-                </div>
 
-                <nav className="flex lg:flex-col gap-2 overflow-x-auto no-scrollbar w-full">
-                  {navItems.map(item => (
-                    <button key={item.id} onClick={() => setActiveTab(item.id)} className={`shrink-0 flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition ${activeTab === item.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}>
-                      <i className={`${item.icon} text-xl`}></i>
-                      <span className="whitespace-nowrap">{item.label}</span>
+                  <nav className="flex lg:flex-col gap-2 overflow-x-auto no-scrollbar w-full">
+                    {navItems.map(item => (
+                      <button key={item.id} onClick={() => setActiveTab(item.id)} className={`shrink-0 flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition ${activeTab === item.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}>
+                        <i className={`${item.icon} text-xl`}></i>
+                        <span className="whitespace-nowrap">{item.label}</span>
+                      </button>
+                    ))}
+                  </nav>
+
+                  <div className="hidden lg:block mt-auto pt-5 border-t border-white/10">
+                    <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white/5 hover:bg-red-600 font-bold transition">
+                      <i className="ri-logout-box-r-line"></i> ออกจากระบบ
                     </button>
-                  ))}
-                </nav>
-
-                <div className="hidden lg:block mt-auto pt-5 border-t border-white/10">
-                  <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white/5 hover:bg-red-600 font-bold transition">
-                    <i className="ri-logout-box-r-line"></i> ออกจากระบบ
-                  </button>
-                </div>
-              </aside>
-
-              <main className="min-w-0">
-                <TopBar activeTab={activeTab} currentAcademicYear={currentAcademicYear} theme={theme} toggleTheme={toggleTheme} onLogout={onLogout} />
-
-                {loadingData ? (
-                  <div className="bg-white rounded-[2rem] p-12 text-center soft-shadow mt-5">
-                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="font-bold text-slate-500">กำลังโหลดข้อมูลสมาชิก...</p>
                   </div>
-                ) : (
-                  <div className="mt-5 animate-fade-in">
-                    {activeTab === 'add' && <StudentForm mode="add" majors={majors} currentAcademicYear={currentAcademicYear} allStudents={students} onDone={() => {}} />}
-                    {activeTab === 'members' && (
-                      <MembersPage
-                        students={filteredStudents}
-                        allStudents={students}
-                        majors={majors}
-                        yearsList={yearsList}
-                        search={search}
-                        setSearch={setSearch}
-                        filterYear={filterYear}
-                        setFilterYear={setFilterYear}
-                        filterMajor={filterMajor}
-                        setFilterMajor={setFilterMajor}
-                        filterInterest={filterInterest}
-                        setFilterInterest={setFilterInterest}
-                        filterStatus={filterStatus}
-                        setFilterStatus={setFilterStatus}
-                        filterPhoto={filterPhoto}
-                        setFilterPhoto={setFilterPhoto}
-                        displayMode={displayMode}
-                        setDisplayMode={setDisplayMode}
-                        onEdit={setEditingStudent}
-                        onView={setDetailStudent}
-                        onDelete={setStudentToDelete}
-                        onStatusChange={handleQuickStatusChange}
-                        onPrint={() => setIsPrintingRoster(true)}
-                        onExport={exportFilteredCSV}
-                        onExportByInterest={exportByDepartment}
-                      />
-                    )}
-                    {activeTab === 'dashboard' && <DashboardPage students={students} yearsList={yearsList} currentAcademicYear={currentAcademicYear} onIssueFilter={(key) => { setFilterPhoto(key); setActiveTab('members'); }} />}
-                    {activeTab === 'year' && <YearManager students={students} yearsList={yearsList} currentAcademicYear={currentAcademicYear} setCurrentAcademicYear={setCurrentAcademicYear} />}
-                    {activeTab === 'import' && <ImportPage currentAcademicYear={currentAcademicYear} majors={majors} onDone={() => setActiveTab('members')} />}
-                    {activeTab === 'settings' && <SettingsPage majors={majors} setMajors={setMajors} currentAcademicYear={currentAcademicYear} setCurrentAcademicYear={setCurrentAcademicYear} />}
-                    {activeTab === 'manual' && <ManualPage />}
-                  </div>
-                )}
-              </main>
-            </div>
+                </aside>
+
+                <main className="min-w-0">
+                  <TopBar activeTab={activeTab} currentAcademicYear={currentAcademicYear} theme={theme} toggleTheme={toggleTheme} onLogout={onLogout} />
+
+                  {loadingData ? (
+                    <div className="bg-white rounded-[2rem] p-12 text-center soft-shadow mt-5">
+                      <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                      <p className="font-bold text-slate-500">กำลังโหลดข้อมูลสมาชิก...</p>
+                    </div>
+                  ) : (
+                    <div className="mt-5 animate-fade-in">
+                      {activeTab === 'add' && <StudentForm mode="add" majors={majors} currentAcademicYear={currentAcademicYear} allStudents={students} onDone={() => {}} />}
+                      {activeTab === 'members' && (
+                        <MembersPage
+                          students={filteredStudents}
+                          allStudents={students}
+                          majors={majors}
+                          yearsList={yearsList}
+                          search={search}
+                          setSearch={setSearch}
+                          filterYear={filterYear}
+                          setFilterYear={setFilterYear}
+                          filterMajor={filterMajor}
+                          setFilterMajor={setFilterMajor}
+                          filterInterest={filterInterest}
+                          setFilterInterest={setFilterInterest}
+                          filterStatus={filterStatus}
+                          setFilterStatus={setFilterStatus}
+                          filterPhoto={filterPhoto}
+                          setFilterPhoto={setFilterPhoto}
+                          displayMode={displayMode}
+                          setDisplayMode={setDisplayMode}
+                          onEdit={setEditingStudent}
+                          onView={setDetailStudent}
+                          onDelete={setStudentToDelete}
+                          onStatusChange={handleQuickStatusChange}
+                          onPrint={() => setIsPrintingRoster(true)}
+                          onExport={exportFilteredCSV}
+                          onExportByInterest={exportByDepartment}
+                        />
+                      )}
+                      {activeTab === 'duty' && <DutySchedulePage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
+                      {activeTab === 'dashboard' && <DashboardPage students={students} yearsList={yearsList} currentAcademicYear={currentAcademicYear} onIssueFilter={(key) => { setFilterPhoto(key); setActiveTab('members'); }} />}
+                      {activeTab === 'year' && <YearManager students={students} yearsList={yearsList} currentAcademicYear={currentAcademicYear} setCurrentAcademicYear={setCurrentAcademicYear} />}
+                      {activeTab === 'import' && <ImportPage currentAcademicYear={currentAcademicYear} majors={majors} onDone={() => setActiveTab('members')} />}
+                      {activeTab === 'settings' && <SettingsPage majors={majors} setMajors={setMajors} currentAcademicYear={currentAcademicYear} setCurrentAcademicYear={setCurrentAcademicYear} />}
+                      {activeTab === 'manual' && <ManualPage />}
+                    </div>
+                  )}
+                </main>
+              </div>
+            )}
           </div>
 
           {isPrintingRoster && ReactDOM.createPortal(
@@ -995,7 +1195,7 @@
 
     function TopBar({ activeTab, currentAcademicYear, theme, toggleTheme, onLogout }) {
       const titleMap = {
-        add: 'เพิ่มสมาชิกใหม่', members: 'ฐานข้อมูลสมาชิก', dashboard: 'สรุปยอดสมาชิก', year: 'จัดการปีการศึกษา', import: 'นำเข้าข้อมูล', settings: 'ตั้งค่าระบบ', manual: 'คู่มือเจ้าหน้าที่'
+        add: 'เพิ่มสมาชิกใหม่', members: 'ฐานข้อมูลสมาชิก', duty: 'ตารางเวรตอนเช้า', dutyDisplay: 'จอแสดงตารางเวรตอนเช้า', dashboard: 'สรุปยอดสมาชิก', year: 'จัดการปีการศึกษา', import: 'นำเข้าข้อมูล', settings: 'ตั้งค่าระบบ', manual: 'คู่มือเจ้าหน้าที่'
       };
       return (
         <header className="no-print rounded-[2rem] bg-white/85 backdrop-blur-xl border border-white soft-shadow p-5 md:p-6 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
@@ -1041,6 +1241,670 @@
         if (s.actualInterest) res.actualInterests[s.actualInterest] = (res.actualInterests[s.actualInterest] || 0) + 1;
       });
       return res;
+    }
+
+
+    function DutySchedulePage({ students, currentAcademicYear, yearsList }) {
+      const [duties, setDuties] = useState([]);
+      const [templates, setTemplates] = useState({});
+      const [loading, setLoading] = useState(true);
+      const [year, setYear] = useState(currentAcademicYear);
+      const [search, setSearch] = useState('');
+      const [form, setForm] = useState(() => createDutyForm(currentAcademicYear));
+      const [editingId, setEditingId] = useState(null);
+      const [saving, setSaving] = useState(false);
+      const [isPrinting, setIsPrinting] = useState(false);
+
+      useEffect(() => {
+        const unsub = getDutyRef().onSnapshot(snapshot => {
+          const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          data.sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+          setDuties(data);
+          setLoading(false);
+        }, err => {
+          console.error(err);
+          setLoading(false);
+          alert('โหลดตารางเวรไม่สำเร็จ');
+        });
+        return () => unsub();
+      }, []);
+
+      useEffect(() => {
+        const unsub = getDutyTemplatesRef().onSnapshot(snapshot => {
+          const map = {};
+          snapshot.docs.forEach(doc => { map[doc.id] = { id: doc.id, ...doc.data() }; });
+          setTemplates(map);
+        }, err => console.error('load duty templates failed', err));
+        return () => unsub();
+      }, []);
+
+      const activeStudents = useMemo(() => students
+        .filter(s => (s.academicYear || currentAcademicYear) === form.academicYear && (s.status || 'active') !== 'dismissed' && (s.status || 'active') !== 'graduated')
+        .sort((a,b) => String(a.level || '').localeCompare(String(b.level || ''), 'th') || String(a.group || '').localeCompare(String(b.group || ''), 'th') || String(a.fullName || '').localeCompare(String(b.fullName || ''), 'th'))
+      , [students, form.academicYear, currentAcademicYear]);
+
+      const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
+      const duplicateIds = useMemo(() => duplicateStudentIdsInWeekly(form.weeklyAssignments), [form.weeklyAssignments]);
+      const duplicateNames = duplicateIds.map(id => studentMap.get(id)).filter(Boolean).map(s => `${s.nickname || s.fullName || '-'} (${s.level || '-'} / ${s.group || '-'})`);
+
+      const visibleDuties = useMemo(() => {
+        const q = search.trim().toLowerCase();
+        return duties.filter(d => {
+          const matchYear = year === 'all' || d.academicYear === year;
+          const weekly = getDutyWeeklyAssignments(d);
+          const text = [
+            d.date, formatThaiWeekRange(d.date), d.academicYear, dutyTableLabel(d.scheduleType), d.note,
+            ...dutyDays.flatMap(day => [day.label, dutyDayText({ ...d, weeklyAssignments: weekly }, day.key)])
+          ].join(' ').toLowerCase();
+          return matchYear && (!q || text.includes(q));
+        });
+      }, [duties, year, search]);
+
+      const nextDuty = useMemo(() => {
+        const today = getWeekStartDate(todayFileDate());
+        return duties
+          .filter(d => d.academicYear === currentAcademicYear && String(getWeekStartDate(d.date) || '') >= today)
+          .sort((a,b) => String(a.date || '').localeCompare(String(b.date || '')))[0] || null;
+      }, [duties, currentAcademicYear]);
+
+      const setAssignment = (dayKey, roleKey, slot, value) => {
+        setForm(prev => {
+          const weekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || prev);
+          const current = [...(weekly[dayKey]?.[roleKey] || [])];
+          while (current.length < slot + 1) current.push('');
+          current[slot] = value;
+          weekly[dayKey][roleKey] = current;
+          return { ...prev, weeklyAssignments: weekly };
+        });
+      };
+
+      const copyDay = (fromDayKey, toDayKey) => {
+        setForm(prev => {
+          const weekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || prev);
+          weekly[toDayKey] = JSON.parse(JSON.stringify(weekly[fromDayKey] || emptyDutyAssignments()));
+          return { ...prev, weeklyAssignments: weekly };
+        });
+      };
+
+      const clearDay = (dayKey) => {
+        setForm(prev => {
+          const weekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || prev);
+          weekly[dayKey] = emptyDutyAssignments();
+          return { ...prev, weeklyAssignments: weekly };
+        });
+      };
+
+      const applyTemplate = (type = form.scheduleType, academicYear = form.academicYear) => {
+        const safeType = type === 'B' ? 'B' : 'A';
+        const template = templates[dutyTemplateDocId(academicYear, safeType)];
+        if (!template) return alert(`ยังไม่ได้บันทึก${dutyTableLabel(safeType)} ของปีการศึกษา ${academicYear}`);
+        setForm(prev => ({ ...prev, academicYear, scheduleType: safeType, weeklyAssignments: normalizeWeeklyAssignmentIds(template) }));
+      };
+
+      const saveTemplate = async (type = form.scheduleType) => {
+        const safeType = type === 'B' ? 'B' : 'A';
+        if (!form.academicYear) return alert('กรุณาเลือกปีการศึกษาก่อน');
+        if (!confirm(`บันทึกตารางเวร จันทร์–เสาร์ ชุดปัจจุบันเป็น${dutyTableLabel(safeType)} ของปีการศึกษา ${form.academicYear} ใช่ไหม?`)) return;
+        const payload = {
+          academicYear: form.academicYear,
+          scheduleType: safeType,
+          weeklyAssignments: normalizeWeeklyAssignmentIds(form.weeklyAssignments),
+          updatedAt: new Date().toISOString(),
+          updatedBy: 'staff'
+        };
+        await getDutyTemplatesRef().doc(dutyTemplateDocId(form.academicYear, safeType)).set(payload, { merge: true });
+        alert(`บันทึก${dutyTableLabel(safeType)} แบบรายวัน จันทร์–เสาร์ เรียบร้อย`);
+      };
+
+      const latestDutyForYear = useMemo(() => duties
+        .filter(d => d.academicYear === form.academicYear)
+        .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')))[0] || null
+      , [duties, form.academicYear]);
+
+      const suggestedNextType = latestDutyForYear?.scheduleType === 'A' ? 'B' : 'A';
+
+      const applySuggestedTemplate = () => {
+        const type = suggestedNextType || 'A';
+        applyTemplate(type, form.academicYear);
+      };
+
+      const resetForm = () => {
+        setEditingId(null);
+        setForm(createDutyForm(currentAcademicYear));
+      };
+
+      const buildWeeklySnapshot = () => {
+        const lookup = new Map(students.map(s => [s.id, s]));
+        const weekly = {};
+        dutyDays.forEach(day => {
+          weekly[day.key] = {};
+          dutyRoles.forEach(role => {
+            const ids = [...new Set((form.weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean))];
+            weekly[day.key][role.key] = ids.map(id => {
+              const s = lookup.get(id);
+              return s ? {
+                id: s.id,
+                studentId: s.studentId || '',
+                fullName: s.fullName || '',
+                nickname: s.nickname || '',
+                level: s.level || '',
+                group: s.group || '',
+                major: s.major || '',
+                phone: s.phone || '',
+                lineId: s.lineId || '',
+                actualInterest: s.actualInterest || s.interest || ''
+              } : null;
+            }).filter(Boolean);
+          });
+        });
+        return weekly;
+      };
+
+      const handleSave = async (e) => {
+        e.preventDefault();
+        if (!form.date) return alert('กรุณาเลือกสัปดาห์');
+        const weeklyAssignments = buildWeeklySnapshot();
+        const assignedCount = countAssignedInWeekly(weeklyAssignments);
+        if (!assignedCount) return alert('กรุณาเลือกนักศึกษาอย่างน้อย 1 หน้าที่');
+        const repeated = duplicateStudentIdsInWeekly(form.weeklyAssignments);
+        if (repeated.length && !confirm(`มีนักศึกษาซ้ำในสัปดาห์นี้ ${repeated.length} คน ต้องการบันทึกต่อไหม?`)) return;
+        const weekStart = getWeekStartDate(form.date);
+        const targetYear = form.academicYear || currentAcademicYear;
+        const duplicateWeek = duties.find(d => d.id !== editingId && d.academicYear === targetYear && getWeekStartDate(d.date) === weekStart);
+        if (duplicateWeek && !confirm(`มีตารางเวรตอนเช้าของ${formatThaiWeekRange(weekStart)} อยู่แล้ว ต้องการบันทึกเพิ่ม/ซ้ำใช่ไหม?`)) return;
+        setSaving(true);
+        try {
+          const payload = {
+            date: weekStart,
+            academicYear: targetYear,
+            scheduleType: form.scheduleType === 'B' ? 'B' : 'A',
+            note: form.note || '',
+            weeklyAssignments,
+            assignments: weeklyAssignments.mon || {},
+            updatedAt: new Date().toISOString(),
+            createdBy: 'staff'
+          };
+          if (editingId) await getDutyRef().doc(editingId).update(payload);
+          else await getDutyRef().add({ ...payload, createdAt: new Date().toISOString() });
+          resetForm();
+        } catch (err) {
+          alert('บันทึกตารางเวรไม่สำเร็จ: ' + err.message);
+        } finally {
+          setSaving(false);
+        }
+      };
+
+      const editDuty = (duty) => {
+        setEditingId(duty.id);
+        setForm({ date: getWeekStartDate(duty.date || todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: duty.scheduleType === 'B' ? 'B' : 'A', note: duty.note || '', weeklyAssignments: normalizeWeeklyAssignmentIds(duty) });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const duplicateDuty = (duty) => {
+        setEditingId(null);
+        setForm({ date: getWeekStartDate(todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: duty.scheduleType === 'B' ? 'B' : 'A', note: duty.note || '', weeklyAssignments: normalizeWeeklyAssignmentIds(duty) });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const deleteDuty = async (duty) => {
+        if (!confirm(`ลบตารางเวรตอนเช้า ${formatThaiWeekRange(duty.date)} ใช่ไหม?`)) return;
+        await getDutyRef().doc(duty.id).delete();
+      };
+
+      const exportCSV = () => {
+        if (!visibleDuties.length) return alert('ไม่มีตารางเวรให้ส่งออก');
+        downloadFile(`MDEC_Morning_Weekly_Daily_Duty_${year === 'all' ? 'All' : year}_${todayFileDate()}.csv`, dutiesToCSV(visibleDuties), 'text/csv;charset=utf-8');
+      };
+
+      return (
+        <div className="space-y-0">
+          <div className="grid xl:grid-cols-[1.1fr_.9fr] gap-5">
+            <form onSubmit={handleSave} className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-7 space-y-6">
+              <div className="flex flex-col md:flex-row gap-4 md:items-start md:justify-between">
+                <div>
+                  <h3 className="text-2xl font-extrabold text-slate-950"><i className="ri-calendar-schedule-fill text-blue-600 mr-2"></i>{editingId ? 'แก้ไขตารางเวรตอนเช้า' : 'เพิ่มตารางเวรตอนเช้าประจำสัปดาห์'}</h3>
+                  <p className="text-slate-500">จัดเวรแยกวัน จันทร์–เสาร์ นักศึกษาผลัดกันทำหน้าที่ในแต่ละวัน</p>
+                </div>
+                {editingId && <button type="button" onClick={resetForm} className="px-4 py-2 rounded-2xl bg-slate-100 text-slate-700 font-bold">ยกเลิกแก้ไข</button>}
+              </div>
+
+              <div className="grid md:grid-cols-4 gap-4">
+                <Input label="สัปดาห์เริ่มต้น" type="date" value={form.date} onChange={v => setForm(prev => ({ ...prev, date: getWeekStartDate(v) }))} />
+                <Select label="ปีการศึกษา" value={form.academicYear} onChange={v => setForm(prev => ({ ...prev, academicYear: v, weeklyAssignments: emptyWeeklyDutyAssignments() }))} options={[...new Set([currentAcademicYear, ...yearsList])]} />
+                <Select label="ตารางที่ใช้" value={form.scheduleType} onChange={v => setForm(prev => ({ ...prev, scheduleType: v === 'B' ? 'B' : 'A' }))} options={['A','B']} optionLabels={{ A:'ตาราง A', B:'ตาราง B' }} />
+                <Input label="หมายเหตุประจำสัปดาห์" value={form.note} onChange={v => setForm(prev => ({ ...prev, note: v }))} placeholder="เช่น สัปดาห์เปิดเทอม / สอบกลางภาค" />
+              </div>
+
+              <div className="rounded-3xl bg-slate-50 border border-slate-100 p-4">
+                <div className="flex flex-col xl:flex-row gap-3 xl:items-center xl:justify-between">
+                  <div>
+                    <h4 className="font-extrabold text-slate-950"><i className="ri-repeat-2-fill text-blue-600 mr-2"></i>ชุดตารางเวรตอนเช้า A / B</h4>
+                    <p className="text-sm text-slate-500">แต่ละชุดเป็นตารางทั้งสัปดาห์ จันทร์–เสาร์ และสลับใช้ทุก 1 สัปดาห์</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {dutyTableTypes.map(t => <button key={t.key} type="button" onClick={() => applyTemplate(t.key, form.academicYear)} className="px-4 py-2 rounded-2xl bg-white text-blue-700 border border-blue-100 font-bold hover:bg-blue-50"><i className="ri-download-cloud-2-line mr-1"></i>เรียกใช้{t.label}</button>)}
+                    <button type="button" onClick={applySuggestedTemplate} className="px-4 py-2 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700"><i className="ri-swap-2-fill mr-1"></i>ใช้ตารางสัปดาห์ถัดไป: {dutyTableLabel(suggestedNextType)}</button>
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {dutyTableTypes.map(t => <button key={t.key} type="button" onClick={() => saveTemplate(t.key)} className="px-4 py-2 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 font-bold"><i className="ri-save-3-line mr-1"></i>บันทึกทั้งสัปดาห์เป็น{t.label}</button>)}
+                </div>
+              </div>
+
+              {!activeStudents.length && <div className="rounded-3xl bg-orange-50 border border-orange-100 text-orange-800 p-4 text-sm"><i className="ri-alert-fill mr-2"></i>ยังไม่มีรายชื่อนักศึกษาปีการศึกษา {form.academicYear} หรือยังไม่ได้เพิ่มสมาชิก</div>}
+              {duplicateIds.length > 0 && <div className="rounded-3xl bg-yellow-50 border border-yellow-100 text-yellow-800 p-4 text-sm"><i className="ri-alert-fill mr-2"></i><b>พบชื่อซ้ำในสัปดาห์นี้:</b> {duplicateNames.join(' / ') || `${duplicateIds.length} คน`} <span className="text-yellow-700">ถ้าจงใจให้ทำซ้ำยังบันทึกได้</span></div>}
+
+              <div className="space-y-4">
+                {dutyDays.map((day, dayIndex) => (
+                  <div key={day.key} className="rounded-[1.7rem] bg-slate-50 border border-slate-100 p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                      <div>
+                        <h4 className="font-extrabold text-slate-950 text-lg"><i className="ri-calendar-event-fill text-blue-600 mr-2"></i>{day.label}</h4>
+                        <p className="text-sm text-slate-500">{formatThaiDate(getDutyDayDate(form.date, day.key))}</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {dayIndex > 0 && <button type="button" onClick={() => copyDay(dutyDays[dayIndex - 1].key, day.key)} className="px-3 py-2 rounded-xl bg-white/80 text-blue-700 border border-blue-100 font-bold text-xs"><i className="ri-file-copy-2-fill mr-1"></i>คัดลอกจากวันก่อน</button>}
+                        <button type="button" onClick={() => clearDay(day.key)} className="px-3 py-2 rounded-xl bg-white/80 text-slate-600 border border-slate-100 font-bold text-xs"><i className="ri-eraser-fill mr-1"></i>ล้างวันนี้</button>
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {dutyRoles.map(role => (
+                        <div key={`${day.key}-${role.key}`} className="rounded-2xl bg-white/70 border border-slate-100 p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center"><i className={role.icon}></i></div>
+                            <div><p className="font-extrabold text-slate-950 leading-tight">{role.title}</p><p className="text-xs text-slate-500">เลือกได้ {role.slots} คน</p></div>
+                          </div>
+                          <div className="space-y-2">
+                            {Array.from({ length: role.slots }).map((_, idx) => (
+                              <select key={idx} value={(form.weeklyAssignments?.[day.key]?.[role.key] || [])[idx] || ''} onChange={e => setAssignment(day.key, role.key, idx, e.target.value)} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-100 outline-none focus:border-blue-500 font-bold">
+                                <option value="">{role.slots > 1 ? `เลือกคนที่ ${idx + 1}` : 'เลือกนักศึกษา'}</option>
+                                {activeStudents.map(s => <option key={s.id} value={s.id}>{s.studentId || '-'} · {studentDutyName(s)}</option>)}
+                              </select>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button disabled={saving} className="flex-1 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold disabled:opacity-50 active:scale-[.98] transition"><i className="ri-save-3-fill mr-2"></i>{saving ? 'กำลังบันทึก...' : editingId ? 'บันทึกการแก้ไข' : 'บันทึกตารางเวรทั้งสัปดาห์'}</button>
+                <button type="button" onClick={resetForm} className="px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/15 font-bold">ล้างฟอร์ม</button>
+              </div>
+            </form>
+
+            <div className="space-y-5">
+              <div className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6">
+                <h3 className="text-xl font-extrabold text-slate-950 mb-4"><i className="ri-dashboard-2-fill text-blue-600 mr-2"></i>สรุปตารางเวร</h3>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="rounded-3xl bg-blue-50 border border-blue-100 p-4"><p className="text-xs text-blue-700 font-bold">สัปดาห์ที่แสดง</p><p className="text-3xl font-extrabold text-slate-950">{visibleDuties.length}</p></div>
+                  <div className="rounded-3xl bg-emerald-50 border border-emerald-100 p-4"><p className="text-xs text-emerald-700 font-bold">รายชื่อนักศึกษาปีนี้</p><p className="text-3xl font-extrabold text-slate-950">{students.filter(s => s.academicYear === currentAcademicYear).length}</p></div>
+                </div>
+                <div className="mt-4 rounded-3xl bg-slate-50 border border-slate-100 p-4">
+                  <p className="text-xs text-slate-500 font-bold">เวรสัปดาห์ถัดไป</p>
+                  {nextDuty ? <div><p className="font-extrabold text-slate-950 text-lg">{formatThaiWeekRange(nextDuty.date)}</p><p className="text-sm text-slate-500">{nextDuty.note || 'ไม่มีหมายเหตุ'}</p></div> : <p className="text-slate-500 text-sm">ยังไม่มีตารางเวรตอนเช้าล่วงหน้าของปีปัจจุบัน</p>}
+                </div>
+              </div>
+
+              <div className="bg-slate-950 text-white rounded-[2rem] soft-shadow p-5 md:p-6">
+                <h3 className="font-extrabold text-xl mb-2"><i className="ri-lightbulb-flash-fill text-yellow-300 mr-2"></i>แนะนำการใช้จริง</h3>
+                <p className="text-slate-300 text-sm leading-relaxed">ให้ตั้งตาราง A และ B เป็น “ตารางทั้งสัปดาห์” โดยแยกคนแต่ละวัน จันทร์–เสาร์ จากนั้นสลับใช้ทุก 1 สัปดาห์ ระบบจะเตือนถ้ามีชื่อซ้ำในสัปดาห์เดียวกัน</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6">
+            <div className="flex flex-col xl:flex-row gap-4 xl:items-center xl:justify-between mb-5">
+              <div>
+                <h3 className="text-xl font-extrabold text-slate-950"><i className="ri-list-check-3 text-blue-600 mr-2"></i>รายการตารางเวรตอนเช้า</h3>
+                <p className="text-slate-500">ค้นหา ดูย้อนหลังรายสัปดาห์ พิมพ์ หรือส่งออก CSV ได้</p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <button onClick={() => onBack && onBack()} className="px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold"><i className="ri-arrow-left-line mr-1"></i> กลับสู่หน้าจัดการ</button>
+                <select value={year} onChange={e => setYear(e.target.value)} className="px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 outline-none focus:border-blue-500 font-bold">
+                  <option value="all">ทุกปีการศึกษา</option>
+                  {[...new Set([currentAcademicYear, ...yearsList])].map(y => <option key={y} value={y}>ปี {y}</option>)}
+                </select>
+                <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ค้นหาสัปดาห์ / วัน / ชื่อ / หมายเหตุ" className="px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 outline-none focus:border-blue-500 font-bold" />
+                <button onClick={exportCSV} className="px-4 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold"><i className="ri-file-excel-2-fill mr-1"></i> CSV</button>
+                <button onClick={() => setIsPrinting(true)} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold"><i className="ri-printer-fill mr-1"></i> พิมพ์</button>
+              </div>
+            </div>
+
+            {loading ? <div className="p-10 text-center text-slate-500 font-bold">กำลังโหลดตารางเวร...</div> : visibleDuties.length ? (
+              <div className="space-y-3">
+                {visibleDuties.map(duty => {
+                  const weekly = getDutyWeeklyAssignments(duty);
+                  return (
+                    <div key={duty.id} className="rounded-[1.6rem] bg-slate-50 border border-slate-100 p-4">
+                      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                        <div className="min-w-[190px]"><p className="text-xs text-blue-600 font-bold">{duty.academicYear}</p><h4 className="font-extrabold text-slate-950 text-lg">{formatThaiWeekRange(duty.date)}</h4><span className="inline-flex mt-1 px-3 py-1 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold">{dutyTableLabel(duty.scheduleType)}</span>{duty.note && <p className="text-sm text-slate-500 mt-1">{duty.note}</p>}</div>
+                        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-2 flex-1">
+                          {dutyDays.map(day => <div key={day.key} className="rounded-2xl bg-white/70 border border-slate-100 p-3"><p className="text-xs text-slate-500 font-bold"><i className="ri-calendar-event-fill text-blue-600 mr-1"></i>{day.shortLabel} · {formatThaiDate(getDutyDayDate(duty.date, day.key))}</p><p className="text-sm font-bold text-slate-900 leading-relaxed mt-1">{dutyRoles.map(role => `${role.shortTitle}: ${dailyDutyRoleText(weekly, day.key, role.key)}`).join(' / ')}</p></div>)}
+                        </div>
+                        <div className="flex lg:flex-col gap-2">
+                          <button onClick={() => editDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-blue-600 hover:bg-blue-50"><i className="ri-edit-2-fill text-xl"></i></button>
+                          <button onClick={() => duplicateDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-emerald-600 hover:bg-emerald-50"><i className="ri-file-copy-2-fill text-xl"></i></button>
+                          <button onClick={() => deleteDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-red-600 hover:bg-red-50"><i className="ri-delete-bin-fill text-xl"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : <div className="p-12 text-center rounded-3xl bg-slate-50 border border-slate-100 text-slate-500 font-bold">ยังไม่มีตารางเวรตามเงื่อนไขที่เลือก</div>}
+          </div>
+
+          {isPrinting && ReactDOM.createPortal(<PrintDutySchedule duties={visibleDuties} yearText={year === 'all' ? 'ทุกปีการศึกษา' : year} onClose={() => setIsPrinting(false)} />, document.body)}
+        </div>
+      );
+    }
+
+    function DutyDisplayPage({ currentAcademicYear, yearsList, onBack }) {
+      const [duties, setDuties] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [year, setYear] = useState(currentAcademicYear);
+      const [selectedId, setSelectedId] = useState('auto');
+      const [showControls, setShowControls] = useState(false);
+      const [now, setNow] = useState(new Date());
+      const [focusDayKey, setFocusDayKey] = useState('auto');
+      const [autoRotate, setAutoRotate] = useState(false);
+
+      useEffect(() => {
+        const timer = setInterval(() => setNow(new Date()), 1000);
+        return () => clearInterval(timer);
+      }, []);
+
+      useEffect(() => {
+        const unsub = getDutyRef().onSnapshot(snapshot => {
+          const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          data.sort((a,b) => String(a.date || '').localeCompare(String(b.date || '')));
+          setDuties(data);
+          setLoading(false);
+        }, err => {
+          console.error(err);
+          setLoading(false);
+          alert('โหลดตารางเวรไม่สำเร็จ');
+        });
+        return () => unsub();
+      }, []);
+
+      const dutiesForYear = useMemo(() => duties.filter(d => d.academicYear === year).sort((a,b) => String(a.date || '').localeCompare(String(b.date || ''))), [duties, year]);
+      const nextDuty = useMemo(() => {
+        const today = getWeekStartDate(todayFileDate());
+        return dutiesForYear.find(d => String(getWeekStartDate(d.date) || '') >= today) || dutiesForYear[dutiesForYear.length - 1] || null;
+      }, [dutiesForYear]);
+      const selectedDuty = useMemo(() => selectedId === 'auto' ? nextDuty : (dutiesForYear.find(d => d.id === selectedId) || nextDuty), [selectedId, nextDuty, dutiesForYear]);
+      const yearOptions = [...new Set([currentAcademicYear, ...yearsList])];
+      const clockText = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+      const todayDate = todayFileDate();
+      const todayKey = dutyDays.find(day => getDutyDayDate(todayDate, day.key) === todayDate)?.key;
+      const isCurrentSelectedWeek = selectedDuty ? getWeekStartDate(selectedDuty.date) === getWeekStartDate(todayDate) : false;
+      const resolvedFocusDayKey = focusDayKey === 'auto' ? ((isCurrentSelectedWeek && todayKey) ? todayKey : 'mon') : focusDayKey;
+      const focusDay = dutyDays.find(day => day.key === resolvedFocusDayKey) || dutyDays[0];
+      const weekly = selectedDuty ? getDutyWeeklyAssignments(selectedDuty) : null;
+      const focusDate = selectedDuty ? getDutyDayDate(selectedDuty.date, focusDay.key) : todayDate;
+      const focusPeopleCount = focusDay ? dutyRoles.reduce((sum, role) => sum + ((weekly?.[focusDay.key]?.[role.key] || []).length), 0) : 0;
+      const weekPeopleCount = weekly ? dutyDays.reduce((sum, day) => sum + dutyRoles.reduce((s, role) => s + ((weekly?.[day.key]?.[role.key] || []).length), 0), 0) : 0;
+
+      useEffect(() => {
+        setFocusDayKey('auto');
+      }, [selectedId, year]);
+
+      useEffect(() => {
+        if (!autoRotate || !selectedDuty) return;
+        const timer = setInterval(() => {
+          setFocusDayKey(prev => {
+            const current = prev === 'auto' ? resolvedFocusDayKey : prev;
+            const idx = Math.max(0, dutyDays.findIndex(d => d.key === current));
+            return dutyDays[(idx + 1) % dutyDays.length].key;
+          });
+        }, 10000);
+        return () => clearInterval(timer);
+      }, [autoRotate, selectedDuty, resolvedFocusDayKey]);
+
+      const toggleFullscreen = () => {
+        const el = document.documentElement;
+        if (!document.fullscreenElement && el.requestFullscreen) el.requestFullscreen();
+        else if (document.exitFullscreen) document.exitFullscreen();
+      };
+
+      const roleClass = (tone) => ({
+        blue: 'from-sky-500/24 to-blue-700/12 border-sky-300/28',
+        cyan: 'from-cyan-500/24 to-sky-700/12 border-cyan-300/28',
+        emerald: 'from-emerald-500/24 to-teal-700/12 border-emerald-300/28',
+        purple: 'from-violet-500/24 to-purple-700/12 border-violet-300/28',
+        orange: 'from-amber-500/24 to-orange-700/12 border-amber-300/28'
+      }[tone] || 'from-blue-500/20 to-cyan-500/10 border-blue-300/20');
+
+      const roleAccentClass = (tone) => ({
+        blue: 'bg-sky-500/22 text-sky-100 border-sky-300/30',
+        cyan: 'bg-cyan-500/22 text-cyan-100 border-cyan-300/30',
+        emerald: 'bg-emerald-500/22 text-emerald-100 border-emerald-300/30',
+        purple: 'bg-violet-500/22 text-violet-100 border-violet-300/30',
+        orange: 'bg-amber-500/22 text-amber-100 border-amber-300/30'
+      }[tone] || 'bg-slate-500/20 text-white border-white/20');
+
+      const roleBadgeClass = (tone) => ({
+        blue: 'bg-sky-400 text-slate-950',
+        cyan: 'bg-cyan-400 text-slate-950',
+        emerald: 'bg-emerald-400 text-slate-950',
+        purple: 'bg-violet-400 text-white',
+        orange: 'bg-amber-400 text-slate-950'
+      }[tone] || 'bg-white text-slate-950');
+
+      const dayClass = (dayKey, isActive) => {
+        const map = {
+          mon: isActive ? 'bg-sky-500/28 border-sky-300/45' : 'bg-sky-500/10 border-sky-300/20 hover:bg-sky-500/16 hover:border-sky-300/30',
+          tue: isActive ? 'bg-emerald-500/28 border-emerald-300/45' : 'bg-emerald-500/10 border-emerald-300/20 hover:bg-emerald-500/16 hover:border-emerald-300/30',
+          wed: isActive ? 'bg-violet-500/28 border-violet-300/45' : 'bg-violet-500/10 border-violet-300/20 hover:bg-violet-500/16 hover:border-violet-300/30',
+          thu: isActive ? 'bg-amber-500/28 border-amber-300/45' : 'bg-amber-500/10 border-amber-300/20 hover:bg-amber-500/16 hover:border-amber-300/30',
+          fri: isActive ? 'bg-rose-500/28 border-rose-300/45' : 'bg-rose-500/10 border-rose-300/20 hover:bg-rose-500/16 hover:border-rose-300/30',
+          sat: isActive ? 'bg-cyan-500/28 border-cyan-300/45' : 'bg-cyan-500/10 border-cyan-300/20 hover:bg-cyan-500/16 hover:border-cyan-300/30'
+        };
+        return map[dayKey] || (isActive ? 'bg-blue-500/25 border-blue-300/45' : 'bg-white/8 border-white/10 hover:bg-white/12 hover:border-blue-300/30');
+      };
+
+      const renderPeople = (people) => {
+        if (!people?.length) return <div className="rounded-2xl border border-dashed border-white/15 px-4 py-4 text-blue-100 font-bold text-lg">ยังไม่ระบุ</div>;
+        return people.map((p, idx) => (
+          <div key={idx} className="rounded-2xl bg-slate-950/45 border border-white/10 px-4 py-3.5">
+            <div className="text-xl 2xl:text-2xl font-extrabold text-white leading-tight">{p.nickname || p.fullName || '-'}</div>
+            <div className="text-sm text-blue-100 font-bold mt-1 truncate">{p.fullName && p.nickname ? p.fullName : (p.studentId || '-')}{p.level ? ` · ${p.level}` : ''}{p.group ? ` / ${p.group}` : ''}</div>
+          </div>
+        ));
+      };
+
+      return (
+        <div className="relative min-h-[calc(100vh-32px)] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 border border-white/10 soft-shadow text-white">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full bg-blue-500/20 blur-3xl"></div>
+            <div className="absolute -bottom-44 -left-44 w-[520px] h-[520px] rounded-full bg-cyan-400/10 blur-3xl"></div>
+            <div className="absolute inset-0 opacity-[0.055]" style={{backgroundImage:'linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px)', backgroundSize:'44px 44px'}}></div>
+          </div>
+
+          <div className="no-print fixed top-4 right-4 z-50 flex gap-2 opacity-35 hover:opacity-100 transition-opacity">
+            <button onClick={() => onBack && onBack()} className="px-4 py-3 rounded-2xl bg-slate-950/75 hover:bg-slate-900 text-white border border-white/10 backdrop-blur font-bold"><i className="ri-arrow-left-line mr-1"></i> กลับ</button>
+            <button onClick={() => setShowControls(true)} className="px-4 py-3 rounded-2xl bg-slate-950/75 hover:bg-slate-900 text-white border border-white/10 backdrop-blur font-bold"><i className="ri-settings-3-fill mr-1"></i> ตัวเลือก</button>
+          </div>
+
+          {showControls && (
+            <div className="no-print fixed inset-0 z-[60] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="w-full max-w-5xl rounded-[2rem] bg-slate-950 border border-white/10 soft-shadow p-5 md:p-6">
+                <div className="flex items-start justify-between gap-4 mb-5">
+                  <div>
+                    <h3 className="text-2xl font-extrabold text-white">ตัวเลือกจอแสดงเวร</h3>
+                    <p className="text-blue-100 text-sm mt-1">ใช้สำหรับเปลี่ยนปี/สัปดาห์ชั่วคราว ก่อนซ่อนกลับเป็นหน้าจอตารางล้วน</p>
+                  </div>
+                  <button onClick={() => setShowControls(false)} className="w-11 h-11 rounded-2xl bg-white/10 hover:bg-white/15 text-white"><i className="ri-close-line text-2xl"></i></button>
+                </div>
+                <div className="grid md:grid-cols-2 xl:grid-cols-5 gap-3">
+                  <select value={year} onChange={e => { setYear(e.target.value); setSelectedId('auto'); }} className="px-4 py-3 rounded-2xl bg-slate-900 border-2 border-slate-700 outline-none focus:border-blue-500 font-bold text-white">
+                    {yearOptions.map(y => <option key={y} value={y}>ปี {y}</option>)}
+                  </select>
+                  <select value={selectedId} onChange={e => setSelectedId(e.target.value)} className="xl:col-span-2 px-4 py-3 rounded-2xl bg-slate-900 border-2 border-slate-700 outline-none focus:border-blue-500 font-bold text-white">
+                    <option value="auto">แสดงเวรสัปดาห์ถัดไปอัตโนมัติ</option>
+                    {dutiesForYear.map(d => <option key={d.id} value={d.id}>{formatThaiWeekRange(d.date)} · {dutyTableLabel(d.scheduleType)}</option>)}
+                  </select>
+                  <button onClick={toggleFullscreen} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold"><i className="ri-fullscreen-fill mr-1"></i> เต็มจอ</button>
+                  <button onClick={() => setAutoRotate(v => !v)} className={`px-4 py-3 rounded-2xl font-bold ${autoRotate ? 'bg-emerald-600 text-white' : 'bg-white/10 text-white hover:bg-white/15'}`}><i className="ri-loop-right-fill mr-1"></i>{autoRotate ? 'กำลังสลับวัน' : 'สลับวันอัตโนมัติ'}</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="relative z-10 p-5 md:p-8 xl:p-10 min-h-[calc(100vh-32px)] flex flex-col">
+            {loading ? (
+              <div className="flex-1 flex items-center justify-center text-blue-100 font-bold text-2xl">กำลังโหลดตารางเวร...</div>
+            ) : selectedDuty ? (
+              <>
+                <header className="grid xl:grid-cols-[1fr_auto] gap-5 items-start mb-6">
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="brand-logo-compact !w-[130px] !h-[52px] flex-shrink-0"><img src={MDEC_LOGO} alt="MDEC" /></div>
+                    <div className="min-w-0">
+                      <p className="text-xs md:text-sm font-bold tracking-[0.22em] text-blue-200 uppercase">MDEC MORNING DUTY BOARD</p>
+                      <h1 className="text-4xl md:text-6xl 2xl:text-7xl font-extrabold text-white tracking-tight leading-none">ตารางเวรตอนเช้า</h1>
+                      <p className="text-blue-100 text-sm md:text-lg mt-2 truncate">{formatThaiWeekRange(selectedDuty.date)} · {dutyTableLabel(selectedDuty.scheduleType)} · ปีการศึกษา {selectedDuty.academicYear || year}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 xl:min-w-[360px]">
+                    <div className="rounded-[1.7rem] bg-white/10 border border-white/10 px-5 py-4">
+                      <p className="text-sm text-blue-100 font-bold">เวลา</p>
+                      <p className="text-4xl 2xl:text-5xl font-extrabold text-white mt-2 leading-none">{clockText}</p>
+                    </div>
+                    <div className="rounded-[1.7rem] bg-white/10 border border-white/10 px-5 py-4">
+                      <p className="text-sm text-blue-100 font-bold">ผู้ปฏิบัติหน้าที่วันนี้</p>
+                      <p className="text-4xl 2xl:text-5xl font-extrabold text-white mt-2 leading-none">{focusPeopleCount}</p>
+                    </div>
+                  </div>
+                </header>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-6">
+                  {dutyDays.map(day => {
+                    const isActive = focusDay.key === day.key;
+                    const isToday = isCurrentSelectedWeek && todayKey === day.key;
+                    const totalPeople = dutyRoles.reduce((sum, role) => sum + ((weekly?.[day.key]?.[role.key] || []).length), 0);
+                    return (
+                      <button key={day.key} type="button" onClick={() => { setFocusDayKey(day.key); setAutoRotate(false); }} className={`text-left rounded-[1.4rem] border px-4 py-4 transition ${dayClass(day.key, isActive)}`}>
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className={`text-xl font-extrabold ${isActive ? 'text-white' : 'text-blue-100'}`}>{day.shortLabel}</div>
+                            <div className="text-xs text-blue-200/90 mt-1">{formatThaiDate(getDutyDayDate(selectedDuty.date, day.key))}</div>
+                          </div>
+                          {isToday ? <span className="px-2 py-1 rounded-lg bg-yellow-300 text-slate-950 text-[10px] font-extrabold">วันนี้</span> : <span className="px-2 py-1 rounded-lg bg-slate-950/45 text-white text-[10px] font-extrabold">{totalPeople} คน</span>}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="flex flex-wrap gap-2.5 mb-6">
+                  {dutyRoles.map(role => (
+                    <div key={`legend-${role.key}`} className={`inline-flex items-center gap-2 rounded-2xl border px-3 py-2 ${roleAccentClass(role.tone)}`}>
+                      <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold ${roleBadgeClass(role.tone)}`}><i className={role.icon}></i></span>
+                      <span className="font-extrabold text-sm md:text-base">{role.shortTitle}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <main className="flex-1 grid 2xl:grid-cols-[1fr_320px] gap-5 min-h-0">
+                  <section className="rounded-[2.1rem] bg-blue-500/12 border border-blue-300/20 p-5 md:p-7 min-h-0">
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
+                      <div>
+                        <p className="text-blue-100 font-bold text-sm">รายละเอียดเวร</p>
+                        <h2 className="text-4xl md:text-6xl 2xl:text-7xl font-extrabold text-white leading-none">{focusDay.label}</h2>
+                        <p className="text-blue-100 mt-2 text-base md:text-xl">{formatThaiDate(focusDate)}</p>
+                      </div>
+                      {isCurrentSelectedWeek && todayKey === focusDay.key && <div className="inline-flex px-4 py-2 rounded-2xl bg-yellow-300 text-slate-950 font-extrabold"><i className="ri-star-fill mr-2"></i>เวรวันนี้</div>}
+                    </div>
+
+                    <div className="grid xl:grid-cols-2 gap-4">
+                      {dutyRoles.map((role, idx) => {
+                        const people = weekly?.[focusDay.key]?.[role.key] || [];
+                        return (
+                          <div key={`${focusDay.key}-${role.key}`} className={`rounded-[1.9rem] bg-gradient-to-br ${roleClass(role.tone)} border p-4 md:p-5`}>
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${roleAccentClass(role.tone)}`}><i className={`${role.icon} text-xl`}></i></div>
+                              <div>
+                                <p className="text-xl 2xl:text-2xl font-extrabold text-white leading-tight">{role.title}</p>
+                                <p className={`text-sm font-bold ${role.tone === 'orange' ? 'text-amber-100' : role.tone === 'purple' ? 'text-violet-100' : role.tone === 'emerald' ? 'text-emerald-100' : role.tone === 'cyan' ? 'text-cyan-100' : 'text-sky-100'}`}>{people.length ? `${people.length} คน` : 'ยังไม่ระบุ'}</p>
+                              </div>
+                            </div>
+                            <div className="space-y-2.5">{renderPeople(people)}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+
+                  <aside className="hidden 2xl:block rounded-[2.1rem] bg-white/10 border border-white/10 p-5">
+                    <h3 className="text-2xl font-extrabold text-white mb-2"><i className="ri-calendar-line text-cyan-300 mr-2"></i>สัปดาห์นี้</h3>
+                    <p className="text-blue-100 text-sm mb-4">สรุปจำนวนผู้ปฏิบัติหน้าที่รายวัน</p>
+                    <div className="space-y-3">
+                      {dutyDays.map(day => {
+                        const peopleCount = dutyRoles.reduce((sum, role) => sum + ((weekly?.[day.key]?.[role.key] || []).length), 0);
+                        const isActive = focusDay.key === day.key;
+                        return (
+                          <button key={`${day.key}-summary`} type="button" onClick={() => { setFocusDayKey(day.key); setAutoRotate(false); }} className={`w-full rounded-2xl border px-4 py-3 text-left transition ${dayClass(day.key, isActive)}`}>
+                            <div className="flex items-center justify-between gap-3">
+                              <div>
+                                <div className="font-extrabold text-white">{day.label}</div>
+                                <div className="text-xs text-blue-100 mt-1">{formatThaiDate(getDutyDayDate(selectedDuty.date, day.key))}</div>
+                              </div>
+                              <div className="text-2xl font-extrabold text-white">{peopleCount}</div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </aside>
+                </main>
+              </>
+            ) : (
+              <div className="flex-1 min-h-[640px] flex flex-col items-center justify-center text-center">
+                <i className="ri-calendar-close-fill text-7xl text-blue-300 mb-4"></i>
+                <h2 className="text-4xl md:text-5xl font-extrabold text-white">ยังไม่มีตารางเวรตอนเช้าที่จะแสดง</h2>
+                <p className="text-blue-100 mt-2 text-lg">กรุณาเพิ่มตารางเวรตอนเช้าในเมนู “ตารางเวรตอนเช้า” ก่อน</p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+    function PrintDutySchedule({ duties, yearText, onClose }) {
+      const reportDate = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+      const sorted = [...duties].sort((a,b) => String(a.date || '').localeCompare(String(b.date || '')));
+      return (
+        <div className="print-overlay fixed inset-0 z-[100] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in">
+          <div className="no-print flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 pb-5 border-b">
+            <div><h2 className="font-extrabold text-2xl">พิมพ์ตารางเวรตอนเช้า</h2><p className="text-slate-500">รายงานนี้แสดงตามตัวกรองในหน้าตารางเวร</p></div>
+            <div className="flex gap-2"><button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>พิมพ์ / Save PDF</button><button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button></div>
+          </div>
+          <section className="report-page">
+            <div className="report-header">
+              <div className="report-brand">
+                <div className="report-logo"><img src={MDEC_LOGO} alt="MDEC" /></div>
+                <div>
+                  <div className="report-title">ตารางเวรตอนเช้าประจำสัปดาห์ จันทร์–เสาร์</div>
+                  <div className="report-subtitle">ชมรม MDEC Photo Club • ภายใต้การดูแลของศูนย์มัลติมีเดียทางการศึกษา</div>
+                </div>
+              </div>
+              <div className="report-meta"><div><strong>ปีการศึกษา:</strong> {yearText}</div><div><strong>จำนวนสัปดาห์:</strong> {sorted.length}</div><div><strong>วันที่ออกรายงาน:</strong> {reportDate}</div></div>
+            </div>
+            <div className="report-note"><span>ภารกิจตอนเช้า: เชิญธงชาติ / เครื่องเสียง / ถ่ายภาพ / พูดทำความเคารพ / เวรทำความสะอาด</span><span>หมายเหตุ: ใช้ตาราง A/B สลับกันทุก 1 สัปดาห์</span></div>
+            <table className="print-table">
+              <thead><tr><th style={{width:'120px'}}>สัปดาห์</th><th style={{width:'78px'}}>วัน</th><th style={{width:'65px'}}>ตาราง</th>{dutyRoles.map(role => <th key={role.key}>{role.shortTitle}</th>)}<th style={{width:'95px'}}>หมายเหตุ</th></tr></thead>
+              <tbody>{sorted.flatMap(d => {
+                const weekly = getDutyWeeklyAssignments(d);
+                return dutyDays.map(day => <tr key={`${d.id || d.date}-${day.key}`}><td><strong>{formatThaiWeekRange(d.date)}</strong></td><td>{day.shortLabel}<br/><span className="print-muted">{formatThaiDate(getDutyDayDate(d.date, day.key))}</span></td><td>{dutyTableLabel(d.scheduleType)}</td>{dutyRoles.map(role => <td key={role.key}>{dailyDutyRoleText(weekly, day.key, role.key)}</td>)}<td>{d.note || '-'}</td></tr>);
+              })}</tbody>
+            </table>
+            <div className="print-footer"><div>Generated by MDEC Photo Club Registry</div><div className="signature-zone"><div className="signature-line">ผู้จัดทำ</div><div className="signature-line">ผู้ตรวจสอบ</div></div></div>
+          </section>
+        </div>
+      );
     }
 
     function DashboardPage({ students, yearsList, currentAcademicYear, onIssueFilter }) {
@@ -1854,6 +2718,8 @@
         ['ถ่ายรูปสมาชิก', 'เปิดกล้อง ถ่ายรูปหน้าตรง พื้นหลังเรียบ ระบบจะบีบอัดรูปให้อัตโนมัติ'],
         ['ตรวจข้อมูลไม่ครบ', 'ไปที่สรุปยอดแล้วกดการ์ด ไม่มีรูป / ไม่มีเบอร์ / ไม่มี Line เพื่อแก้ข้อมูลก่อนสรุป'],
         ['ดูรายละเอียดและหมายเหตุ', 'กดไอคอนรูปตาเพื่อดูข้อมูลเต็ม ใส่หมายเหตุเจ้าหน้าที่เมื่อต้องติดตามงาน'],
+        ['ตารางเวรตอนเช้า', 'ตั้งชุดตาราง A และ B แบบแยกวัน จันทร์–เสาร์ แล้วสลับใช้รายสัปดาห์สำหรับเวรเชิญธงชาติ เครื่องเสียง ถ่ายภาพ ทำความเคารพ และทำความสะอาดได้'],
+        ['จอแสดงเวร', 'ใช้เปิดค้างไว้บนจอ/ทีวีให้นักศึกษาดูตารางเวรแบบอ่านอย่างเดียว มีปุ่มเต็มจอและซ่อนแถบควบคุมได้'],
         ['พิมพ์รายงาน', 'กรองปี/สาขา/ฝ่ายก่อน แล้วเลือกพิมพ์รายงานตาราง ทำเนียบรูปภาพ หรือใบเซ็นชื่อ'],
         ['สำรองข้อมูลก่อนจบปี', 'ดาวน์โหลด JSON และ CSV แล้วตรวจสอบไฟล์ก่อนล้างข้อมูลปีการศึกษา'],
         ['ล้างข้อมูลปีเก่า', 'ติ๊กยืนยันว่า Backup แล้ว และพิมพ์ CLEAR ตามปีการศึกษาที่เลือก'],
