@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Registry v19 TV Mode Color Coded</title>
+  <title>MDEC Photo Club Registry v34 Remove Excel Import</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -424,6 +424,135 @@
       body.dark-mode .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
         border-color: rgba(71, 85, 105, .6) !important;
       }
+
+
+      /* v24 global dark audit: ลดอาการพื้น/ตัวอักษรกลืนกันในทุกหน้า */
+      body.dark-mode main,
+      body.dark-mode .animate-fade-in { color: #e5edf8 !important; }
+
+      body.dark-mode .rounded-\[2rem\].bg-white,
+      body.dark-mode .rounded-\[2\.2rem\].bg-white,
+      body.dark-mode .rounded-\[1\.6rem\].bg-white,
+      body.dark-mode .rounded-3xl.bg-white,
+      body.dark-mode .rounded-2xl.bg-white {
+        background: rgba(15, 23, 42, .94) !important;
+        border-color: rgba(71, 85, 105, .78) !important;
+        color: #e5edf8 !important;
+      }
+
+      body.dark-mode .bg-slate-950,
+      body.dark-mode .bg-slate-900,
+      body.dark-mode .bg-slate-800 {
+        border-color: rgba(71, 85, 105, .78) !important;
+      }
+
+      body.dark-mode .bg-white\/5,
+      body.dark-mode .bg-white\/10,
+      body.dark-mode .bg-white\/15,
+      body.dark-mode .hover\:bg-white\/10:hover,
+      body.dark-mode .hover\:bg-white\/15:hover,
+      body.dark-mode .bg-slate-950\/35,
+      body.dark-mode .bg-slate-950\/40,
+      body.dark-mode .bg-slate-950\/45,
+      body.dark-mode .bg-slate-950\/55 {
+        color: #e5edf8 !important;
+        border-color: rgba(148, 163, 184, .24) !important;
+      }
+
+      body.dark-mode .bg-red-950\/35,
+      body.dark-mode .bg-red-950\/40 {
+        background: rgba(69, 10, 10, .55) !important;
+        color: #fee2e2 !important;
+        border-color: rgba(248, 113, 113, .38) !important;
+      }
+
+      body.dark-mode .text-red-100,
+      body.dark-mode .text-red-200,
+      body.dark-mode .text-red-300 { color: #fecaca !important; }
+      body.dark-mode .text-emerald-100,
+      body.dark-mode .text-emerald-200 { color: #bbf7d0 !important; }
+      body.dark-mode .text-cyan-100,
+      body.dark-mode .text-cyan-200 { color: #cffafe !important; }
+      body.dark-mode .text-blue-100,
+      body.dark-mode .text-blue-200 { color: #dbeafe !important; }
+      body.dark-mode .text-amber-100,
+      body.dark-mode .text-amber-200 { color: #fde68a !important; }
+
+      body.dark-mode button:not(.bg-blue-600):not(.bg-blue-700):not(.bg-emerald-600):not(.bg-red-600):not(.bg-indigo-600):not(.bg-amber-500):not(.bg-yellow-300),
+      body.dark-mode .file\:bg-blue-600::file-selector-button {
+        border-color: rgba(71, 85, 105, .78);
+      }
+
+      body.dark-mode button.bg-slate-100,
+      body.dark-mode button.bg-slate-200,
+      body.dark-mode button.bg-white,
+      body.dark-mode button.bg-white\/10,
+      body.dark-mode button.bg-white\/15,
+      body.dark-mode .bg-slate-100.hover\:bg-slate-200,
+      body.dark-mode .bg-white.hover\:bg-blue-50 {
+        background: rgba(30, 41, 59, .94) !important;
+        color: #e2e8f0 !important;
+        border-color: rgba(71, 85, 105, .78) !important;
+      }
+
+      body.dark-mode button:disabled,
+      body.dark-mode input:disabled,
+      body.dark-mode select:disabled,
+      body.dark-mode textarea:disabled {
+        opacity: .55 !important;
+        cursor: not-allowed !important;
+      }
+
+      body.dark-mode select option {
+        background: #0f172a !important;
+        color: #f8fafc !important;
+      }
+
+      body.dark-mode input[type="file"] {
+        color: #cbd5e1 !important;
+        background: rgba(15, 23, 42, .9) !important;
+        border-color: rgba(71, 85, 105, .9) !important;
+      }
+      body.dark-mode input[type="file"]::file-selector-button {
+        background: #2563eb !important;
+        color: white !important;
+        border: 0 !important;
+      }
+
+      body.dark-mode label span,
+      body.dark-mode label .text-slate-500,
+      body.dark-mode label .text-slate-400 { color: #a8b3c7 !important; }
+
+      body.dark-mode .fixed.inset-0.bg-black\/40,
+      body.dark-mode .fixed.inset-0.bg-slate-950\/70,
+      body.dark-mode .fixed.inset-0.bg-slate-950\/72 {
+        background-color: rgba(2, 6, 23, .78) !important;
+      }
+
+      body.dark-mode .bg-red-50,
+      body.dark-mode .bg-orange-50,
+      body.dark-mode .bg-yellow-50,
+      body.dark-mode .bg-emerald-50,
+      body.dark-mode .bg-blue-50,
+      body.dark-mode .bg-cyan-50 {
+        color: #e5edf8 !important;
+      }
+
+      body.dark-mode .text-slate-950 strong,
+      body.dark-mode strong.text-slate-900,
+      body.dark-mode strong.text-slate-950 { color: #ffffff !important; }
+
+      body.dark-mode .ring-blue-100,
+      body.dark-mode .focus\:ring-blue-100:focus { --tw-ring-color: rgba(59,130,246,.35) !important; }
+
+      body.dark-mode .manual-card,
+      body.dark-mode .settings-card,
+      body.dark-mode .import-card,
+      body.dark-mode .year-card {
+        background: rgba(15, 23, 42, .94) !important;
+        color: #e5edf8 !important;
+        border-color: rgba(71, 85, 105, .78) !important;
+      }
     }
 
 
@@ -598,6 +727,62 @@
       { key: 'cleaning', title: 'เวรทำความสะอาดห้อง', shortTitle: 'ทำความสะอาด', icon: 'ri-brush-3-fill', slots: 3, tone: 'orange' }
     ];
 
+    const dutyRoleTones = ['blue', 'cyan', 'emerald', 'purple', 'orange'];
+    const dutyRoleIcons = ['ri-flag-2-fill','ri-volume-up-fill','ri-camera-3-fill','ri-mic-fill','ri-brush-3-fill','ri-megaphone-fill','ri-team-fill','ri-tools-fill','ri-shield-check-fill','ri-star-fill'];
+
+    function safeRoleKey(value, fallback = '') {
+      const raw = String(value || '').trim().toLowerCase();
+      const ascii = raw.replace(/[^a-z0-9_]+/g, '_').replace(/^_+|_+$/g, '');
+      return ascii || fallback || `role_${Date.now()}`;
+    }
+
+    function defaultDutyRoleDefs() {
+      return dutyRoles.map(role => ({ ...role }));
+    }
+
+    function normalizeDutyRoles(roleDefs, roleSlots) {
+      const source = Array.isArray(roleDefs) && roleDefs.length ? roleDefs : dutyRoles;
+      const seen = new Set();
+      const roles = source.map((role, idx) => {
+        const fallbackKey = dutyRoles[idx]?.key || `role_${idx + 1}`;
+        let key = safeRoleKey(role?.key, fallbackKey);
+        if (seen.has(key)) key = `${key}_${idx + 1}`;
+        seen.add(key);
+        const title = String(role?.title || role?.shortTitle || dutyRoles[idx]?.title || `ตำแหน่งที่ ${idx + 1}`).trim();
+        const shortTitle = String(role?.shortTitle || title).trim();
+        const icon = role?.icon || dutyRoleIcons[idx % dutyRoleIcons.length];
+        const tone = dutyRoleTones.includes(role?.tone) ? role.tone : dutyRoleTones[idx % dutyRoleTones.length];
+        const rawSlots = Number(roleSlots?.[key] ?? role?.slots ?? dutyRoles[idx]?.slots ?? 1);
+        const slots = Math.max(0, Math.min(10, Number.isFinite(rawSlots) ? Math.round(rawSlots) : 1));
+        return { key, title, shortTitle, icon, tone, slots };
+      }).filter(role => role.title);
+      return roles.length ? roles : defaultDutyRoleDefs();
+    }
+
+    function getDutyRoles(source) {
+      return normalizeDutyRoles(source?.roleDefs || source?.roles || source?.dutyRoles, source?.roleSlots);
+    }
+
+    function defaultDutyRoleSlots(roleDefs = dutyRoles) {
+      return normalizeDutyRoles(roleDefs).reduce((acc, role) => {
+        acc[role.key] = role.slots;
+        return acc;
+      }, {});
+    }
+
+    function getRoleSlotCount(role, roleSlots) {
+      const raw = Number(roleSlots?.[role.key]);
+      if (!Number.isFinite(raw)) return Math.max(0, Math.min(10, Number(role?.slots ?? 1)));
+      return Math.max(0, Math.min(10, Math.round(raw)));
+    }
+
+    function normalizeRoleSlots(roleSlots, roleDefs = dutyRoles) {
+      return normalizeDutyRoles(roleDefs, roleSlots).reduce((acc, role) => {
+        acc[role.key] = getRoleSlotCount(role, roleSlots || {});
+        return acc;
+      }, {});
+    }
+
     const dutyDays = [
       { key: 'mon', label: 'วันจันทร์', shortLabel: 'จันทร์', offset: 0 },
       { key: 'tue', label: 'วันอังคาร', shortLabel: 'อังคาร', offset: 1 },
@@ -620,22 +805,28 @@
       return `${year || 'unknown'}_${type === 'B' ? 'B' : 'A'}`;
     }
 
-    function emptyDutyAssignments() {
-      return dutyRoles.reduce((acc, role) => {
-        acc[role.key] = Array(role.slots).fill('');
+    function emptyDutyAssignments(roleSlots = defaultDutyRoleSlots(), roleDefs = dutyRoles) {
+      const roles = normalizeDutyRoles(roleDefs, roleSlots);
+      const safeSlots = normalizeRoleSlots(roleSlots, roles);
+      return roles.reduce((acc, role) => {
+        acc[role.key] = Array(getRoleSlotCount(role, safeSlots)).fill('');
         return acc;
       }, {});
     }
 
-    function emptyWeeklyDutyAssignments() {
+    function emptyWeeklyDutyAssignments(roleSlots = defaultDutyRoleSlots(), roleDefs = dutyRoles) {
+      const roles = normalizeDutyRoles(roleDefs, roleSlots);
+      const safeSlots = normalizeRoleSlots(roleSlots, roles);
       return dutyDays.reduce((acc, day) => {
-        acc[day.key] = emptyDutyAssignments();
+        acc[day.key] = emptyDutyAssignments(safeSlots, roles);
         return acc;
       }, {});
     }
 
     function createDutyForm(year) {
-      return { date: getWeekStartDate(todayFileDate()), academicYear: year, scheduleType: 'A', note: '', weeklyAssignments: emptyWeeklyDutyAssignments() };
+      const roleDefs = defaultDutyRoleDefs();
+      const roleSlots = defaultDutyRoleSlots(roleDefs);
+      return { date: getWeekStartDate(todayFileDate()), academicYear: year, scheduleType: 'A', note: '', roleDefs, roleSlots, weeklyAssignments: emptyWeeklyDutyAssignments(roleSlots, roleDefs) };
     }
 
     function studentDutyName(s) {
@@ -663,15 +854,18 @@
     }
 
     function getDutyWeeklyAssignments(duty) {
+      const roles = getDutyRoles(duty || {});
+      const roleSlots = normalizeRoleSlots(duty?.roleSlots || {}, roles);
       if (duty?.weeklyAssignments) return duty.weeklyAssignments;
-      const weekly = emptyWeeklyDutyAssignments();
+      const weekly = emptyWeeklyDutyAssignments(roleSlots, roles);
       if (duty?.assignments) weekly.mon = duty.assignments;
       return weekly;
     }
 
     function dutyDayText(duty, dayKey) {
+      const roles = getDutyRoles(duty || {});
       const weekly = getDutyWeeklyAssignments(duty);
-      return dutyRoles.map(role => dailyDutyRoleText(weekly, dayKey, role.key)).join(' | ');
+      return roles.map(role => dailyDutyRoleText(weekly, dayKey, role.key)).join(' | ');
     }
 
     function formatThaiDate(dateStr) {
@@ -726,29 +920,34 @@
       return `สัปดาห์ ${s} - ${e}`;
     }
 
-    function normalizeWeeklyAssignmentIds(source) {
-      const weekly = emptyWeeklyDutyAssignments();
+    function normalizeWeeklyAssignmentIds(source, roleSlotsOverride, roleDefsOverride) {
+      const roles = normalizeDutyRoles(roleDefsOverride || source?.roleDefs || getDutyRoles(source || {}), roleSlotsOverride || source?.roleSlots || {});
+      const roleSlots = normalizeRoleSlots(roleSlotsOverride || source?.roleSlots || {}, roles);
+      const weekly = emptyWeeklyDutyAssignments(roleSlots, roles);
       const sourceWeekly = source?.weeklyAssignments || source;
       dutyDays.forEach(day => {
         const daySource = sourceWeekly?.[day.key] || (day.key === 'mon' ? source?.assignments : null) || {};
-        dutyRoles.forEach(role => {
+        roles.forEach(role => {
+          const slots = getRoleSlotCount(role, roleSlots);
           const ids = (daySource?.[role.key] || []).map(p => typeof p === 'string' ? p : (p?.id || '')).filter(Boolean);
-          weekly[day.key][role.key] = [...ids, ...Array(role.slots).fill('')].slice(0, role.slots);
+          weekly[day.key][role.key] = [...ids, ...Array(slots).fill('')].slice(0, slots);
         });
       });
       return weekly;
     }
 
-    function countAssignedInWeekly(weeklyAssignments) {
-      return dutyDays.reduce((sum, day) => sum + dutyRoles.reduce((daySum, role) => {
+    function countAssignedInWeekly(weeklyAssignments, roleDefs = dutyRoles) {
+      const roles = normalizeDutyRoles(roleDefs);
+      return dutyDays.reduce((sum, day) => sum + roles.reduce((daySum, role) => {
         const ids = (weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean);
         return daySum + ids.length;
       }, 0), 0);
     }
 
-    function duplicateStudentIdsInWeekly(weeklyAssignments) {
+    function duplicateStudentIdsInWeekly(weeklyAssignments, roleDefs = dutyRoles) {
+      const roles = normalizeDutyRoles(roleDefs);
       const counts = {};
-      dutyDays.forEach(day => dutyRoles.forEach(role => {
+      dutyDays.forEach(day => roles.forEach(role => {
         (weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean).forEach(id => {
           counts[id] = (counts[id] || 0) + 1;
         });
@@ -757,13 +956,17 @@
     }
 
     function dutiesToCSV(duties) {
-      const headers = ['สัปดาห์', 'วันที่', 'ปีการศึกษา', 'ตาราง', 'วัน', ...dutyRoles.map(r => r.title), 'หมายเหตุ', 'วันที่บันทึก'];
+      const allRoles = [];
+      const seen = new Set();
+      duties.forEach(d => getDutyRoles(d).forEach(role => { if (!seen.has(role.key)) { seen.add(role.key); allRoles.push(role); } }));
+      const rolesForHeader = allRoles.length ? allRoles : dutyRoles;
+      const headers = ['สัปดาห์', 'วันที่', 'ปีการศึกษา', 'ตาราง', 'วัน', ...rolesForHeader.map(r => r.title), 'หมายเหตุ', 'วันที่บันทึก'];
       const rows = [];
       duties.forEach(d => {
         const weekly = getDutyWeeklyAssignments(d);
         dutyDays.forEach(day => rows.push([
           formatThaiWeekRange(d.date), formatThaiDate(getDutyDayDate(d.date, day.key)), d.academicYear, dutyTableLabel(d.scheduleType), day.label,
-          ...dutyRoles.map(r => dailyDutyRoleText(weekly, day.key, r.key)),
+          ...rolesForHeader.map(r => dailyDutyRoleText(weekly, day.key, r.key)),
           d.note || '', d.createdAt || ''
         ].map(escapeCSV).join(',')));
       });
@@ -1072,7 +1275,6 @@
         { id:'dutyDisplay', label:'จอแสดงเวรเช้า', icon:'ri-tv-2-fill' },
         { id:'dashboard', label:'สรุปยอด', icon:'ri-pie-chart-2-fill' },
         { id:'year', label:'จัดการปี', icon:'ri-calendar-check-fill' },
-        { id:'import', label:'นำเข้า Excel', icon:'ri-file-excel-2-fill' },
         { id:'settings', label:'ตั้งค่าระบบ', icon:'ri-settings-3-fill' },
         { id:'manual', label:'คู่มือ', icon:'ri-book-open-fill' }
       ];
@@ -1093,7 +1295,7 @@
                 </div>
               ) : (
                 <div className="animate-fade-in">
-                  <DutyDisplayPage currentAcademicYear={currentAcademicYear} yearsList={yearsList} onBack={() => setActiveTab('duty')} />
+                  <DutyDisplayPage currentAcademicYear={currentAcademicYear} yearsList={yearsList} students={students} onBack={() => setActiveTab('duty')} onNavigate={setActiveTab} />
                 </div>
               )
             ) : (
@@ -1172,7 +1374,6 @@
                       {activeTab === 'duty' && <DutySchedulePage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
                       {activeTab === 'dashboard' && <DashboardPage students={students} yearsList={yearsList} currentAcademicYear={currentAcademicYear} onIssueFilter={(key) => { setFilterPhoto(key); setActiveTab('members'); }} />}
                       {activeTab === 'year' && <YearManager students={students} yearsList={yearsList} currentAcademicYear={currentAcademicYear} setCurrentAcademicYear={setCurrentAcademicYear} />}
-                      {activeTab === 'import' && <ImportPage currentAcademicYear={currentAcademicYear} majors={majors} onDone={() => setActiveTab('members')} />}
                       {activeTab === 'settings' && <SettingsPage majors={majors} setMajors={setMajors} currentAcademicYear={currentAcademicYear} setCurrentAcademicYear={setCurrentAcademicYear} />}
                       {activeTab === 'manual' && <ManualPage />}
                     </div>
@@ -1195,7 +1396,7 @@
 
     function TopBar({ activeTab, currentAcademicYear, theme, toggleTheme, onLogout }) {
       const titleMap = {
-        add: 'เพิ่มสมาชิกใหม่', members: 'ฐานข้อมูลสมาชิก', duty: 'ตารางเวรตอนเช้า', dutyDisplay: 'จอแสดงตารางเวรตอนเช้า', dashboard: 'สรุปยอดสมาชิก', year: 'จัดการปีการศึกษา', import: 'นำเข้าข้อมูล', settings: 'ตั้งค่าระบบ', manual: 'คู่มือเจ้าหน้าที่'
+        add: 'เพิ่มสมาชิกใหม่', members: 'ฐานข้อมูลสมาชิก', duty: 'ตารางเวรตอนเช้า', dutyDisplay: 'จอแสดงตารางเวรตอนเช้า', dashboard: 'สรุปยอดสมาชิก', year: 'จัดการปีการศึกษา', settings: 'ตั้งค่าระบบ', manual: 'คู่มือเจ้าหน้าที่'
       };
       return (
         <header className="no-print rounded-[2rem] bg-white/85 backdrop-blur-xl border border-white soft-shadow p-5 md:p-6 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
@@ -1284,7 +1485,8 @@
       , [students, form.academicYear, currentAcademicYear]);
 
       const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
-      const duplicateIds = useMemo(() => duplicateStudentIdsInWeekly(form.weeklyAssignments), [form.weeklyAssignments]);
+      const formRoles = useMemo(() => normalizeDutyRoles(form.roleDefs, form.roleSlots), [form.roleDefs, form.roleSlots]);
+      const duplicateIds = useMemo(() => duplicateStudentIdsInWeekly(form.weeklyAssignments, formRoles), [form.weeklyAssignments, formRoles]);
       const duplicateNames = duplicateIds.map(id => studentMap.get(id)).filter(Boolean).map(s => `${s.nickname || s.fullName || '-'} (${s.level || '-'} / ${s.group || '-'})`);
 
       const visibleDuties = useMemo(() => {
@@ -1307,9 +1509,65 @@
           .sort((a,b) => String(a.date || '').localeCompare(String(b.date || '')))[0] || null;
       }, [duties, currentAcademicYear]);
 
+      const setRoleSlotCount = (roleKey, value) => {
+        const nextCount = Math.max(0, Math.min(10, Number(value) || 0));
+        setForm(prev => {
+          const roles = normalizeDutyRoles(prev.roleDefs, { ...(prev.roleSlots || {}), [roleKey]: nextCount });
+          const roleSlots = normalizeRoleSlots({ ...(prev.roleSlots || {}), [roleKey]: nextCount }, roles);
+          const weeklyAssignments = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || {}, roleSlots, roles);
+          return { ...prev, roleDefs: roles, roleSlots, weeklyAssignments };
+        });
+      };
+
+      const setRoleField = (roleKey, field, value) => {
+        setForm(prev => {
+          const roles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots).map(role => role.key === roleKey ? { ...role, [field]: value } : role);
+          const roleSlots = normalizeRoleSlots(prev.roleSlots, roles);
+          const weeklyAssignments = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || {}, roleSlots, roles);
+          return { ...prev, roleDefs: roles, roleSlots, weeklyAssignments };
+        });
+      };
+
+      const addRole = () => {
+        setForm(prev => {
+          const roles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots);
+          const nextIndex = roles.length + 1;
+          const key = `custom_${Date.now()}`;
+          const newRole = { key, title: `ตำแหน่งใหม่ ${nextIndex}`, shortTitle: `ตำแหน่ง ${nextIndex}`, icon: dutyRoleIcons[nextIndex % dutyRoleIcons.length], tone: dutyRoleTones[nextIndex % dutyRoleTones.length], slots: 1 };
+          const roleDefs = [...roles, newRole];
+          const roleSlots = normalizeRoleSlots({ ...(prev.roleSlots || {}), [key]: 1 }, roleDefs);
+          const weeklyAssignments = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || {}, roleSlots, roleDefs);
+          return { ...prev, roleDefs, roleSlots, weeklyAssignments };
+        });
+      };
+
+      const removeRole = (roleKey) => {
+        setForm(prev => {
+          const roles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots);
+          if (roles.length <= 1) { alert('ต้องมีอย่างน้อย 1 ตำแหน่งเวร'); return prev; }
+          const target = roles.find(r => r.key === roleKey);
+          if (!confirm(`ลบตำแหน่ง "${target?.title || roleKey}" ออกจากตารางนี้ใช่ไหม?`)) return prev;
+          const roleDefs = roles.filter(role => role.key !== roleKey);
+          const roleSlots = { ...(prev.roleSlots || {}) };
+          delete roleSlots[roleKey];
+          const weeklyAssignments = JSON.parse(JSON.stringify(prev.weeklyAssignments || {}));
+          dutyDays.forEach(day => { if (weeklyAssignments?.[day.key]) delete weeklyAssignments[day.key][roleKey]; });
+          return { ...prev, roleDefs, roleSlots: normalizeRoleSlots(roleSlots, roleDefs), weeklyAssignments: normalizeWeeklyAssignmentIds(weeklyAssignments, roleSlots, roleDefs) };
+        });
+      };
+
+      const resetRolesToDefault = () => {
+        setForm(prev => {
+          const roleDefs = defaultDutyRoleDefs();
+          const roleSlots = defaultDutyRoleSlots(roleDefs);
+          return { ...prev, roleDefs, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(prev.weeklyAssignments || {}, roleSlots, roleDefs) };
+        });
+      };
+
       const setAssignment = (dayKey, roleKey, slot, value) => {
         setForm(prev => {
-          const weekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || prev);
+          const roles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots);
+          const weekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || prev, prev.roleSlots, roles);
           const current = [...(weekly[dayKey]?.[roleKey] || [])];
           while (current.length < slot + 1) current.push('');
           current[slot] = value;
@@ -1320,16 +1578,18 @@
 
       const copyDay = (fromDayKey, toDayKey) => {
         setForm(prev => {
-          const weekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || prev);
-          weekly[toDayKey] = JSON.parse(JSON.stringify(weekly[fromDayKey] || emptyDutyAssignments()));
+          const roles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots);
+          const weekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || prev, prev.roleSlots, roles);
+          weekly[toDayKey] = JSON.parse(JSON.stringify(weekly[fromDayKey] || emptyDutyAssignments(prev.roleSlots, roles)));
           return { ...prev, weeklyAssignments: weekly };
         });
       };
 
       const clearDay = (dayKey) => {
         setForm(prev => {
-          const weekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || prev);
-          weekly[dayKey] = emptyDutyAssignments();
+          const roles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots);
+          const weekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || prev, prev.roleSlots, roles);
+          weekly[dayKey] = emptyDutyAssignments(prev.roleSlots, roles);
           return { ...prev, weeklyAssignments: weekly };
         });
       };
@@ -1338,7 +1598,9 @@
         const safeType = type === 'B' ? 'B' : 'A';
         const template = templates[dutyTemplateDocId(academicYear, safeType)];
         if (!template) return alert(`ยังไม่ได้บันทึก${dutyTableLabel(safeType)} ของปีการศึกษา ${academicYear}`);
-        setForm(prev => ({ ...prev, academicYear, scheduleType: safeType, weeklyAssignments: normalizeWeeklyAssignmentIds(template) }));
+        const roleDefs = getDutyRoles(template);
+        const roleSlots = normalizeRoleSlots(template.roleSlots || {}, roleDefs);
+        setForm(prev => ({ ...prev, academicYear, scheduleType: safeType, roleDefs, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(template, roleSlots, roleDefs) }));
       };
 
       const saveTemplate = async (type = form.scheduleType) => {
@@ -1348,7 +1610,9 @@
         const payload = {
           academicYear: form.academicYear,
           scheduleType: safeType,
-          weeklyAssignments: normalizeWeeklyAssignmentIds(form.weeklyAssignments),
+          roleDefs: normalizeDutyRoles(form.roleDefs, form.roleSlots),
+          roleSlots: normalizeRoleSlots(form.roleSlots, form.roleDefs),
+          weeklyAssignments: normalizeWeeklyAssignmentIds(form.weeklyAssignments, form.roleSlots, form.roleDefs),
           updatedAt: new Date().toISOString(),
           updatedBy: 'staff'
         };
@@ -1378,7 +1642,7 @@
         const weekly = {};
         dutyDays.forEach(day => {
           weekly[day.key] = {};
-          dutyRoles.forEach(role => {
+          formRoles.forEach(role => {
             const ids = [...new Set((form.weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean))];
             weekly[day.key][role.key] = ids.map(id => {
               const s = lookup.get(id);
@@ -1392,7 +1656,8 @@
                 major: s.major || '',
                 phone: s.phone || '',
                 lineId: s.lineId || '',
-                actualInterest: s.actualInterest || s.interest || ''
+                actualInterest: s.actualInterest || s.interest || '',
+                photo: s.photo || null
               } : null;
             }).filter(Boolean);
           });
@@ -1404,9 +1669,9 @@
         e.preventDefault();
         if (!form.date) return alert('กรุณาเลือกสัปดาห์');
         const weeklyAssignments = buildWeeklySnapshot();
-        const assignedCount = countAssignedInWeekly(weeklyAssignments);
+        const assignedCount = countAssignedInWeekly(weeklyAssignments, formRoles);
         if (!assignedCount) return alert('กรุณาเลือกนักศึกษาอย่างน้อย 1 หน้าที่');
-        const repeated = duplicateStudentIdsInWeekly(form.weeklyAssignments);
+        const repeated = duplicateStudentIdsInWeekly(form.weeklyAssignments, formRoles);
         if (repeated.length && !confirm(`มีนักศึกษาซ้ำในสัปดาห์นี้ ${repeated.length} คน ต้องการบันทึกต่อไหม?`)) return;
         const weekStart = getWeekStartDate(form.date);
         const targetYear = form.academicYear || currentAcademicYear;
@@ -1419,6 +1684,8 @@
             academicYear: targetYear,
             scheduleType: form.scheduleType === 'B' ? 'B' : 'A',
             note: form.note || '',
+            roleDefs: normalizeDutyRoles(form.roleDefs, form.roleSlots),
+            roleSlots: normalizeRoleSlots(form.roleSlots, form.roleDefs),
             weeklyAssignments,
             assignments: weeklyAssignments.mon || {},
             updatedAt: new Date().toISOString(),
@@ -1436,13 +1703,17 @@
 
       const editDuty = (duty) => {
         setEditingId(duty.id);
-        setForm({ date: getWeekStartDate(duty.date || todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: duty.scheduleType === 'B' ? 'B' : 'A', note: duty.note || '', weeklyAssignments: normalizeWeeklyAssignmentIds(duty) });
+        const roleDefs = getDutyRoles(duty);
+        const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
+        setForm({ date: getWeekStartDate(duty.date || todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: duty.scheduleType === 'B' ? 'B' : 'A', note: duty.note || '', roleDefs, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(duty, roleSlots, roleDefs) });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
       const duplicateDuty = (duty) => {
         setEditingId(null);
-        setForm({ date: getWeekStartDate(todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: duty.scheduleType === 'B' ? 'B' : 'A', note: duty.note || '', weeklyAssignments: normalizeWeeklyAssignmentIds(duty) });
+        const roleDefs = getDutyRoles(duty);
+        const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
+        setForm({ date: getWeekStartDate(todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: duty.scheduleType === 'B' ? 'B' : 'A', note: duty.note || '', roleDefs, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(duty, roleSlots, roleDefs) });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
@@ -1470,9 +1741,112 @@
 
               <div className="grid md:grid-cols-4 gap-4">
                 <Input label="สัปดาห์เริ่มต้น" type="date" value={form.date} onChange={v => setForm(prev => ({ ...prev, date: getWeekStartDate(v) }))} />
-                <Select label="ปีการศึกษา" value={form.academicYear} onChange={v => setForm(prev => ({ ...prev, academicYear: v, weeklyAssignments: emptyWeeklyDutyAssignments() }))} options={[...new Set([currentAcademicYear, ...yearsList])]} />
+                <Select label="ปีการศึกษา" value={form.academicYear} onChange={v => setForm(prev => ({ ...prev, academicYear: v, weeklyAssignments: emptyWeeklyDutyAssignments(prev.roleSlots, prev.roleDefs) }))} options={[...new Set([currentAcademicYear, ...yearsList])]} />
                 <Select label="ตารางที่ใช้" value={form.scheduleType} onChange={v => setForm(prev => ({ ...prev, scheduleType: v === 'B' ? 'B' : 'A' }))} options={['A','B']} optionLabels={{ A:'ตาราง A', B:'ตาราง B' }} />
                 <Input label="หมายเหตุประจำสัปดาห์" value={form.note} onChange={v => setForm(prev => ({ ...prev, note: v }))} placeholder="เช่น สัปดาห์เปิดเทอม / สอบกลางภาค" />
+              </div>
+
+
+              <div className="rounded-3xl bg-blue-50 border border-blue-100 p-4">
+                <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
+                  <div>
+                    <h4 className="font-extrabold text-slate-950"><i className="ri-user-settings-fill text-blue-600 mr-2"></i>จัดการตำแหน่งเวรตอนเช้า</h4>
+                    <p className="text-sm text-slate-500">กำหนดเองได้ว่ามีตำแหน่งอะไร ชื่อตำแหน่งอะไร ใช้นักศึกษากี่คน และจะปิดตำแหน่งไหนก็ได้</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" onClick={addRole} className="px-4 py-2 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700"><i className="ri-add-line mr-1"></i>เพิ่มตำแหน่ง</button>
+                    <button type="button" onClick={resetRolesToDefault} className="px-4 py-2 rounded-2xl bg-white text-blue-700 border border-blue-100 font-bold hover:bg-blue-50"><i className="ri-refresh-line mr-1"></i>กลับค่าเริ่มต้น</button>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="rounded-2xl bg-white/70 border border-blue-100 px-4 py-3">
+                    <div className="grid md:grid-cols-4 gap-3 text-xs md:text-sm font-bold">
+                      <div className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700"><span className="block text-[11px] uppercase tracking-wide text-slate-400 mb-1">วิธีใช้งาน</span>พิมพ์ <span className="text-slate-950">ชื่อตำแหน่งเต็ม</span> ให้ชัดเจน เช่น “คุมเครื่องเสียง”</div>
+                      <div className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700"><span className="block text-[11px] uppercase tracking-wide text-slate-400 mb-1">ชื่อย่อบนจอ</span>ใช้ชื่อสั้นสำหรับจอแสดงเวร เช่น “เครื่องเสียง”</div>
+                      <div className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700"><span className="block text-[11px] uppercase tracking-wide text-slate-400 mb-1">จำนวนคน</span>กำหนดจำนวนนักศึกษาที่ต้องใช้ในหน้าที่นั้น</div>
+                      <div className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700"><span className="block text-[11px] uppercase tracking-wide text-slate-400 mb-1">คำแนะนำ</span>ถ้าไม่ใช้หน้าที่นี้ในสัปดาห์นั้น ให้ตั้งจำนวนเป็น <span className="text-slate-950">0</span></div>
+                    </div>
+                  </div>
+                  {formRoles.map((role, idx) => {
+                    const slots = getRoleSlotCount(role, form.roleSlots);
+                    const toneMap = {
+                      blue: 'from-sky-500 to-blue-600',
+                      cyan: 'from-cyan-500 to-sky-500',
+                      emerald: 'from-emerald-500 to-green-600',
+                      purple: 'from-violet-500 to-purple-600',
+                      orange: 'from-amber-500 to-orange-600'
+                    };
+                    const toneLabelMap = { blue: 'ฟ้า', cyan: 'น้ำเงินอมฟ้า', emerald: 'เขียว', purple: 'ม่วง', orange: 'ส้ม' };
+                    return (
+                      <div key={`role-editor-${role.key}`} className="rounded-[28px] bg-white border border-blue-100 shadow-sm overflow-hidden">
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 px-5 py-4 border-b border-slate-800 bg-slate-950 text-white">
+                          <div className="flex items-center gap-4 min-w-0">
+                            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${toneMap[role.tone] || toneMap.blue} text-white flex items-center justify-center shadow-sm flex-shrink-0`}>
+                              <i className={`${role.icon} text-2xl`}></i>
+                            </div>
+                            <div className="min-w-0">
+                              <div className="text-xs font-extrabold uppercase tracking-[0.18em] text-blue-200/80 mb-1">ตำแหน่งที่ {idx + 1}</div>
+                              <div className="text-xl font-black text-white leading-tight break-words">{role.title || 'ยังไม่ได้ตั้งชื่อตำแหน่ง'}</div>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold">ชื่อย่อ: {role.shortTitle || '-'}</span>
+                                <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/20 text-blue-100 text-xs font-bold">{slots} คน</span>
+                                <span className="inline-flex items-center px-3 py-1 rounded-full bg-violet-500/20 text-violet-100 text-xs font-bold">สี {toneLabelMap[role.tone] || 'ฟ้า'}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <button type="button" onClick={() => removeRole(role.key)} className="self-start lg:self-center inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-red-500/15 text-red-100 border border-red-400/20 hover:bg-red-500/25 font-bold"><i className="ri-delete-bin-fill"></i>ลบตำแหน่ง</button>
+                        </div>
+                        <div className="p-5">
+                          <div className="grid xl:grid-cols-12 gap-4">
+                            <label className="block xl:col-span-5">
+                              <span className="block text-sm font-extrabold text-slate-700 mb-2">ชื่อตำแหน่ง</span>
+                              <input value={role.title} onChange={e => setRoleField(role.key, 'title', e.target.value)} className="w-full px-4 py-4 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 text-base md:text-lg font-extrabold text-slate-950" placeholder="เช่น คุมเครื่องเสียง" />
+                            </label>
+                            <label className="block xl:col-span-3">
+                              <span className="block text-sm font-extrabold text-slate-700 mb-2">ชื่อย่อบนจอ</span>
+                              <input value={role.shortTitle} onChange={e => setRoleField(role.key, 'shortTitle', e.target.value)} className="w-full px-4 py-4 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 text-base font-bold text-slate-950" placeholder="เช่น เครื่องเสียง" />
+                            </label>
+                            <label className="block xl:col-span-4">
+                              <span className="block text-sm font-extrabold text-slate-700 mb-2">จำนวนคนที่ต้องใช้</span>
+                              <div className="flex items-center gap-2">
+                                <button type="button" onClick={() => setRoleSlotCount(role.key, slots - 1)} className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-700 font-extrabold text-xl hover:bg-slate-200"><i className="ri-subtract-line"></i></button>
+                                <input type="number" min="0" max="10" value={slots} onChange={e => setRoleSlotCount(role.key, e.target.value)} className="flex-1 px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 text-center text-xl font-black text-slate-950 outline-none focus:border-blue-500" />
+                                <button type="button" onClick={() => setRoleSlotCount(role.key, slots + 1)} className="w-12 h-12 rounded-2xl bg-blue-600 text-white font-extrabold text-xl hover:bg-blue-700"><i className="ri-add-line"></i></button>
+                              </div>
+                            </label>
+                            <label className="block xl:col-span-4">
+                              <span className="block text-sm font-extrabold text-slate-700 mb-2">สีประจำตำแหน่ง</span>
+                              <select value={role.tone} onChange={e => setRoleField(role.key, 'tone', e.target.value)} className="w-full px-4 py-4 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-950">
+                                <option value="blue">ฟ้า</option>
+                                <option value="cyan">น้ำเงินอมฟ้า</option>
+                                <option value="emerald">เขียว</option>
+                                <option value="purple">ม่วง</option>
+                                <option value="orange">ส้ม</option>
+                              </select>
+                            </label>
+                            <label className="block xl:col-span-5">
+                              <span className="block text-sm font-extrabold text-slate-700 mb-2">ไอคอน</span>
+                              <select value={role.icon} onChange={e => setRoleField(role.key, 'icon', e.target.value)} className="w-full px-4 py-4 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-950">
+                                {dutyRoleIcons.map(icon => <option key={icon} value={icon}>{icon}</option>)}
+                              </select>
+                            </label>
+                            <div className="block xl:col-span-3">
+                              <span className="block text-sm font-extrabold text-slate-700 mb-2">ตัวอย่างบนจอ</span>
+                              <div className={`h-[58px] rounded-2xl bg-gradient-to-br ${toneMap[role.tone] || toneMap.blue} text-white flex items-center gap-3 px-4 shadow-sm`}>
+                                <i className={`${role.icon} text-xl flex-shrink-0`}></i>
+                                <div className="min-w-0">
+                                  <div className="text-sm font-black truncate">{role.shortTitle || role.title || '-'}</div>
+                                  <div className="text-[11px] opacity-90">{slots} คน</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-sm text-slate-500 mt-4">ตำแหน่งนี้จะสร้างช่องเลือกนักศึกษา <span className="font-extrabold text-slate-700">{slots} ช่อง</span> ในทุกวันของสัปดาห์นี้</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="rounded-3xl bg-slate-50 border border-slate-100 p-4">
@@ -1508,22 +1882,27 @@
                       </div>
                     </div>
                     <div className="grid md:grid-cols-2 gap-3">
-                      {dutyRoles.map(role => (
-                        <div key={`${day.key}-${role.key}`} className="rounded-2xl bg-white/70 border border-slate-100 p-3">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center"><i className={role.icon}></i></div>
-                            <div><p className="font-extrabold text-slate-950 leading-tight">{role.title}</p><p className="text-xs text-slate-500">เลือกได้ {role.slots} คน</p></div>
+                      {formRoles.map(role => {
+                        const slots = getRoleSlotCount(role, form.roleSlots);
+                        return (
+                          <div key={`${day.key}-${role.key}`} className="rounded-2xl bg-white/70 border border-slate-100 p-3">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center"><i className={role.icon}></i></div>
+                              <div><p className="font-extrabold text-slate-950 leading-tight">{role.title}</p><p className="text-xs text-slate-500">{slots ? `เลือกได้ ${slots} คน` : 'ไม่ใช้หน้าที่นี้'}</p></div>
+                            </div>
+                            <div className="space-y-2">
+                              {slots === 0 ? (
+                                <div className="rounded-2xl bg-slate-100 text-slate-500 px-4 py-3 font-bold text-sm text-center">ปิดหน้าที่นี้ในสัปดาห์นี้</div>
+                              ) : Array.from({ length: slots }).map((_, idx) => (
+                                <select key={idx} value={(form.weeklyAssignments?.[day.key]?.[role.key] || [])[idx] || ''} onChange={e => setAssignment(day.key, role.key, idx, e.target.value)} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-100 outline-none focus:border-blue-500 font-bold">
+                                  <option value="">{slots > 1 ? `เลือกคนที่ ${idx + 1}` : 'เลือกนักศึกษา'}</option>
+                                  {activeStudents.map(s => <option key={s.id} value={s.id}>{s.studentId || '-'} · {studentDutyName(s)}</option>)}
+                                </select>
+                              ))}
+                            </div>
                           </div>
-                          <div className="space-y-2">
-                            {Array.from({ length: role.slots }).map((_, idx) => (
-                              <select key={idx} value={(form.weeklyAssignments?.[day.key]?.[role.key] || [])[idx] || ''} onChange={e => setAssignment(day.key, role.key, idx, e.target.value)} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-100 outline-none focus:border-blue-500 font-bold">
-                                <option value="">{role.slots > 1 ? `เลือกคนที่ ${idx + 1}` : 'เลือกนักศึกษา'}</option>
-                                {activeStudents.map(s => <option key={s.id} value={s.id}>{s.studentId || '-'} · {studentDutyName(s)}</option>)}
-                              </select>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
@@ -1562,7 +1941,6 @@
                 <p className="text-slate-500">ค้นหา ดูย้อนหลังรายสัปดาห์ พิมพ์ หรือส่งออก CSV ได้</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
-                <button onClick={() => onBack && onBack()} className="px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold"><i className="ri-arrow-left-line mr-1"></i> กลับสู่หน้าจัดการ</button>
                 <select value={year} onChange={e => setYear(e.target.value)} className="px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 outline-none focus:border-blue-500 font-bold">
                   <option value="all">ทุกปีการศึกษา</option>
                   {[...new Set([currentAcademicYear, ...yearsList])].map(y => <option key={y} value={y}>ปี {y}</option>)}
@@ -1582,7 +1960,7 @@
                       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                         <div className="min-w-[190px]"><p className="text-xs text-blue-600 font-bold">{duty.academicYear}</p><h4 className="font-extrabold text-slate-950 text-lg">{formatThaiWeekRange(duty.date)}</h4><span className="inline-flex mt-1 px-3 py-1 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold">{dutyTableLabel(duty.scheduleType)}</span>{duty.note && <p className="text-sm text-slate-500 mt-1">{duty.note}</p>}</div>
                         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-2 flex-1">
-                          {dutyDays.map(day => <div key={day.key} className="rounded-2xl bg-white/70 border border-slate-100 p-3"><p className="text-xs text-slate-500 font-bold"><i className="ri-calendar-event-fill text-blue-600 mr-1"></i>{day.shortLabel} · {formatThaiDate(getDutyDayDate(duty.date, day.key))}</p><p className="text-sm font-bold text-slate-900 leading-relaxed mt-1">{dutyRoles.map(role => `${role.shortTitle}: ${dailyDutyRoleText(weekly, day.key, role.key)}`).join(' / ')}</p></div>)}
+                          {dutyDays.map(day => <div key={day.key} className="rounded-2xl bg-white/70 border border-slate-100 p-3"><p className="text-xs text-slate-500 font-bold"><i className="ri-calendar-event-fill text-blue-600 mr-1"></i>{day.shortLabel} · {formatThaiDate(getDutyDayDate(duty.date, day.key))}</p><p className="text-sm font-bold text-slate-900 leading-relaxed mt-1">{getDutyRoles(duty).map(role => `${role.shortTitle}: ${dailyDutyRoleText(weekly, day.key, role.key)}`).join(' / ')}</p></div>)}
                         </div>
                         <div className="flex lg:flex-col gap-2">
                           <button onClick={() => editDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-blue-600 hover:bg-blue-50"><i className="ri-edit-2-fill text-xl"></i></button>
@@ -1602,7 +1980,45 @@
       );
     }
 
-    function DutyDisplayPage({ currentAcademicYear, yearsList, onBack }) {
+    function PrintDutySchedule({ duties, yearText, onClose }) {
+      const reportDate = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+      const sorted = [...duties].sort((a,b) => String(a.date || '').localeCompare(String(b.date || '')));
+      const allRoles = [];
+      const seen = new Set();
+      sorted.forEach(d => getDutyRoles(d).forEach(role => { if (!seen.has(role.key)) { seen.add(role.key); allRoles.push(role); } }));
+      const rolesForHeader = allRoles.length ? allRoles : dutyRoles;
+      return (
+        <div className="print-overlay fixed inset-0 z-[100] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in">
+          <div className="no-print flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 pb-5 border-b">
+            <div><h2 className="font-extrabold text-2xl">พิมพ์ตารางเวรตอนเช้า</h2><p className="text-slate-500">รายงานนี้แสดงตามตัวกรองในหน้าตารางเวร</p></div>
+            <div className="flex gap-2"><button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>พิมพ์ / Save PDF</button><button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button></div>
+          </div>
+          <section className="report-page">
+            <div className="report-header">
+              <div className="report-brand">
+                <div className="report-logo"><img src={MDEC_LOGO} alt="MDEC" /></div>
+                <div>
+                  <div className="report-title">ตารางเวรตอนเช้าประจำสัปดาห์ จันทร์–เสาร์</div>
+                  <div className="report-subtitle">ชมรม MDEC Photo Club • ภายใต้การดูแลของศูนย์มัลติมีเดียทางการศึกษา</div>
+                </div>
+              </div>
+              <div className="report-meta"><div><strong>ปีการศึกษา:</strong> {yearText}</div><div><strong>จำนวนสัปดาห์:</strong> {sorted.length}</div><div><strong>วันที่ออกรายงาน:</strong> {reportDate}</div></div>
+            </div>
+            <div className="report-note"><span>ตำแหน่งเวรสามารถกำหนดเองได้ตามตารางแต่ละสัปดาห์</span><span>หมายเหตุ: ใช้ตาราง A/B สลับกันทุก 1 สัปดาห์ได้</span></div>
+            <table className="print-table">
+              <thead><tr><th style={{width:'120px'}}>สัปดาห์</th><th style={{width:'78px'}}>วัน</th><th style={{width:'65px'}}>ตาราง</th>{rolesForHeader.map(role => <th key={role.key}>{role.shortTitle || role.title}</th>)}<th style={{width:'95px'}}>หมายเหตุ</th></tr></thead>
+              <tbody>{sorted.flatMap(d => {
+                const weekly = getDutyWeeklyAssignments(d);
+                return dutyDays.map(day => <tr key={`${d.id || d.date}-${day.key}`}><td><strong>{formatThaiWeekRange(d.date)}</strong></td><td>{day.shortLabel}<br/><span className="print-muted">{formatThaiDate(getDutyDayDate(d.date, day.key))}</span></td><td>{dutyTableLabel(d.scheduleType)}</td>{rolesForHeader.map(role => <td key={role.key}>{dailyDutyRoleText(weekly, day.key, role.key)}</td>)}<td>{d.note || '-'}</td></tr>);
+              })}</tbody>
+            </table>
+            <div className="print-footer"><div>Generated by MDEC Photo Club Registry</div><div className="signature-zone"><div className="signature-line">ผู้จัดทำ</div><div className="signature-line">ผู้ตรวจสอบ</div></div></div>
+          </section>
+        </div>
+      );
+    }
+
+    function DutyDisplayPage({ currentAcademicYear, yearsList, students = [], onBack, onNavigate }) {
       const [duties, setDuties] = useState([]);
       const [loading, setLoading] = useState(true);
       const [year, setYear] = useState(currentAcademicYear);
@@ -1611,6 +2027,17 @@
       const [now, setNow] = useState(new Date());
       const [focusDayKey, setFocusDayKey] = useState('auto');
       const [autoRotate, setAutoRotate] = useState(false);
+
+      useEffect(() => {
+        const onKeyDown = (e) => {
+          if (e.key === 'Escape') {
+            setShowControls(false);
+            if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+          }
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+      }, []);
 
       useEffect(() => {
         const timer = setInterval(() => setNow(new Date()), 1000);
@@ -1638,7 +2065,9 @@
       }, [dutiesForYear]);
       const selectedDuty = useMemo(() => selectedId === 'auto' ? nextDuty : (dutiesForYear.find(d => d.id === selectedId) || nextDuty), [selectedId, nextDuty, dutiesForYear]);
       const yearOptions = [...new Set([currentAcademicYear, ...yearsList])];
+      const studentLookup = useMemo(() => new Map((students || []).map(s => [s.id, s])), [students]);
       const clockText = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+      const dateText = now.toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
       const todayDate = todayFileDate();
       const todayKey = dutyDays.find(day => getDutyDayDate(todayDate, day.key) === todayDate)?.key;
       const isCurrentSelectedWeek = selectedDuty ? getWeekStartDate(selectedDuty.date) === getWeekStartDate(todayDate) : false;
@@ -1646,8 +2075,9 @@
       const focusDay = dutyDays.find(day => day.key === resolvedFocusDayKey) || dutyDays[0];
       const weekly = selectedDuty ? getDutyWeeklyAssignments(selectedDuty) : null;
       const focusDate = selectedDuty ? getDutyDayDate(selectedDuty.date, focusDay.key) : todayDate;
-      const focusPeopleCount = focusDay ? dutyRoles.reduce((sum, role) => sum + ((weekly?.[focusDay.key]?.[role.key] || []).length), 0) : 0;
-      const weekPeopleCount = weekly ? dutyDays.reduce((sum, day) => sum + dutyRoles.reduce((s, role) => s + ((weekly?.[day.key]?.[role.key] || []).length), 0), 0) : 0;
+      const selectedRoles = selectedDuty ? getDutyRoles(selectedDuty) : dutyRoles;
+      const selectedRoleSlots = normalizeRoleSlots(selectedDuty?.roleSlots || {}, selectedRoles);
+      const focusPeopleCount = focusDay ? selectedRoles.reduce((sum, role) => sum + ((weekly?.[focusDay.key]?.[role.key] || []).length), 0) : 0;
 
       useEffect(() => {
         setFocusDayKey('auto');
@@ -1661,7 +2091,7 @@
             const idx = Math.max(0, dutyDays.findIndex(d => d.key === current));
             return dutyDays[(idx + 1) % dutyDays.length].key;
           });
-        }, 10000);
+        }, 9000);
         return () => clearInterval(timer);
       }, [autoRotate, selectedDuty, resolvedFocusDayKey]);
 
@@ -1671,76 +2101,105 @@
         else if (document.exitFullscreen) document.exitFullscreen();
       };
 
-      const roleClass = (tone) => ({
-        blue: 'from-sky-500/24 to-blue-700/12 border-sky-300/28',
-        cyan: 'from-cyan-500/24 to-sky-700/12 border-cyan-300/28',
-        emerald: 'from-emerald-500/24 to-teal-700/12 border-emerald-300/28',
-        purple: 'from-violet-500/24 to-purple-700/12 border-violet-300/28',
-        orange: 'from-amber-500/24 to-orange-700/12 border-amber-300/28'
-      }[tone] || 'from-blue-500/20 to-cyan-500/10 border-blue-300/20');
+      const roleColor = (tone) => ({
+        blue: { panel:'bg-sky-500/10 border-sky-300/20', accent:'bg-sky-400 text-slate-950', accentSoft:'bg-sky-500/14 border-sky-300/20', soft:'bg-sky-500/12', text:'text-sky-100', line:'bg-sky-400' },
+        cyan: { panel:'bg-cyan-500/10 border-cyan-300/20', accent:'bg-cyan-300 text-slate-950', accentSoft:'bg-cyan-500/14 border-cyan-300/20', soft:'bg-cyan-500/12', text:'text-cyan-100', line:'bg-cyan-300' },
+        emerald: { panel:'bg-emerald-500/10 border-emerald-300/20', accent:'bg-emerald-300 text-slate-950', accentSoft:'bg-emerald-500/14 border-emerald-300/20', soft:'bg-emerald-500/12', text:'text-emerald-100', line:'bg-emerald-300' },
+        purple: { panel:'bg-violet-500/10 border-violet-300/20', accent:'bg-violet-400 text-white', accentSoft:'bg-violet-500/14 border-violet-300/20', soft:'bg-violet-500/12', text:'text-violet-100', line:'bg-violet-400' },
+        orange: { panel:'bg-amber-500/10 border-amber-300/20', accent:'bg-amber-300 text-slate-950', accentSoft:'bg-amber-500/14 border-amber-300/20', soft:'bg-amber-500/12', text:'text-amber-100', line:'bg-amber-300' }
+      }[tone] || { panel:'bg-blue-500/10 border-blue-300/20', accent:'bg-blue-400 text-slate-950', accentSoft:'bg-blue-500/14 border-blue-300/20', soft:'bg-blue-500/12', text:'text-blue-100', line:'bg-blue-400' });
 
-      const roleAccentClass = (tone) => ({
-        blue: 'bg-sky-500/22 text-sky-100 border-sky-300/30',
-        cyan: 'bg-cyan-500/22 text-cyan-100 border-cyan-300/30',
-        emerald: 'bg-emerald-500/22 text-emerald-100 border-emerald-300/30',
-        purple: 'bg-violet-500/22 text-violet-100 border-violet-300/30',
-        orange: 'bg-amber-500/22 text-amber-100 border-amber-300/30'
-      }[tone] || 'bg-slate-500/20 text-white border-white/20');
+      const dayColor = (key, active) => ({
+        mon: active ? 'bg-sky-400 text-slate-950 border-sky-200' : 'bg-sky-400/12 text-sky-100 border-sky-300/20',
+        tue: active ? 'bg-emerald-300 text-slate-950 border-emerald-200' : 'bg-emerald-400/12 text-emerald-100 border-emerald-300/20',
+        wed: active ? 'bg-violet-400 text-white border-violet-200' : 'bg-violet-400/12 text-violet-100 border-violet-300/20',
+        thu: active ? 'bg-amber-300 text-slate-950 border-amber-200' : 'bg-amber-400/12 text-amber-100 border-amber-300/20',
+        fri: active ? 'bg-rose-400 text-white border-rose-200' : 'bg-rose-400/12 text-rose-100 border-rose-300/20',
+        sat: active ? 'bg-cyan-300 text-slate-950 border-cyan-200' : 'bg-cyan-400/12 text-cyan-100 border-cyan-300/20'
+      }[key] || (active ? 'bg-blue-400 text-slate-950 border-blue-200' : 'bg-white/10 text-white border-white/10'));
 
-      const roleBadgeClass = (tone) => ({
-        blue: 'bg-sky-400 text-slate-950',
-        cyan: 'bg-cyan-400 text-slate-950',
-        emerald: 'bg-emerald-400 text-slate-950',
-        purple: 'bg-violet-400 text-white',
-        orange: 'bg-amber-400 text-slate-950'
-      }[tone] || 'bg-white text-slate-950');
-
-      const dayClass = (dayKey, isActive) => {
-        const map = {
-          mon: isActive ? 'bg-sky-500/28 border-sky-300/45' : 'bg-sky-500/10 border-sky-300/20 hover:bg-sky-500/16 hover:border-sky-300/30',
-          tue: isActive ? 'bg-emerald-500/28 border-emerald-300/45' : 'bg-emerald-500/10 border-emerald-300/20 hover:bg-emerald-500/16 hover:border-emerald-300/30',
-          wed: isActive ? 'bg-violet-500/28 border-violet-300/45' : 'bg-violet-500/10 border-violet-300/20 hover:bg-violet-500/16 hover:border-violet-300/30',
-          thu: isActive ? 'bg-amber-500/28 border-amber-300/45' : 'bg-amber-500/10 border-amber-300/20 hover:bg-amber-500/16 hover:border-amber-300/30',
-          fri: isActive ? 'bg-rose-500/28 border-rose-300/45' : 'bg-rose-500/10 border-rose-300/20 hover:bg-rose-500/16 hover:border-rose-300/30',
-          sat: isActive ? 'bg-cyan-500/28 border-cyan-300/45' : 'bg-cyan-500/10 border-cyan-300/20 hover:bg-cyan-500/16 hover:border-cyan-300/30'
+      const resolvePerson = (person) => {
+        if (!person) return null;
+        if (typeof person === 'string') {
+          const s = studentLookup.get(person);
+          return s ? {
+            id: s.id,
+            studentId: s.studentId || '',
+            fullName: s.fullName || '',
+            nickname: s.nickname || '',
+            level: s.level || '',
+            group: s.group || '',
+            major: s.major || '',
+            photo: s.photo || null
+          } : { id: person, fullName: '-', nickname: '-', photo: null };
+        }
+        const s = studentLookup.get(person.id);
+        return {
+          ...person,
+          fullName: person.fullName || s?.fullName || '',
+          nickname: person.nickname || s?.nickname || '',
+          studentId: person.studentId || s?.studentId || '',
+          level: person.level || s?.level || '',
+          group: person.group || s?.group || '',
+          major: person.major || s?.major || '',
+          photo: person.photo || s?.photo || null
         };
-        return map[dayKey] || (isActive ? 'bg-blue-500/25 border-blue-300/45' : 'bg-white/8 border-white/10 hover:bg-white/12 hover:border-blue-300/30');
       };
 
-      const renderPeople = (people) => {
-        if (!people?.length) return <div className="rounded-2xl border border-dashed border-white/15 px-4 py-4 text-blue-100 font-bold text-lg">ยังไม่ระบุ</div>;
-        return people.map((p, idx) => (
-          <div key={idx} className="rounded-2xl bg-slate-950/45 border border-white/10 px-4 py-3.5">
-            <div className="text-xl 2xl:text-2xl font-extrabold text-white leading-tight">{p.nickname || p.fullName || '-'}</div>
-            <div className="text-sm text-blue-100 font-bold mt-1 truncate">{p.fullName && p.nickname ? p.fullName : (p.studentId || '-')}{p.level ? ` · ${p.level}` : ''}{p.group ? ` / ${p.group}` : ''}</div>
+      const initialsOf = (person) => {
+        const text = person?.nickname || person?.fullName || '?';
+        return String(text).trim().charAt(0) || '?';
+      };
+
+      const renderPersonCard = (person, idx, tone) => {
+        const c = roleColor(tone);
+        return (
+          <div key={person?.id || idx} className={`rounded-[1.35rem] ${c.soft} border border-white/10 p-3`}>
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-[1.15rem] overflow-hidden bg-slate-900/60 border border-white/10 flex-shrink-0 flex items-center justify-center">
+                {person?.photo ? (
+                  <img src={person.photo} alt={person.nickname || person.fullName || 'student'} className="w-full h-full object-cover" />
+                ) : (
+                  <div className={`w-full h-full flex items-center justify-center text-2xl md:text-3xl font-extrabold ${c.text}`}>{initialsOf(person)}</div>
+                )}
+              </div>
+              <div className="min-w-0">
+                <div className="text-xl md:text-2xl font-extrabold text-white leading-tight truncate">{person?.nickname || person?.fullName || '-'}</div>
+                <div className="text-sm md:text-base text-blue-100 truncate">{person?.fullName && person?.nickname ? person.fullName : (person?.studentId || '-')}</div>
+                <div className={`text-xs md:text-sm font-bold mt-1 ${c.text}`}>{[person?.level, person?.group].filter(Boolean).join(' / ') || (person?.major || '-')}</div>
+              </div>
+            </div>
           </div>
-        ));
+        );
       };
 
       return (
-        <div className="relative min-h-[calc(100vh-32px)] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 border border-white/10 soft-shadow text-white">
+        <div className="relative min-h-[calc(100vh-32px)] overflow-hidden rounded-[2.4rem] bg-[#081323] border border-white/10 soft-shadow text-white">
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full bg-blue-500/20 blur-3xl"></div>
-            <div className="absolute -bottom-44 -left-44 w-[520px] h-[520px] rounded-full bg-cyan-400/10 blur-3xl"></div>
-            <div className="absolute inset-0 opacity-[0.055]" style={{backgroundImage:'linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px)', backgroundSize:'44px 44px'}}></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-950/70 via-slate-950 to-slate-950"></div>
+            <div className="absolute -top-44 -right-44 w-[520px] h-[520px] rounded-full bg-blue-500/18 blur-3xl"></div>
+            <div className="absolute -bottom-48 -left-44 w-[540px] h-[540px] rounded-full bg-cyan-400/10 blur-3xl"></div>
           </div>
 
-          <div className="no-print fixed top-4 right-4 z-50 flex gap-2 opacity-35 hover:opacity-100 transition-opacity">
-            <button onClick={() => onBack && onBack()} className="px-4 py-3 rounded-2xl bg-slate-950/75 hover:bg-slate-900 text-white border border-white/10 backdrop-blur font-bold"><i className="ri-arrow-left-line mr-1"></i> กลับ</button>
-            <button onClick={() => setShowControls(true)} className="px-4 py-3 rounded-2xl bg-slate-950/75 hover:bg-slate-900 text-white border border-white/10 backdrop-blur font-bold"><i className="ri-settings-3-fill mr-1"></i> ตัวเลือก</button>
+          <div className="no-print fixed top-4 right-4 z-50 flex flex-wrap justify-end gap-2 opacity-70 hover:opacity-100 transition-opacity">
+            <button onClick={() => { setShowControls(false); onNavigate && onNavigate('add'); }} className="px-4 py-3 rounded-2xl bg-emerald-600/95 hover:bg-emerald-600 text-white border border-emerald-400/20 backdrop-blur font-bold shadow-lg"><i className="ri-user-add-fill mr-1"></i> เพิ่มสมาชิก</button>
+            <button onClick={() => { setShowControls(false); onNavigate && onNavigate('duty'); }} className="px-4 py-3 rounded-2xl bg-blue-600/95 hover:bg-blue-600 text-white border border-blue-400/20 backdrop-blur font-bold shadow-lg"><i className="ri-save-3-fill mr-1"></i> บันทึกข้อมูล</button>
+            <button onClick={() => { setShowControls(false); onBack && onBack(); }} className="px-4 py-3 rounded-2xl bg-slate-950/85 hover:bg-slate-900 text-white border border-white/10 backdrop-blur font-bold shadow-lg"><i className="ri-arrow-left-line mr-1"></i> กลับ</button>
+            <button onClick={() => setShowControls(true)} className="px-4 py-3 rounded-2xl bg-white/15 hover:bg-white/25 text-white border border-white/20 backdrop-blur font-bold shadow-lg"><i className="ri-settings-3-fill mr-1"></i> ตัวเลือก</button>
           </div>
 
           {showControls && (
-            <div className="no-print fixed inset-0 z-[60] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="w-full max-w-5xl rounded-[2rem] bg-slate-950 border border-white/10 soft-shadow p-5 md:p-6">
+            <div onClick={() => setShowControls(false)} className="no-print fixed inset-0 z-[60] bg-slate-950/45 backdrop-blur-[2px] flex items-center justify-center p-4">
+              <button onClick={() => setShowControls(false)} className="absolute top-4 right-4 z-[70] px-4 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-extrabold shadow-xl"><i className="ri-close-circle-fill mr-1"></i> ปิดหน้าต่างนี้</button>
+              <div onClick={e => e.stopPropagation()} className="relative z-[65] w-full max-w-5xl rounded-[2rem] bg-slate-900 border border-white/20 soft-shadow p-5 md:p-6">
                 <div className="flex items-start justify-between gap-4 mb-5">
                   <div>
                     <h3 className="text-2xl font-extrabold text-white">ตัวเลือกจอแสดงเวร</h3>
-                    <p className="text-blue-100 text-sm mt-1">ใช้สำหรับเปลี่ยนปี/สัปดาห์ชั่วคราว ก่อนซ่อนกลับเป็นหน้าจอตารางล้วน</p>
+                    <p className="text-blue-100 text-sm mt-1">คลิกพื้นที่ว่างด้านนอก หรือกด ESC เพื่อปิดหน้าต่างนี้</p>
                   </div>
-                  <button onClick={() => setShowControls(false)} className="w-11 h-11 rounded-2xl bg-white/10 hover:bg-white/15 text-white"><i className="ri-close-line text-2xl"></i></button>
+                  <button onClick={() => setShowControls(false)} className="w-11 h-11 rounded-2xl bg-red-600 hover:bg-red-700 text-white shadow-lg"><i className="ri-close-line text-2xl"></i></button>
                 </div>
-                <div className="grid md:grid-cols-2 xl:grid-cols-5 gap-3">
+                <div className="grid md:grid-cols-2 xl:grid-cols-6 gap-3">
                   <select value={year} onChange={e => { setYear(e.target.value); setSelectedId('auto'); }} className="px-4 py-3 rounded-2xl bg-slate-900 border-2 border-slate-700 outline-none focus:border-blue-500 font-bold text-white">
                     {yearOptions.map(y => <option key={y} value={y}>ปี {y}</option>)}
                   </select>
@@ -1748,261 +2207,139 @@
                     <option value="auto">แสดงเวรสัปดาห์ถัดไปอัตโนมัติ</option>
                     {dutiesForYear.map(d => <option key={d.id} value={d.id}>{formatThaiWeekRange(d.date)} · {dutyTableLabel(d.scheduleType)}</option>)}
                   </select>
+                  <button onClick={() => { setShowControls(false); onNavigate && onNavigate('add'); }} className="px-4 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold"><i className="ri-user-add-fill mr-1"></i> เพิ่มสมาชิก</button>
+                  <button onClick={() => { setShowControls(false); onNavigate && onNavigate('duty'); }} className="px-4 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold"><i className="ri-save-3-fill mr-1"></i> บันทึกข้อมูล</button>
                   <button onClick={toggleFullscreen} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold"><i className="ri-fullscreen-fill mr-1"></i> เต็มจอ</button>
-                  <button onClick={() => setAutoRotate(v => !v)} className={`px-4 py-3 rounded-2xl font-bold ${autoRotate ? 'bg-emerald-600 text-white' : 'bg-white/10 text-white hover:bg-white/15'}`}><i className="ri-loop-right-fill mr-1"></i>{autoRotate ? 'กำลังสลับวัน' : 'สลับวันอัตโนมัติ'}</button>
+                  <button onClick={() => setAutoRotate(v => !v)} className={`px-4 py-3 rounded-2xl font-bold ${autoRotate ? 'bg-amber-500 text-slate-950' : 'bg-white/10 text-white hover:bg-white/15'}`}><i className="ri-loop-right-fill mr-1"></i>{autoRotate ? 'กำลังสลับวัน' : 'สลับวันอัตโนมัติ'}</button>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="relative z-10 p-5 md:p-8 xl:p-10 min-h-[calc(100vh-32px)] flex flex-col">
+          <div className="relative z-10 min-h-[calc(100vh-32px)] p-5 md:p-8 xl:p-10 flex flex-col">
             {loading ? (
               <div className="flex-1 flex items-center justify-center text-blue-100 font-bold text-2xl">กำลังโหลดตารางเวร...</div>
             ) : selectedDuty ? (
               <>
-                <header className="grid xl:grid-cols-[1fr_auto] gap-5 items-start mb-6">
+                <header className="grid 2xl:grid-cols-[1fr_auto] gap-5 items-start mb-6">
                   <div className="flex items-center gap-4 min-w-0">
-                    <div className="brand-logo-compact !w-[130px] !h-[52px] flex-shrink-0"><img src={MDEC_LOGO} alt="MDEC" /></div>
+                    <div className="brand-logo-compact !w-[132px] !h-[52px] flex-shrink-0"><img src={MDEC_LOGO} alt="MDEC" /></div>
                     <div className="min-w-0">
-                      <p className="text-xs md:text-sm font-bold tracking-[0.22em] text-blue-200 uppercase">MDEC MORNING DUTY BOARD</p>
-                      <h1 className="text-4xl md:text-6xl 2xl:text-7xl font-extrabold text-white tracking-tight leading-none">ตารางเวรตอนเช้า</h1>
+                      <p className="text-xs md:text-sm font-bold tracking-[0.20em] text-blue-200 uppercase">MDEC MORNING DUTY BOARD</p>
+                      <h1 className="text-4xl md:text-6xl 2xl:text-7xl font-extrabold text-white tracking-tight leading-none">เวรตอนเช้า</h1>
                       <p className="text-blue-100 text-sm md:text-lg mt-2 truncate">{formatThaiWeekRange(selectedDuty.date)} · {dutyTableLabel(selectedDuty.scheduleType)} · ปีการศึกษา {selectedDuty.academicYear || year}</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 xl:min-w-[360px]">
-                    <div className="rounded-[1.7rem] bg-white/10 border border-white/10 px-5 py-4">
+                  <div className="grid grid-cols-2 gap-3 2xl:min-w-[420px]">
+                    <div className="rounded-[1.7rem] bg-white/8 border border-white/10 px-5 py-4">
                       <p className="text-sm text-blue-100 font-bold">เวลา</p>
                       <p className="text-4xl 2xl:text-5xl font-extrabold text-white mt-2 leading-none">{clockText}</p>
                     </div>
-                    <div className="rounded-[1.7rem] bg-white/10 border border-white/10 px-5 py-4">
-                      <p className="text-sm text-blue-100 font-bold">ผู้ปฏิบัติหน้าที่วันนี้</p>
-                      <p className="text-4xl 2xl:text-5xl font-extrabold text-white mt-2 leading-none">{focusPeopleCount}</p>
+                    <div className="rounded-[1.7rem] bg-white/8 border border-white/10 px-5 py-4">
+                      <p className="text-sm text-blue-100 font-bold">วันปัจจุบัน</p>
+                      <p className="text-xl 2xl:text-2xl font-extrabold text-white mt-2 leading-tight">{dateText}</p>
                     </div>
                   </div>
                 </header>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-6">
-                  {dutyDays.map(day => {
-                    const isActive = focusDay.key === day.key;
-                    const isToday = isCurrentSelectedWeek && todayKey === day.key;
-                    const totalPeople = dutyRoles.reduce((sum, role) => sum + ((weekly?.[day.key]?.[role.key] || []).length), 0);
-                    return (
-                      <button key={day.key} type="button" onClick={() => { setFocusDayKey(day.key); setAutoRotate(false); }} className={`text-left rounded-[1.4rem] border px-4 py-4 transition ${dayClass(day.key, isActive)}`}>
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <div className={`text-xl font-extrabold ${isActive ? 'text-white' : 'text-blue-100'}`}>{day.shortLabel}</div>
-                            <div className="text-xs text-blue-200/90 mt-1">{formatThaiDate(getDutyDayDate(selectedDuty.date, day.key))}</div>
+                <div className="rounded-[2rem] bg-white/6 border border-white/10 p-4 md:p-5 mb-6">
+                  <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-4">
+                    <div>
+                      <p className="text-blue-100 font-bold text-sm">กำลังแสดง</p>
+                      <h2 className="text-4xl md:text-6xl font-extrabold text-white leading-none">{focusDay.label}</h2>
+                      <p className="text-blue-100 text-base md:text-xl mt-2">{formatThaiDate(focusDate)}</p>
+                    </div>
+                    <div className="rounded-[1.5rem] bg-slate-950/35 border border-white/10 px-5 py-4">
+                      <p className="text-xs md:text-sm text-blue-100 font-bold">ผู้ปฏิบัติหน้าที่รวม</p>
+                      <p className="text-4xl md:text-5xl font-extrabold text-white leading-none mt-2">{focusPeopleCount}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+                    {dutyDays.map(day => {
+                      const isActive = focusDay.key === day.key;
+                      const isToday = isCurrentSelectedWeek && todayKey === day.key;
+                      const totalPeople = selectedRoles.reduce((sum, role) => sum + ((weekly?.[day.key]?.[role.key] || []).length), 0);
+                      return (
+                        <button key={day.key} type="button" onClick={() => { setFocusDayKey(day.key); setAutoRotate(false); }} className={`rounded-[1.35rem] border px-4 py-3 text-left transition ${dayColor(day.key, isActive)}`}>
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <div className="text-xl font-extrabold leading-none">{day.shortLabel}</div>
+                              <div className={`text-xs mt-2 ${isActive ? 'text-slate-900/80' : 'text-current opacity-75'}`}>{formatThaiDate(getDutyDayDate(selectedDuty.date, day.key))}</div>
+                            </div>
+                            <div className="flex flex-col items-end gap-2">
+                              {isToday && <span className="px-2 py-1 rounded-lg bg-yellow-300 text-slate-950 text-[10px] font-extrabold">วันนี้</span>}
+                              <span className={`px-2 py-1 rounded-lg text-[10px] font-extrabold ${isActive ? 'bg-slate-950/10 text-current' : 'bg-white/10 text-white'}`}>{totalPeople} คน</span>
+                            </div>
                           </div>
-                          {isToday ? <span className="px-2 py-1 rounded-lg bg-yellow-300 text-slate-950 text-[10px] font-extrabold">วันนี้</span> : <span className="px-2 py-1 rounded-lg bg-slate-950/45 text-white text-[10px] font-extrabold">{totalPeople} คน</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <section className="flex-1 min-h-0 rounded-[2.1rem] bg-white/7 border border-white/10 p-4 md:p-5 xl:p-6">
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <div>
+                      <h3 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-3"><span className={`inline-flex items-center justify-center px-3 py-1 rounded-2xl border ${dayColor(focusDay.key, false)}`}>{focusDay.shortLabel}</span><span>ตารางเวรของ{focusDay.label}</span></h3>
+                      <p className="text-blue-100 text-sm md:text-base mt-1">แตะเลือกวันด้านบนเพื่อดูเวรวันอื่น ๆ ได้ทันที</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 h-full">
+                    {selectedRoles.filter(role => getRoleSlotCount(role, selectedRoleSlots) > 0 || ((weekly?.[focusDay.key]?.[role.key] || []).length)).map(role => {
+                      const c = roleColor(role.tone);
+                      const rawPeople = weekly?.[focusDay.key]?.[role.key] || [];
+                      const people = rawPeople.map(resolvePerson).filter(Boolean);
+                      const slots = getRoleSlotCount(role, selectedRoleSlots);
+                      const cells = Array.from({ length: Math.max(slots, people.length || 0, 1) }, (_, idx) => people[idx] || null);
+                      return (
+                        <div key={`${focusDay.key}-${role.key}`} className={`rounded-[1.8rem] border ${c.panel} overflow-hidden flex flex-col min-h-[360px] xl:min-h-[430px]`}>
+                          <div className="relative px-4 py-4 bg-slate-950/45 border-b border-white/10">
+                            <div className={`absolute left-0 top-0 w-full h-1.5 ${c.line}`}></div>
+                            <div className="flex items-center justify-between gap-3 mt-1">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <span className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${c.accent}`}><i className={`${role.icon} text-xl`}></i></span>
+                                <div className="min-w-0">
+                                  <div className="text-xs uppercase tracking-[0.16em] text-slate-300 font-bold mb-1">หน้าที่</div>
+                                  <div className="text-lg md:text-[1.35rem] font-extrabold text-white leading-tight truncate">{role.title}</div>
+                                </div>
+                              </div>
+                              <div className={`px-3 py-2 rounded-2xl border text-center min-w-[86px] ${c.accentSoft}`}>
+                                <div className="text-xs font-bold opacity-80">จำนวน</div>
+                                <div className="text-lg font-extrabold leading-none mt-1">{people.length || 0}</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex-1 p-3 space-y-3">
+                            {cells.map((person, idx) => person ? (
+                              renderPersonCard(person, idx, role.tone)
+                            ) : (
+                              <div key={`empty-${role.key}-${idx}`} className="rounded-[1.35rem] border border-dashed border-white/12 bg-slate-950/24 p-4 min-h-[92px] flex items-center justify-center text-center">
+                                <div>
+                                  <div className={`text-sm md:text-base font-extrabold ${c.text}`}>ว่าง</div>
+                                  <div className="text-xs text-blue-100/70 mt-1">ยังไม่ระบุผู้ปฏิบัติหน้าที่</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="flex flex-wrap gap-2.5 mb-6">
-                  {dutyRoles.map(role => (
-                    <div key={`legend-${role.key}`} className={`inline-flex items-center gap-2 rounded-2xl border px-3 py-2 ${roleAccentClass(role.tone)}`}>
-                      <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold ${roleBadgeClass(role.tone)}`}><i className={role.icon}></i></span>
-                      <span className="font-extrabold text-sm md:text-base">{role.shortTitle}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <main className="flex-1 grid 2xl:grid-cols-[1fr_320px] gap-5 min-h-0">
-                  <section className="rounded-[2.1rem] bg-blue-500/12 border border-blue-300/20 p-5 md:p-7 min-h-0">
-                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
-                      <div>
-                        <p className="text-blue-100 font-bold text-sm">รายละเอียดเวร</p>
-                        <h2 className="text-4xl md:text-6xl 2xl:text-7xl font-extrabold text-white leading-none">{focusDay.label}</h2>
-                        <p className="text-blue-100 mt-2 text-base md:text-xl">{formatThaiDate(focusDate)}</p>
-                      </div>
-                      {isCurrentSelectedWeek && todayKey === focusDay.key && <div className="inline-flex px-4 py-2 rounded-2xl bg-yellow-300 text-slate-950 font-extrabold"><i className="ri-star-fill mr-2"></i>เวรวันนี้</div>}
-                    </div>
-
-                    <div className="grid xl:grid-cols-2 gap-4">
-                      {dutyRoles.map((role, idx) => {
-                        const people = weekly?.[focusDay.key]?.[role.key] || [];
-                        return (
-                          <div key={`${focusDay.key}-${role.key}`} className={`rounded-[1.9rem] bg-gradient-to-br ${roleClass(role.tone)} border p-4 md:p-5`}>
-                            <div className="flex items-center gap-3 mb-4">
-                              <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${roleAccentClass(role.tone)}`}><i className={`${role.icon} text-xl`}></i></div>
-                              <div>
-                                <p className="text-xl 2xl:text-2xl font-extrabold text-white leading-tight">{role.title}</p>
-                                <p className={`text-sm font-bold ${role.tone === 'orange' ? 'text-amber-100' : role.tone === 'purple' ? 'text-violet-100' : role.tone === 'emerald' ? 'text-emerald-100' : role.tone === 'cyan' ? 'text-cyan-100' : 'text-sky-100'}`}>{people.length ? `${people.length} คน` : 'ยังไม่ระบุ'}</p>
-                              </div>
-                            </div>
-                            <div className="space-y-2.5">{renderPeople(people)}</div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </section>
-
-                  <aside className="hidden 2xl:block rounded-[2.1rem] bg-white/10 border border-white/10 p-5">
-                    <h3 className="text-2xl font-extrabold text-white mb-2"><i className="ri-calendar-line text-cyan-300 mr-2"></i>สัปดาห์นี้</h3>
-                    <p className="text-blue-100 text-sm mb-4">สรุปจำนวนผู้ปฏิบัติหน้าที่รายวัน</p>
-                    <div className="space-y-3">
-                      {dutyDays.map(day => {
-                        const peopleCount = dutyRoles.reduce((sum, role) => sum + ((weekly?.[day.key]?.[role.key] || []).length), 0);
-                        const isActive = focusDay.key === day.key;
-                        return (
-                          <button key={`${day.key}-summary`} type="button" onClick={() => { setFocusDayKey(day.key); setAutoRotate(false); }} className={`w-full rounded-2xl border px-4 py-3 text-left transition ${dayClass(day.key, isActive)}`}>
-                            <div className="flex items-center justify-between gap-3">
-                              <div>
-                                <div className="font-extrabold text-white">{day.label}</div>
-                                <div className="text-xs text-blue-100 mt-1">{formatThaiDate(getDutyDayDate(selectedDuty.date, day.key))}</div>
-                              </div>
-                              <div className="text-2xl font-extrabold text-white">{peopleCount}</div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </aside>
-                </main>
+                      );
+                    })}
+                  </div>
+                </section>
               </>
             ) : (
               <div className="flex-1 min-h-[640px] flex flex-col items-center justify-center text-center">
                 <i className="ri-calendar-close-fill text-7xl text-blue-300 mb-4"></i>
-                <h2 className="text-4xl md:text-5xl font-extrabold text-white">ยังไม่มีตารางเวรตอนเช้าที่จะแสดง</h2>
-                <p className="text-blue-100 mt-2 text-lg">กรุณาเพิ่มตารางเวรตอนเช้าในเมนู “ตารางเวรตอนเช้า” ก่อน</p>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-white">ยังไม่มีตารางเวรตอนเช้าที่จะแสดง</h2>
+                <p className="text-blue-100 mt-2">กรุณาเพิ่มตารางเวรตอนเช้าในเมนู “ตารางเวรตอนเช้า” ก่อน</p>
               </div>
             )}
           </div>
         </div>
       );
     }
-    function PrintDutySchedule({ duties, yearText, onClose }) {
-      const reportDate = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-      const sorted = [...duties].sort((a,b) => String(a.date || '').localeCompare(String(b.date || '')));
-      return (
-        <div className="print-overlay fixed inset-0 z-[100] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in">
-          <div className="no-print flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 pb-5 border-b">
-            <div><h2 className="font-extrabold text-2xl">พิมพ์ตารางเวรตอนเช้า</h2><p className="text-slate-500">รายงานนี้แสดงตามตัวกรองในหน้าตารางเวร</p></div>
-            <div className="flex gap-2"><button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>พิมพ์ / Save PDF</button><button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button></div>
-          </div>
-          <section className="report-page">
-            <div className="report-header">
-              <div className="report-brand">
-                <div className="report-logo"><img src={MDEC_LOGO} alt="MDEC" /></div>
-                <div>
-                  <div className="report-title">ตารางเวรตอนเช้าประจำสัปดาห์ จันทร์–เสาร์</div>
-                  <div className="report-subtitle">ชมรม MDEC Photo Club • ภายใต้การดูแลของศูนย์มัลติมีเดียทางการศึกษา</div>
-                </div>
-              </div>
-              <div className="report-meta"><div><strong>ปีการศึกษา:</strong> {yearText}</div><div><strong>จำนวนสัปดาห์:</strong> {sorted.length}</div><div><strong>วันที่ออกรายงาน:</strong> {reportDate}</div></div>
-            </div>
-            <div className="report-note"><span>ภารกิจตอนเช้า: เชิญธงชาติ / เครื่องเสียง / ถ่ายภาพ / พูดทำความเคารพ / เวรทำความสะอาด</span><span>หมายเหตุ: ใช้ตาราง A/B สลับกันทุก 1 สัปดาห์</span></div>
-            <table className="print-table">
-              <thead><tr><th style={{width:'120px'}}>สัปดาห์</th><th style={{width:'78px'}}>วัน</th><th style={{width:'65px'}}>ตาราง</th>{dutyRoles.map(role => <th key={role.key}>{role.shortTitle}</th>)}<th style={{width:'95px'}}>หมายเหตุ</th></tr></thead>
-              <tbody>{sorted.flatMap(d => {
-                const weekly = getDutyWeeklyAssignments(d);
-                return dutyDays.map(day => <tr key={`${d.id || d.date}-${day.key}`}><td><strong>{formatThaiWeekRange(d.date)}</strong></td><td>{day.shortLabel}<br/><span className="print-muted">{formatThaiDate(getDutyDayDate(d.date, day.key))}</span></td><td>{dutyTableLabel(d.scheduleType)}</td>{dutyRoles.map(role => <td key={role.key}>{dailyDutyRoleText(weekly, day.key, role.key)}</td>)}<td>{d.note || '-'}</td></tr>);
-              })}</tbody>
-            </table>
-            <div className="print-footer"><div>Generated by MDEC Photo Club Registry</div><div className="signature-zone"><div className="signature-line">ผู้จัดทำ</div><div className="signature-line">ผู้ตรวจสอบ</div></div></div>
-          </section>
-        </div>
-      );
-    }
-
-    function DashboardPage({ students, yearsList, currentAcademicYear, onIssueFilter }) {
-      const [year, setYear] = useState(currentAcademicYear);
-      const stats = useMemo(() => buildStats(students, year), [students, year]);
-      const topInterests = Object.entries(stats.interests).sort((a,b) => b[1]-a[1]);
-      const topMajors = Object.entries(stats.majors).sort((a,b) => b[1]-a[1]);
-      const issueCards = [
-        ['noPhoto','ยังไม่มีรูปถ่าย',stats.noPhoto,'ri-image-close-fill'],
-        ['noPhone','ไม่มีเบอร์โทร',stats.noPhone,'ri-phone-fill'],
-        ['noLine','ไม่มี Line ID',stats.noLine,'ri-line-fill'],
-        ['noEmergency','ไม่มีเบอร์ฉุกเฉิน',stats.noEmergency,'ri-alarm-warning-fill'],
-        ['noActualInterest','ยังไม่กำหนดฝ่ายจริง',stats.noActualInterest,'ri-team-fill'],
-        ['incomplete','ข้อมูลไม่ครบทั้งหมด',stats.incomplete,'ri-error-warning-fill']
-      ];
-      return (
-        <div className="space-y-5">
-          <div className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-            <div>
-              <h3 className="text-xl font-extrabold">ภาพรวมทะเบียนชมรม</h3>
-              <p className="text-slate-500">เลือกปีการศึกษาเพื่อดูสรุปยอดสมาชิก</p>
-            </div>
-            <select value={year} onChange={e => setYear(e.target.value)} className="px-4 py-3 rounded-2xl border-2 border-blue-100 bg-blue-50 text-blue-800 font-bold outline-none focus:border-blue-500">
-              <option value="all">ทุกปีการศึกษา</option>
-              {yearsList.map(y => <option key={y} value={y}>ปีการศึกษา {y}</option>)}
-            </select>
-          </div>
-
-          <div className="grid sm:grid-cols-2 xl:grid-cols-5 gap-5">
-            <StatCard icon="ri-team-fill" label="สมาชิกทั้งหมด" value={stats.total} tone="blue" />
-            <StatCard icon="ri-user-star-fill" label="สมาชิกปัจจุบัน" value={stats.active} tone="green" />
-            <StatCard icon="ri-image-fill" label="มีรูปถ่ายแล้ว" value={stats.withPhoto} tone="cyan" />
-            <StatCard icon="ri-error-warning-fill" label="ไม่มีรูปถ่าย" value={stats.noPhoto} tone="orange" />
-            <StatCard icon="ri-file-warning-fill" label="ข้อมูลไม่ครบ" value={stats.incomplete} tone="orange" />
-          </div>
-
-          <div className="bg-white rounded-[2rem] soft-shadow border border-white p-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-              <div><h3 className="text-xl font-extrabold"><i className="ri-error-warning-fill text-orange-500 mr-2"></i>ตรวจข้อมูลไม่ครบ</h3><p className="text-slate-500 text-sm">กดที่การ์ดเพื่อไปกรองรายชื่อในฐานข้อมูลได้ทันที</p></div>
-            </div>
-            <div className="grid sm:grid-cols-2 xl:grid-cols-6 gap-3">
-              {issueCards.map(([key,label,count,icon]) => <button key={key} onClick={() => onIssueFilter && onIssueFilter(key)} className="text-left rounded-2xl bg-slate-50 hover:bg-blue-50 border border-slate-100 p-4 transition"><i className={`${icon} text-xl text-blue-600`}></i><p className="text-xs text-slate-500 mt-2">{label}</p><p className="text-2xl font-extrabold text-slate-950">{count}</p></button>)}
-            </div>
-          </div>
-
-          <div className="grid xl:grid-cols-2 gap-5">
-            <ChartCard title="ฝ่ายที่สนใจ" icon="ri-camera-lens-fill" data={topInterests} total={stats.total} />
-            <ChartCard title="สาขาวิชา" icon="ri-school-fill" data={topMajors} total={stats.total} />
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            <SmallMetric title="ชาย" value={stats.male} icon="ri-men-fill" />
-            <SmallMetric title="หญิง" value={stats.female} icon="ri-women-fill" />
-            <SmallMetric title="LGBTQ+ / อื่น ๆ" value={stats.lgbt} icon="ri-rainbow-fill" />
-          </div>
-        </div>
-      );
-    }
-
-    function StatCard({ icon, label, value, tone }) {
-      const tones = {
-        blue: 'bg-blue-600 text-white shadow-blue-200', green: 'bg-emerald-500 text-white shadow-emerald-100', cyan: 'bg-cyan-500 text-white shadow-cyan-100', orange: 'bg-orange-500 text-white shadow-orange-100'
-      };
-      return (
-        <div className="bg-white rounded-[2rem] p-6 soft-shadow border border-white overflow-hidden relative">
-          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-xl ${tones[tone]}`}><i className={icon}></i></div>
-          <p className="text-sm text-slate-500 font-bold mt-6">{label}</p>
-          <h3 className="text-4xl font-extrabold text-slate-950 mt-1">{value}</h3>
-          <div className="absolute -right-8 -bottom-8 w-28 h-28 bg-blue-50 rounded-full"></div>
-        </div>
-      );
-    }
-
-    function SmallMetric({ title, value, icon }) {
-      return (
-        <div className="bg-white rounded-[2rem] p-6 border border-white soft-shadow flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center text-2xl"><i className={icon}></i></div>
-          <div><p className="text-slate-500 font-bold text-sm">{title}</p><p className="text-3xl font-extrabold">{value}</p></div>
-        </div>
-      );
-    }
-
-    function ChartCard({ title, icon, data, total }) {
-      return (
-        <div className="bg-white rounded-[2rem] soft-shadow border border-white p-6">
-          <h3 className="font-extrabold text-xl mb-5 flex items-center gap-2"><i className={`${icon} text-blue-600`}></i>{title}</h3>
-          <div className="space-y-4">
-            {data.length ? data.map(([name, count]) => (
-              <div key={name}>
-                <div className="flex justify-between text-sm font-bold mb-2"><span className="truncate pr-4">{name}</span><span className="text-blue-700">{count} คน</span></div>
-                <div className="h-3 rounded-full bg-slate-100 overflow-hidden"><div className="h-full bg-blue-600 rounded-full" style={{ width: `${total ? (count/total)*100 : 0}%` }}></div></div>
-              </div>
-            )) : <p className="text-center text-slate-400 py-10">ยังไม่มีข้อมูล</p>}
-          </div>
-        </div>
-      );
-    }
-
     function MembersPage(props) {
       const { students, majors, yearsList, search, setSearch, filterYear, setFilterYear, filterMajor, setFilterMajor, filterInterest, setFilterInterest, filterStatus, setFilterStatus, filterPhoto, setFilterPhoto, displayMode, setDisplayMode, onView, onEdit, onDelete, onStatusChange, onPrint, onExport, onExportByInterest } = props;
       const [currentPage, setCurrentPage] = useState(1);
@@ -2183,16 +2520,46 @@
 
       useEffect(() => () => stopCamera(), []);
 
+      useEffect(() => {
+        if (!cameraOn || !streamRef.current || !videoRef.current) return;
+        const video = videoRef.current;
+        video.srcObject = streamRef.current;
+        video.muted = true;
+        video.playsInline = true;
+        video.onloadedmetadata = () => {
+          video.play().catch(() => {});
+        };
+        video.play().catch(() => {});
+      }, [cameraOn]);
+
       const setField = (name, value) => setFormData(prev => ({ ...prev, [name]: value }));
 
       const startCamera = async () => {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            return alert('เบราว์เซอร์นี้ไม่รองรับการเปิดกล้อง กรุณาเปิดผ่าน Chrome/Edge/Safari เวอร์ชันใหม่ และต้องเป็น HTTPS');
+          }
+          stopCamera();
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+            audio: false
+          });
           streamRef.current = stream;
-          if (videoRef.current) videoRef.current.srcObject = stream;
           setCameraOn(true);
+          setTimeout(() => {
+            if (videoRef.current && streamRef.current) {
+              videoRef.current.srcObject = streamRef.current;
+              videoRef.current.play().catch(() => {});
+            }
+          }, 80);
         } catch (err) {
-          alert('ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตสิทธิ์การใช้กล้อง หรือเปิดผ่าน HTTPS/localhost');
+          console.error('Camera error:', err);
+          let msg = 'ไม่สามารถเปิดกล้องได้';
+          if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') msg = 'ระบบยังไม่ได้รับสิทธิ์ใช้กล้อง กรุณาอนุญาตกล้องในเบราว์เซอร์แล้วลองใหม่';
+          else if (err?.name === 'NotFoundError' || err?.name === 'DevicesNotFoundError') msg = 'ไม่พบกล้องในอุปกรณ์นี้';
+          else if (err?.name === 'NotReadableError' || err?.name === 'TrackStartError') msg = 'กล้องอาจถูกโปรแกรมอื่นใช้งานอยู่ กรุณาปิดโปรแกรมที่ใช้กล้องแล้วลองใหม่';
+          else if (location.protocol !== 'https:' && location.hostname !== 'localhost') msg = 'ต้องเปิดเว็บผ่าน HTTPS หรือ localhost กล้องจึงจะทำงานได้';
+          alert(`${msg}\n\nรายละเอียด: ${err?.name || err?.message || '-'}`);
         }
       };
 
@@ -2469,26 +2836,235 @@
       );
     }
 
+    function DashboardPage({ students, yearsList, currentAcademicYear, onIssueFilter }) {
+      const [year, setYear] = useState(currentAcademicYear || 'all');
+      useEffect(() => {
+        if (currentAcademicYear && !year) setYear(currentAcademicYear);
+      }, [currentAcademicYear]);
+
+      const stats = useMemo(() => buildStats(students, year), [students, year]);
+      const yearOptions = ['all', ...new Set([currentAcademicYear, ...yearsList].filter(Boolean))];
+      const majorEntries = Object.entries(stats.majors || {}).sort((a,b) => b[1] - a[1]).slice(0, 6);
+      const actualInterestEntries = Object.entries(stats.actualInterests || {}).sort((a,b) => b[1] - a[1]).slice(0, 6);
+      const total = Math.max(stats.total || 0, 1);
+      const completenessRate = Math.round(((stats.total - stats.incomplete) / total) * 100);
+      const photoRate = Math.round((stats.withPhoto / total) * 100);
+      const activeRate = Math.round((stats.active / total) * 100);
+
+      const issueCards = [
+        { key: 'incomplete', title: 'ข้อมูลไม่ครบ', count: stats.incomplete, icon: 'ri-error-warning-fill', accent: 'amber', desc: 'ข้อมูลสำคัญยังกรอกไม่ครบ' },
+        { key: 'noPhoto', title: 'ไม่มีรูปถ่าย', count: stats.noPhoto, icon: 'ri-image-fill', accent: 'rose', desc: 'ยังไม่มีรูปโปรไฟล์ในระบบ' },
+        { key: 'noPhone', title: 'ไม่มีเบอร์โทร', count: stats.noPhone, icon: 'ri-phone-fill', accent: 'orange', desc: 'ควรมีเบอร์ติดต่ออย่างน้อย 1 เบอร์' },
+        { key: 'noLine', title: 'ไม่มี Line ID', count: stats.noLine, icon: 'ri-chat-1-fill', accent: 'emerald', desc: 'ใช้ติดต่อและประสานงาน' },
+        { key: 'noEmergency', title: 'ไม่มีเบอร์ฉุกเฉิน', count: stats.noEmergency, icon: 'ri-alarm-warning-fill', accent: 'violet', desc: 'ข้อมูลสำคัญกรณีฉุกเฉิน' },
+        { key: 'noActualInterest', title: 'ยังไม่กำหนดฝ่ายจริง', count: stats.noActualInterest, icon: 'ri-briefcase-4-fill', accent: 'blue', desc: 'ยังไม่ได้สรุปบทบาทปฏิบัติงานจริง' }
+      ];
+
+      const accentStyles = {
+        amber: { stripe: 'bg-amber-400', icon: 'bg-amber-50 text-amber-600', num: 'text-slate-950', chip: 'bg-amber-50 text-amber-700 border-amber-100' },
+        rose: { stripe: 'bg-rose-400', icon: 'bg-rose-50 text-rose-600', num: 'text-slate-950', chip: 'bg-rose-50 text-rose-700 border-rose-100' },
+        orange: { stripe: 'bg-orange-400', icon: 'bg-orange-50 text-orange-600', num: 'text-slate-950', chip: 'bg-orange-50 text-orange-700 border-orange-100' },
+        emerald: { stripe: 'bg-emerald-400', icon: 'bg-emerald-50 text-emerald-600', num: 'text-slate-950', chip: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
+        violet: { stripe: 'bg-violet-400', icon: 'bg-violet-50 text-violet-600', num: 'text-slate-950', chip: 'bg-violet-50 text-violet-700 border-violet-100' },
+        blue: { stripe: 'bg-blue-400', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' }
+      };
+
+      const statCards = [
+        { title: 'สมาชิกทั้งหมด', value: stats.total, icon: 'ri-team-fill', iconWrap: 'bg-slate-100 text-slate-800', meta: 'จำนวนสมาชิกตามปีที่เลือก' },
+        { title: 'สมาชิกปัจจุบัน', value: stats.active, icon: 'ri-user-star-fill', iconWrap: 'bg-blue-50 text-blue-700', meta: `${activeRate}% ของสมาชิกทั้งหมด` },
+        { title: 'มีรูปถ่าย', value: stats.withPhoto, icon: 'ri-image-fill', iconWrap: 'bg-sky-50 text-sky-700', meta: `${photoRate}% ของสมาชิกทั้งหมด` },
+        { title: 'ข้อมูลสมบูรณ์', value: Math.max(stats.total - stats.incomplete, 0), icon: 'ri-shield-check-fill', iconWrap: 'bg-indigo-50 text-indigo-700', meta: `${completenessRate}% กรอกข้อมูลครบ` }
+      ];
+
+      const progressCards = [
+        { title: 'ข้อมูลสมบูรณ์', subtitle: 'กรอกข้อมูลหลักครบ', value: completenessRate, icon: 'ri-checkbox-circle-fill', iconWrap: 'bg-emerald-50 text-emerald-700', bar: 'bg-emerald-500' },
+        { title: 'อัตรามีรูปถ่าย', subtitle: 'ช่วยให้ค้นหาง่ายขึ้น', value: photoRate, icon: 'ri-image-fill', iconWrap: 'bg-blue-50 text-blue-700', bar: 'bg-blue-500' },
+        { title: 'สมาชิกปัจจุบัน', subtitle: 'สถานะกำลังใช้งาน', value: activeRate, icon: 'ri-user-star-fill', iconWrap: 'bg-indigo-50 text-indigo-700', bar: 'bg-indigo-500' }
+      ];
+
+      const statusItems = [
+        { label: 'กำลังศึกษา / ใช้งาน', value: stats.active, tone: 'bg-blue-500' },
+        { label: 'พักกิจกรรม', value: stats.paused, tone: 'bg-sky-500' },
+        { label: 'จบแล้ว', value: stats.graduated, tone: 'bg-indigo-500' },
+        { label: 'พ้นสภาพ', value: stats.dismissed, tone: 'bg-slate-500' }
+      ];
+
+      return (
+        <div className="space-y-5">
+          <section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-6 md:p-7 overflow-hidden relative">
+            <div className="absolute -top-16 -right-16 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-70"></div>
+            <div className="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-extrabold tracking-wide uppercase mb-3">
+                  <i className="ri-pie-chart-2-fill"></i> Dashboard Overview
+                </div>
+                <h3 className="text-3xl font-black text-slate-950 leading-tight">สรุปยอดสมาชิกชมรม</h3>
+                <p className="text-slate-500 mt-2 max-w-3xl">ผมปรับโทนสีให้ไปในแนวเดียวกันมากขึ้น เน้นขาว + น้ำเงิน + เทา แล้วใช้สีอื่นเป็นเพียงสีบอกสถานะเท่านั้น</p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-wide text-slate-400 font-extrabold">เลือกปีการศึกษา</div>
+                  <select value={year} onChange={e => setYear(e.target.value)} className="mt-1 bg-transparent text-slate-950 font-black outline-none min-w-[190px]">
+                    {yearOptions.map(y => <option key={y} value={y}>{y === 'all' ? 'ทุกปีการศึกษา' : `ปีการศึกษา ${y}`}</option>)}
+                  </select>
+                </div>
+                <div className="rounded-2xl bg-slate-950 text-white px-5 py-4 min-w-[190px]">
+                  <div className="text-[11px] uppercase tracking-wide text-blue-200 font-extrabold">สรุปเร็ว</div>
+                  <div className="mt-1 text-xl font-black">{stats.total} สมาชิก</div>
+                  <div className="text-sm text-slate-300 mt-1">ข้อมูลสมบูรณ์ {Math.max(stats.total - stats.incomplete, 0)} คน</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
+            {statCards.map(card => (
+              <div key={card.title} className="rounded-[1.7rem] bg-white border border-slate-200 soft-shadow p-5">
+                <div className={`w-14 h-14 rounded-2xl ${card.iconWrap} flex items-center justify-center text-2xl mb-5`}><i className={card.icon}></i></div>
+                <div className="text-sm font-bold text-slate-500">{card.title}</div>
+                <div className="text-4xl font-black text-slate-950 mt-1">{card.value}</div>
+                <div className="text-xs text-slate-400 mt-2">{card.meta}</div>
+              </div>
+            ))}
+          </section>
+
+          <section className="grid xl:grid-cols-[1.4fr_0.8fr] gap-5 items-start">
+            <div className="space-y-5">
+              <div className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6">
+                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
+                  <div>
+                    <h3 className="text-xl font-black text-slate-950"><i className="ri-search-eye-fill text-blue-600 mr-2"></i>จุดที่ควรตรวจสอบ</h3>
+                    <p className="text-sm text-slate-500 mt-1">พื้นหลังทุกการ์ดถูกทำให้เหมือนกัน แล้วใช้แค่แถบสี/ไอคอนเพื่อบอกประเภทปัญหา</p>
+                  </div>
+                  <div className="text-xs font-bold text-slate-400">คลิกการ์ดเพื่อเปิดฐานข้อมูลพร้อมตัวกรองอัตโนมัติ</div>
+                </div>
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {issueCards.map(item => {
+                    const tone = accentStyles[item.accent] || accentStyles.blue;
+                    return (
+                      <button key={item.key} type="button" onClick={() => onIssueFilter && onIssueFilter(item.key)} className="relative text-left rounded-[1.5rem] border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md overflow-hidden">
+                        <div className={`absolute inset-x-0 top-0 h-1.5 ${tone.stripe}`}></div>
+                        <div className="flex items-start justify-between gap-3 pt-1">
+                          <div className={`w-12 h-12 rounded-2xl ${tone.icon} flex items-center justify-center text-xl shrink-0`}>
+                            <i className={item.icon}></i>
+                          </div>
+                          <div className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${tone.chip}`}>เปิดรายการ</div>
+                        </div>
+                        <div className="mt-4 text-sm font-extrabold text-slate-900">{item.title}</div>
+                        <div className="text-xs text-slate-500 mt-1 min-h-[34px]">{item.desc}</div>
+                        <div className="mt-4 flex items-end justify-between gap-3">
+                          <div className={`text-4xl leading-none font-black ${tone.num}`}>{item.count}</div>
+                          <div className="text-xs font-bold text-blue-600">กดเพื่อเปิดรายการ</div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-5">
+                {progressCards.map(card => (
+                  <div key={card.title} className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6">
+                    <div className="flex items-center gap-3 mb-4"><div className={`w-11 h-11 rounded-2xl ${card.iconWrap} flex items-center justify-center text-xl`}><i className={card.icon}></i></div><div><h4 className="font-black text-slate-950">{card.title}</h4><p className="text-xs text-slate-400">{card.subtitle}</p></div></div>
+                    <div className="text-4xl font-black text-slate-950">{card.value}%</div>
+                    <div className="mt-3 h-3 rounded-full bg-slate-100 overflow-hidden"><div className={`h-full rounded-full ${card.bar}`} style={{ width: `${Math.min(card.value, 100)}%` }}></div></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-5">
+              <div className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6">
+                <h3 className="text-xl font-black text-slate-950 mb-4"><i className="ri-bookmark-3-fill text-blue-600 mr-2"></i>สรุปสถานะ</h3>
+                <div className="space-y-3">
+                  {statusItems.map(item => {
+                    const width = Math.min(Math.round((item.value / total) * 100), 100);
+                    return (
+                      <div key={item.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex items-center justify-between gap-3 mb-3">
+                          <div className="font-bold text-slate-700">{item.label}</div>
+                          <div className="text-xl font-black text-slate-950">{item.value}</div>
+                        </div>
+                        <div className="h-2.5 rounded-full bg-slate-200 overflow-hidden"><div className={`h-full rounded-full ${item.tone}`} style={{ width: `${width}%` }}></div></div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6">
+                <h3 className="text-xl font-black text-slate-950 mb-4"><i className="ri-building-4-fill text-blue-600 mr-2"></i>สาขาที่มีสมาชิกมากสุด</h3>
+                <div className="space-y-3">
+                  {majorEntries.length ? majorEntries.map(([name, count], idx) => {
+                    const width = Math.min(Math.round((count / total) * 100), 100);
+                    return (
+                      <div key={name} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex items-center justify-between gap-3 mb-2">
+                          <div className="font-bold text-slate-800">{idx + 1}. {name}</div>
+                          <div className="text-lg font-black text-slate-950">{count}</div>
+                        </div>
+                        <div className="h-2.5 rounded-full bg-slate-200 overflow-hidden"><div className="h-full rounded-full bg-blue-500" style={{ width: `${width}%` }}></div></div>
+                      </div>
+                    );
+                  }) : <div className="rounded-2xl bg-slate-50 px-4 py-6 text-slate-500 text-sm font-bold text-center">ยังไม่มีข้อมูลสาขา</div>}
+                </div>
+              </div>
+
+              <div className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6">
+                <h3 className="text-xl font-black text-slate-950 mb-4"><i className="ri-briefcase-4-fill text-blue-600 mr-2"></i>ฝ่ายจริงที่มีการจัดแล้ว</h3>
+                <div className="space-y-3">
+                  {actualInterestEntries.length ? actualInterestEntries.map(([name, count], idx) => {
+                    const width = Math.min(Math.round((count / total) * 100), 100);
+                    return (
+                      <div key={name} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex items-center justify-between gap-3 mb-2">
+                          <div className="font-bold text-slate-800">{idx + 1}. {name}</div>
+                          <div className="text-lg font-black text-slate-950">{count}</div>
+                        </div>
+                        <div className="h-2.5 rounded-full bg-slate-200 overflow-hidden"><div className="h-full rounded-full bg-indigo-500" style={{ width: `${width}%` }}></div></div>
+                      </div>
+                    );
+                  }) : <div className="rounded-2xl bg-slate-50 px-4 py-6 text-slate-500 text-sm font-bold text-center">ยังไม่มีการกำหนดฝ่ายจริง</div>}
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      );
+    }
+
     function YearManager({ students, yearsList, currentAcademicYear, setCurrentAcademicYear }) {
+      const yearOptions = useMemo(() => [...new Set([currentAcademicYear, ...(yearsList || [])].filter(Boolean))], [currentAcademicYear, yearsList]);
       const [year, setYear] = useState(currentAcademicYear);
       const [confirmText, setConfirmText] = useState('');
       const [busy, setBusy] = useState(false);
       const [backupConfirmed, setBackupConfirmed] = useState(false);
       const [backupLogs, setBackupLogs] = useState([]);
-      useEffect(() => { setConfirmText(''); setBackupConfirmed(false); }, [year]);
+
       useEffect(() => {
-        const unsub = getSettingsRef().onSnapshot(doc => setBackupLogs((doc.data()?.backupLogs || []).slice(0, 8)));
+        if (!yearOptions.includes(year) && yearOptions.length) setYear(yearOptions[0]);
+      }, [yearOptions]);
+
+      useEffect(() => { setConfirmText(''); setBackupConfirmed(false); }, [year]);
+
+      useEffect(() => {
+        const unsub = getSettingsRef().onSnapshot(doc => {
+          const data = doc.exists ? (doc.data() || {}) : {};
+          setBackupLogs(Array.isArray(data.backupLogs) ? data.backupLogs.slice(0, 8) : []);
+        }, err => console.error('backup log load failed', err));
         return () => unsub();
       }, []);
+
+      const selected = useMemo(() => students.filter(s => String(s.academicYear || '') === String(year || '')), [students, year]);
+      const stats = useMemo(() => buildStats(students, year), [students, year]);
+      const clearCode = `CLEAR ${year}`;
+
       const recordBackupLog = async (type) => {
         const entry = { type, academicYear: year, total: selected.length, at: new Date().toISOString() };
         const next = [entry, ...backupLogs].slice(0, 20);
         setBackupLogs(next);
         await getSettingsRef().set({ backupLogs: next }, { merge: true });
       };
-      const selected = students.filter(s => s.academicYear === year);
-      const stats = buildStats(students, year);
-      const clearCode = `CLEAR ${year}`;
 
       const backupJSON = () => {
         if (!selected.length) return alert('ปีนี้ยังไม่มีข้อมูลให้สำรอง');
@@ -2511,6 +3087,7 @@
       };
 
       const clearYear = async () => {
+        if (!selected.length) return alert('ปีนี้ไม่มีข้อมูลให้ล้าง');
         if (!backupConfirmed) return alert('กรุณาติ๊กยืนยันว่าได้สำรองข้อมูล JSON และ CSV เรียบร้อยแล้ว');
         if (confirmText !== clearCode) return alert(`กรุณาพิมพ์ ${clearCode} ให้ถูกต้อง`);
         const ok = confirm(`ยืนยันล้างข้อมูลสมาชิกปีการศึกษา ${year} จำนวน ${selected.length} รายการ?\nควรสำรองข้อมูล JSON และ CSV ก่อนล้างทุกครั้ง`);
@@ -2526,6 +3103,7 @@
           }
           alert(`ล้างข้อมูลปีการศึกษา ${year} เรียบร้อย`);
           setConfirmText('');
+          setBackupConfirmed(false);
         } catch (err) {
           alert('ล้างข้อมูลไม่สำเร็จ: ' + err.message);
         } finally {
@@ -2535,127 +3113,59 @@
 
       return (
         <div className="space-y-5">
-          <div className="bg-white rounded-[2rem] soft-shadow border border-white p-6 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-            <div><h3 className="text-2xl font-extrabold">จัดการข้อมูลแบบปีต่อปี</h3><p className="text-slate-500">สำรองข้อมูลก่อนล้างข้อมูลเพื่อเริ่มรับสมัครปีใหม่</p></div>
-            <select value={year} onChange={e => setYear(e.target.value)} className="px-4 py-3 rounded-2xl bg-blue-50 border-2 border-blue-100 text-blue-800 font-bold outline-none focus:border-blue-500">
-              {yearsList.map(y => <option key={y} value={y}>ปีการศึกษา {y}</option>)}
-            </select>
+          <div className="year-card rounded-[2rem] soft-shadow border border-white/10 p-5 md:p-6 bg-slate-950 text-white overflow-hidden relative">
+            <div className="absolute -right-20 -top-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"></div>
+            <div className="relative z-10 flex flex-col xl:flex-row gap-4 xl:items-center xl:justify-between">
+              <div>
+                <p className="text-xs font-extrabold tracking-[0.22em] text-blue-200 uppercase mb-2">Academic Year Manager</p>
+                <h3 className="text-2xl md:text-3xl font-extrabold">จัดการข้อมูลแบบปีต่อปี</h3>
+                <p className="text-blue-100 mt-1">สำรองข้อมูลก่อนล้างข้อมูล เพื่อเริ่มรับสมัครปีการศึกษาใหม่อย่างปลอดภัย</p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                <span className="text-sm text-blue-100 font-bold">เลือกปีการศึกษา</span>
+                <select value={year || ''} onChange={e => setYear(e.target.value)} className="px-5 py-3 rounded-2xl bg-white text-slate-950 border-2 border-white/20 font-extrabold outline-none focus:border-blue-300 min-w-[190px]">
+                  {yearOptions.map(y => <option key={y} value={y}>ปีการศึกษา {y}</option>)}
+                </select>
+              </div>
+            </div>
           </div>
 
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
-            <StatCard icon="ri-team-fill" label="สมาชิกปีนี้" value={stats.total} tone="blue" />
-            <StatCard icon="ri-image-fill" label="มีรูปถ่าย" value={stats.withPhoto} tone="cyan" />
-            <StatCard icon="ri-user-star-fill" label="สมาชิกปัจจุบัน" value={stats.active} tone="green" />
-            <StatCard icon="ri-user-unfollow-fill" label="พ้นสภาพ" value={stats.dismissed} tone="orange" />
+            <div className="rounded-[1.8rem] bg-slate-900 border border-slate-700 p-5 text-white"><div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-team-fill"></i></div><p className="text-sm text-slate-300 font-bold">สมาชิกปีนี้</p><p className="text-4xl font-extrabold mt-1">{stats.total}</p></div>
+            <div className="rounded-[1.8rem] bg-slate-900 border border-slate-700 p-5 text-white"><div className="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-200 flex items-center justify-center text-2xl mb-4"><i className="ri-image-fill"></i></div><p className="text-sm text-slate-300 font-bold">มีรูปถ่าย</p><p className="text-4xl font-extrabold mt-1">{stats.withPhoto}</p></div>
+            <div className="rounded-[1.8rem] bg-slate-900 border border-slate-700 p-5 text-white"><div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-200 flex items-center justify-center text-2xl mb-4"><i className="ri-user-star-fill"></i></div><p className="text-sm text-slate-300 font-bold">สมาชิกปัจจุบัน</p><p className="text-4xl font-extrabold mt-1">{stats.active}</p></div>
+            <div className="rounded-[1.8rem] bg-slate-900 border border-slate-700 p-5 text-white"><div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-200 flex items-center justify-center text-2xl mb-4"><i className="ri-user-unfollow-fill"></i></div><p className="text-sm text-slate-300 font-bold">พ้นสภาพ</p><p className="text-4xl font-extrabold mt-1">{stats.dismissed}</p></div>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-5">
-            <div className="bg-white rounded-[2rem] soft-shadow border border-white p-6">
-              <h3 className="font-extrabold text-xl mb-3"><i className="ri-download-cloud-2-fill text-blue-600 mr-2"></i>สำรองข้อมูลปีการศึกษา {year}</h3>
-              <p className="text-slate-500 mb-6">แนะนำให้ดาวน์โหลดทั้ง JSON และ CSV แล้วเก็บไว้ใน Google Drive ของศูนย์</p>
+            <div className="year-card rounded-[2rem] soft-shadow border border-slate-700 bg-slate-900 p-5 md:p-6 text-white">
+              <h3 className="font-extrabold text-xl mb-2"><i className="ri-download-cloud-2-fill text-blue-300 mr-2"></i>สำรองข้อมูลปีการศึกษา {year}</h3>
+              <p className="text-slate-300 mb-6">แนะนำให้ดาวน์โหลดทั้ง JSON และ CSV แล้วเก็บไว้ใน Google Drive ของศูนย์ก่อนล้างข้อมูลทุกครั้ง</p>
               <div className="grid sm:grid-cols-2 gap-3">
-                <button onClick={backupJSON} className="py-4 rounded-2xl bg-slate-950 text-white font-bold hover:bg-slate-800"><i className="ri-braces-fill mr-2"></i>Backup .JSON</button>
-                <button onClick={backupCSV} className="py-4 rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-700"><i className="ri-file-excel-2-fill mr-2"></i>Export CSV</button>
+                <button onClick={backupJSON} className="py-4 rounded-2xl bg-blue-600 text-white font-extrabold hover:bg-blue-700"><i className="ri-braces-fill mr-2"></i>Backup .JSON</button>
+                <button onClick={backupCSV} className="py-4 rounded-2xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-700"><i className="ri-file-excel-2-fill mr-2"></i>Export CSV</button>
               </div>
-              <div className="mt-5 rounded-3xl bg-slate-50 border border-slate-100 p-4">
-                <h4 className="font-extrabold mb-2"><i className="ri-history-fill text-blue-600 mr-2"></i>Backup Log ล่าสุด</h4>
-                {backupLogs.length ? backupLogs.slice(0,5).map((log,idx) => <div key={idx} className="flex justify-between gap-3 text-sm py-2 border-t border-slate-100"><span>{log.type} · ปี {log.academicYear} · {log.total} รายการ</span><span className="text-slate-500">{new Date(log.at).toLocaleString('th-TH')}</span></div>) : <p className="text-sm text-slate-400">ยังไม่มีประวัติการสำรองข้อมูล</p>}
+              <div className="mt-5 rounded-3xl bg-slate-950/55 border border-slate-700 p-4">
+                <h4 className="font-extrabold mb-2"><i className="ri-history-fill text-blue-300 mr-2"></i>Backup Log ล่าสุด</h4>
+                {backupLogs.length ? backupLogs.slice(0,5).map((log,idx) => <div key={idx} className="flex justify-between gap-3 text-sm py-2 border-t border-slate-700"><span className="text-slate-200">{log.type} · ปี {log.academicYear} · {log.total} รายการ</span><span className="text-slate-400">{new Date(log.at).toLocaleString('th-TH')}</span></div>) : <p className="text-sm text-slate-400">ยังไม่มีประวัติการสำรองข้อมูล</p>}
               </div>
             </div>
 
-            <div className="bg-red-50 rounded-[2rem] border border-red-100 p-6">
-              <h3 className="font-extrabold text-xl text-red-800 mb-3"><i className="ri-error-warning-fill mr-2"></i>โซนอันตราย: ล้างข้อมูลรายปี</h3>
-              <p className="text-red-700/80 mb-5">การล้างข้อมูลจะลบเฉพาะสมาชิกปีการศึกษา {year} เท่านั้น ไม่ลบรายชื่อสาขาหรือการตั้งค่าระบบ</p>
-              <label className="flex items-start gap-3 bg-white/80 border border-red-100 rounded-2xl p-4 mb-4 cursor-pointer">
+            <div className="year-card rounded-[2rem] border border-red-500/30 bg-red-950/35 p-5 md:p-6 text-white">
+              <h3 className="font-extrabold text-xl text-red-100 mb-2"><i className="ri-error-warning-fill text-red-300 mr-2"></i>โซนอันตราย: ล้างข้อมูลรายปี</h3>
+              <p className="text-red-100/80 mb-5">การล้างข้อมูลจะลบเฉพาะสมาชิกปีการศึกษา {year} เท่านั้น ไม่ลบรายชื่อสาขา การตั้งค่าระบบ หรือตารางเวร</p>
+              <label className="flex items-start gap-3 bg-slate-950/40 border border-red-400/25 rounded-2xl p-4 mb-4 cursor-pointer">
                 <input type="checkbox" checked={backupConfirmed} onChange={e => setBackupConfirmed(e.target.checked)} className="mt-1 w-5 h-5 accent-red-600" />
-                <span className="text-sm font-bold text-red-800 leading-relaxed">ยืนยันว่าได้ดาวน์โหลด Backup .JSON และ Export CSV ของปีการศึกษา {year} เรียบร้อยแล้ว</span>
+                <span className="text-sm font-bold text-red-50 leading-relaxed">ยืนยันว่าได้ดาวน์โหลด Backup .JSON และ Export CSV ของปีการศึกษา {year} เรียบร้อยแล้ว</span>
               </label>
               <label className="block mb-4">
-                <span className="block text-sm font-bold text-red-800 mb-2">พิมพ์รหัสยืนยัน: {clearCode}</span>
-                <input value={confirmText} onChange={e => setConfirmText(e.target.value)} className="w-full px-4 py-3 rounded-2xl border-2 border-red-100 outline-none focus:border-red-500 font-bold bg-white" placeholder={clearCode} />
+                <span className="block text-sm font-bold text-red-100 mb-2">พิมพ์รหัสยืนยัน: <span className="text-white">{clearCode}</span></span>
+                <input value={confirmText} onChange={e => setConfirmText(e.target.value)} className="w-full px-4 py-3 rounded-2xl border-2 border-red-400/30 outline-none focus:border-red-300 font-extrabold bg-slate-950 text-white placeholder:text-slate-500" placeholder={clearCode} />
               </label>
-              <button disabled={busy || !backupConfirmed || confirmText !== clearCode || selected.length === 0} onClick={clearYear} className="w-full py-4 rounded-2xl bg-red-600 text-white font-extrabold disabled:opacity-40 hover:bg-red-700">
-                {busy ? 'กำลังล้างข้อมูล...' : `ล้างข้อมูลปีการศึกษา ${year}`}
+              <button disabled={busy || !backupConfirmed || confirmText !== clearCode || selected.length === 0} onClick={clearYear} className="w-full py-4 rounded-2xl bg-red-600 text-white font-extrabold disabled:opacity-35 hover:bg-red-700">
+                {busy ? 'กำลังล้างข้อมูล...' : selected.length === 0 ? `ไม่มีข้อมูลปี ${year} ให้ล้าง` : `ล้างข้อมูลปีการศึกษา ${year}`}
               </button>
             </div>
-          </div>
-        </div>
-      );
-    }
-
-    function ImportPage({ currentAcademicYear, majors, onDone }) {
-      const [bulkData, setBulkData] = useState('');
-      const [importing, setImporting] = useState(false);
-      const fileInputRef = useRef(null);
-
-      const importRows = async () => {
-        const rows = bulkData.trim().split('\n').filter(Boolean);
-        if (!rows.length) return alert('กรุณาวางข้อมูลจาก Excel ก่อน');
-        setImporting(true);
-        let count = 0;
-        try {
-          for (const row of rows) {
-            const c = row.split('\t').map(x => x.trim());
-            if (!c[0] || !c[1]) continue;
-            await getStudentsRef().add({
-              studentId: c[0] || '', fullName: c[1] || '', nickname: c[2] || '', phone: c[3] || '',
-              level: c[4] || 'ปวช.1', group: c[5] || '', major: c[6] || majors[0] || '', academicYear: c[7] || currentAcademicYear,
-              gender: c[8] || 'ชาย', lineId: c[9] || '', emergencyPhone: c[10] || '', medicalCondition: c[11] || '-',
-              interest: c[12] || 'ฝ่ายภาพนิ่ง', actualInterest: c[13] || '', equipment: c[14] || 'ใช้มือถือเป็นหลัก', experience: c[15] || 'ระดับเริ่มต้น', reason: c[16] || '', staffNotes: c[17] || '',
-              status: 'active', photo: null, entryMode: 'staff_import', source: 'excel_paste', createdBy: 'เจ้าหน้าที่', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
-            });
-            count++;
-          }
-          alert(`นำเข้าสำเร็จ ${count} รายการ`);
-          setBulkData('');
-          onDone && onDone();
-        } catch (err) { alert('นำเข้าไม่สำเร็จ: ' + err.message); }
-        finally { setImporting(false); }
-      };
-
-      const handleBackupFile = e => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async () => {
-          try {
-            const data = JSON.parse(reader.result);
-            const students = Array.isArray(data.students) ? data.students : [];
-            if (!students.length) return alert('ไม่พบข้อมูล students ในไฟล์ Backup');
-            const ok = confirm(`ต้องการนำเข้า Backup จำนวน ${students.length} รายการหรือไม่?`);
-            if (!ok) return;
-            setImporting(true);
-            for (const item of students) {
-              const copy = { ...item };
-              delete copy.id;
-              await getStudentsRef().add({ ...copy, importedAt: new Date().toISOString(), entryMode: 'json_restore' });
-            }
-            alert('นำเข้า Backup JSON เรียบร้อย');
-            onDone && onDone();
-          } catch (err) { alert('อ่านไฟล์ Backup ไม่สำเร็จ: ' + err.message); }
-          finally { setImporting(false); if (fileInputRef.current) fileInputRef.current.value = ''; }
-        };
-        reader.readAsText(file);
-      };
-
-      return (
-        <div className="grid xl:grid-cols-[1fr_.8fr] gap-5">
-          <div className="bg-slate-950 text-white rounded-[2rem] soft-shadow p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-5"><div className="w-12 h-12 rounded-2xl bg-emerald-500 text-slate-950 flex items-center justify-center text-2xl"><i className="ri-file-excel-2-fill"></i></div><div><h3 className="text-2xl font-extrabold">นำเข้าจาก Excel</h3><p className="text-slate-400">คัดลอกข้อมูลจากตารางแล้ววางลงช่องนี้</p></div></div>
-            <div className="rounded-3xl bg-white/5 border border-white/10 p-4 text-sm text-slate-300 mb-5 leading-relaxed">
-              ลำดับคอลัมน์ที่รองรับ: <span className="text-emerald-300 font-bold">รหัส | ชื่อ-สกุล | ชื่อเล่น | โทร | ระดับ | กลุ่ม | สาขา | ปี | เพศ | Line | เบอร์ฉุกเฉิน | โรคประจำตัว | ฝ่ายสนใจ | ฝ่ายจริง | อุปกรณ์ | ประสบการณ์ | เหตุผล | หมายเหตุ</span>
-            </div>
-            <textarea value={bulkData} onChange={e => setBulkData(e.target.value)} className="w-full h-80 p-5 rounded-3xl bg-slate-900 border-2 border-slate-800 outline-none focus:border-emerald-500 font-mono text-sm text-white resize-none" placeholder="วางข้อมูลจาก Excel ที่นี่..."></textarea>
-            <button disabled={importing || !bulkData.trim()} onClick={importRows} className="mt-5 w-full py-4 rounded-2xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-700 disabled:opacity-40">
-              {importing ? 'กำลังนำเข้า...' : 'นำเข้าข้อมูลเข้าสู่ระบบ'}
-            </button>
-          </div>
-
-          <div className="bg-white rounded-[2rem] soft-shadow border border-white p-6 md:p-8 h-fit">
-            <h3 className="text-2xl font-extrabold mb-3"><i className="ri-upload-cloud-2-fill text-blue-600 mr-2"></i>กู้คืนจาก Backup JSON</h3>
-            <p className="text-slate-500 mb-6">ใช้สำหรับนำไฟล์สำรองรายปีกลับเข้าระบบ หากต้องการเปิดดูข้อมูลเก่าอีกครั้ง</p>
-            <input ref={fileInputRef} type="file" accept=".json,application/json" onChange={handleBackupFile} className="block w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-5 file:rounded-2xl file:border-0 file:bg-blue-600 file:text-white file:font-bold hover:file:bg-blue-700" />
-            <div className="mt-6 rounded-3xl bg-blue-50 border border-blue-100 p-5 text-sm text-blue-800 leading-relaxed"><strong>หมายเหตุ:</strong> การกู้คืน JSON จะเพิ่มข้อมูลเป็นรายการใหม่ ไม่เขียนทับรายการเดิม เพื่อป้องกันข้อมูลหายโดยไม่ตั้งใจ</div>
           </div>
         </div>
       );
@@ -2688,7 +3198,7 @@
       };
       return (
         <div className="grid xl:grid-cols-2 gap-5">
-          <div className="bg-white rounded-[2rem] soft-shadow border border-white p-6 md:p-8">
+          <div className="settings-card bg-white rounded-[2rem] soft-shadow border border-white p-6 md:p-8">
             <h3 className="text-2xl font-extrabold mb-2"><i className="ri-calendar-2-fill text-blue-600 mr-2"></i>ปีการศึกษาปัจจุบัน</h3>
             <p className="text-slate-500 mb-6">หน้าเพิ่มสมาชิกใหม่จะใช้ค่านี้เป็นปีเริ่มต้น</p>
             <div className="flex gap-3">
@@ -2697,7 +3207,7 @@
             </div>
           </div>
 
-          <div className="bg-slate-950 text-white rounded-[2rem] soft-shadow p-6 md:p-8">
+          <div className="settings-card bg-slate-950 text-white rounded-[2rem] soft-shadow p-6 md:p-8">
             <h3 className="text-2xl font-extrabold mb-2"><i className="ri-school-fill text-blue-300 mr-2"></i>รายชื่อสาขาวิชา</h3>
             <p className="text-slate-400 mb-6">เพิ่ม/ลบสาขาที่ใช้ในฟอร์มคีย์ข้อมูล</p>
             <div className="flex gap-3 mb-6">
@@ -2726,7 +3236,7 @@
         ['เริ่มปีใหม่', 'ตั้งค่าปีการศึกษาปัจจุบันในเมนูตั้งค่าระบบ แล้วเริ่มคีย์ข้อมูลรุ่นใหม่']
       ];
       return (
-        <div className="bg-white rounded-[2rem] soft-shadow border border-white p-6 md:p-8">
+        <div className="manual-card bg-white rounded-[2rem] soft-shadow border border-white p-6 md:p-8">
           <h3 className="text-2xl font-extrabold mb-2"><i className="ri-book-open-fill text-blue-600 mr-2"></i>คู่มือเจ้าหน้าที่แบบย่อ</h3>
           <p className="text-slate-500 mb-6">ขั้นตอนนี้ออกแบบสำหรับการใช้งานภายในศูนย์ โดยเจ้าหน้าที่เป็นผู้คีย์และควบคุมข้อมูลทั้งหมด</p>
           <div className="grid md:grid-cols-2 gap-4">
