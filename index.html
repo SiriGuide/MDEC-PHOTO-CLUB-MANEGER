@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Registry v34 Remove Excel Import</title>
+  <title>MDEC Photo Club Registry v36 Dashboard Unified Issue Colors</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -741,22 +741,32 @@
     }
 
     function normalizeDutyRoles(roleDefs, roleSlots) {
-      const source = Array.isArray(roleDefs) && roleDefs.length ? roleDefs : dutyRoles;
+      const hasCustomRoles = Array.isArray(roleDefs);
+      const source = hasCustomRoles ? roleDefs : dutyRoles;
       const seen = new Set();
       const roles = source.map((role, idx) => {
         const fallbackKey = dutyRoles[idx]?.key || `role_${idx + 1}`;
         let key = safeRoleKey(role?.key, fallbackKey);
         if (seen.has(key)) key = `${key}_${idx + 1}`;
         seen.add(key);
-        const title = String(role?.title || role?.shortTitle || dutyRoles[idx]?.title || `ตำแหน่งที่ ${idx + 1}`).trim();
-        const shortTitle = String(role?.shortTitle || title).trim();
+
+        // สำคัญ: ถ้าผู้ใช้ลบชื่อตำแหน่งให้เป็นค่าว่าง ต้องคงค่าว่างไว้
+        // ไม่ fallback กลับไปเป็นค่าเริ่มต้น ไม่งั้นพิมพ์ลบแล้วมันจะเด้งกลับมาเอง
+        const hasTitleValue = Object.prototype.hasOwnProperty.call(role || {}, 'title');
+        const hasShortTitleValue = Object.prototype.hasOwnProperty.call(role || {}, 'shortTitle');
+        const fallbackTitle = dutyRoles[idx]?.title || `ตำแหน่งที่ ${idx + 1}`;
+        const title = hasTitleValue ? String(role?.title ?? '').trim() : String(role?.shortTitle || fallbackTitle).trim();
+        const shortTitle = hasShortTitleValue ? String(role?.shortTitle ?? '').trim() : String(title || fallbackTitle).trim();
         const icon = role?.icon || dutyRoleIcons[idx % dutyRoleIcons.length];
         const tone = dutyRoleTones.includes(role?.tone) ? role.tone : dutyRoleTones[idx % dutyRoleTones.length];
         const rawSlots = Number(roleSlots?.[key] ?? role?.slots ?? dutyRoles[idx]?.slots ?? 1);
         const slots = Math.max(0, Math.min(10, Number.isFinite(rawSlots) ? Math.round(rawSlots) : 1));
         return { key, title, shortTitle, icon, tone, slots };
-      }).filter(role => role.title);
-      return roles.length ? roles : defaultDutyRoleDefs();
+      });
+
+      // ถ้าเป็นข้อมูล custom จากฟอร์ม ให้คืนตามจริง แม้ชื่อจะว่าง เพื่อให้แก้ไขได้ไม่เด้งกลับ
+      // ถ้าไม่ได้ส่ง roleDefs มาเลย ค่อยใช้ค่าเริ่มต้น
+      return hasCustomRoles ? roles : (roles.length ? roles : defaultDutyRoleDefs());
     }
 
     function getDutyRoles(source) {
@@ -1668,6 +1678,8 @@
       const handleSave = async (e) => {
         e.preventDefault();
         if (!form.date) return alert('กรุณาเลือกสัปดาห์');
+        const invalidRoles = formRoles.filter(role => !String(role.title || '').trim());
+        if (invalidRoles.length) return alert('กรุณาใส่ชื่อตำแหน่งให้ครบ หรือกดปุ่มลบตำแหน่งที่ไม่ต้องการออกก่อนบันทึก');
         const weeklyAssignments = buildWeeklySnapshot();
         const assignedCount = countAssignedInWeekly(weeklyAssignments, formRoles);
         if (!assignedCount) return alert('กรุณาเลือกนักศึกษาอย่างน้อย 1 หน้าที่');
@@ -2852,21 +2864,21 @@
       const activeRate = Math.round((stats.active / total) * 100);
 
       const issueCards = [
-        { key: 'incomplete', title: 'ข้อมูลไม่ครบ', count: stats.incomplete, icon: 'ri-error-warning-fill', accent: 'amber', desc: 'ข้อมูลสำคัญยังกรอกไม่ครบ' },
-        { key: 'noPhoto', title: 'ไม่มีรูปถ่าย', count: stats.noPhoto, icon: 'ri-image-fill', accent: 'rose', desc: 'ยังไม่มีรูปโปรไฟล์ในระบบ' },
-        { key: 'noPhone', title: 'ไม่มีเบอร์โทร', count: stats.noPhone, icon: 'ri-phone-fill', accent: 'orange', desc: 'ควรมีเบอร์ติดต่ออย่างน้อย 1 เบอร์' },
-        { key: 'noLine', title: 'ไม่มี Line ID', count: stats.noLine, icon: 'ri-chat-1-fill', accent: 'emerald', desc: 'ใช้ติดต่อและประสานงาน' },
-        { key: 'noEmergency', title: 'ไม่มีเบอร์ฉุกเฉิน', count: stats.noEmergency, icon: 'ri-alarm-warning-fill', accent: 'violet', desc: 'ข้อมูลสำคัญกรณีฉุกเฉิน' },
+        { key: 'incomplete', title: 'ข้อมูลไม่ครบ', count: stats.incomplete, icon: 'ri-error-warning-fill', accent: 'blue', desc: 'ข้อมูลสำคัญยังกรอกไม่ครบ' },
+        { key: 'noPhoto', title: 'ไม่มีรูปถ่าย', count: stats.noPhoto, icon: 'ri-image-fill', accent: 'blue', desc: 'ยังไม่มีรูปโปรไฟล์ในระบบ' },
+        { key: 'noPhone', title: 'ไม่มีเบอร์โทร', count: stats.noPhone, icon: 'ri-phone-fill', accent: 'blue', desc: 'ควรมีเบอร์ติดต่ออย่างน้อย 1 เบอร์' },
+        { key: 'noLine', title: 'ไม่มี Line ID', count: stats.noLine, icon: 'ri-chat-1-fill', accent: 'blue', desc: 'ใช้ติดต่อและประสานงาน' },
+        { key: 'noEmergency', title: 'ไม่มีเบอร์ฉุกเฉิน', count: stats.noEmergency, icon: 'ri-alarm-warning-fill', accent: 'blue', desc: 'ข้อมูลสำคัญกรณีฉุกเฉิน' },
         { key: 'noActualInterest', title: 'ยังไม่กำหนดฝ่ายจริง', count: stats.noActualInterest, icon: 'ri-briefcase-4-fill', accent: 'blue', desc: 'ยังไม่ได้สรุปบทบาทปฏิบัติงานจริง' }
       ];
 
       const accentStyles = {
-        amber: { stripe: 'bg-amber-400', icon: 'bg-amber-50 text-amber-600', num: 'text-slate-950', chip: 'bg-amber-50 text-amber-700 border-amber-100' },
-        rose: { stripe: 'bg-rose-400', icon: 'bg-rose-50 text-rose-600', num: 'text-slate-950', chip: 'bg-rose-50 text-rose-700 border-rose-100' },
-        orange: { stripe: 'bg-orange-400', icon: 'bg-orange-50 text-orange-600', num: 'text-slate-950', chip: 'bg-orange-50 text-orange-700 border-orange-100' },
-        emerald: { stripe: 'bg-emerald-400', icon: 'bg-emerald-50 text-emerald-600', num: 'text-slate-950', chip: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
-        violet: { stripe: 'bg-violet-400', icon: 'bg-violet-50 text-violet-600', num: 'text-slate-950', chip: 'bg-violet-50 text-violet-700 border-violet-100' },
-        blue: { stripe: 'bg-blue-400', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' }
+        amber: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
+        rose: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
+        orange: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
+        emerald: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
+        violet: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
+        blue: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' }
       };
 
       const statCards = [
@@ -2877,16 +2889,16 @@
       ];
 
       const progressCards = [
-        { title: 'ข้อมูลสมบูรณ์', subtitle: 'กรอกข้อมูลหลักครบ', value: completenessRate, icon: 'ri-checkbox-circle-fill', iconWrap: 'bg-emerald-50 text-emerald-700', bar: 'bg-emerald-500' },
+        { title: 'ข้อมูลสมบูรณ์', subtitle: 'กรอกข้อมูลหลักครบ', value: completenessRate, icon: 'ri-checkbox-circle-fill', iconWrap: 'bg-blue-50 text-blue-700', bar: 'bg-blue-500' },
         { title: 'อัตรามีรูปถ่าย', subtitle: 'ช่วยให้ค้นหาง่ายขึ้น', value: photoRate, icon: 'ri-image-fill', iconWrap: 'bg-blue-50 text-blue-700', bar: 'bg-blue-500' },
-        { title: 'สมาชิกปัจจุบัน', subtitle: 'สถานะกำลังใช้งาน', value: activeRate, icon: 'ri-user-star-fill', iconWrap: 'bg-indigo-50 text-indigo-700', bar: 'bg-indigo-500' }
+        { title: 'สมาชิกปัจจุบัน', subtitle: 'สถานะกำลังใช้งาน', value: activeRate, icon: 'ri-user-star-fill', iconWrap: 'bg-blue-50 text-blue-700', bar: 'bg-blue-500' }
       ];
 
       const statusItems = [
         { label: 'กำลังศึกษา / ใช้งาน', value: stats.active, tone: 'bg-blue-500' },
-        { label: 'พักกิจกรรม', value: stats.paused, tone: 'bg-sky-500' },
-        { label: 'จบแล้ว', value: stats.graduated, tone: 'bg-indigo-500' },
-        { label: 'พ้นสภาพ', value: stats.dismissed, tone: 'bg-slate-500' }
+        { label: 'พักกิจกรรม', value: stats.paused, tone: 'bg-blue-500' },
+        { label: 'จบแล้ว', value: stats.graduated, tone: 'bg-blue-500' },
+        { label: 'พ้นสภาพ', value: stats.dismissed, tone: 'bg-blue-500' }
       ];
 
       return (
@@ -2899,7 +2911,7 @@
                   <i className="ri-pie-chart-2-fill"></i> Dashboard Overview
                 </div>
                 <h3 className="text-3xl font-black text-slate-950 leading-tight">สรุปยอดสมาชิกชมรม</h3>
-                <p className="text-slate-500 mt-2 max-w-3xl">ผมปรับโทนสีให้ไปในแนวเดียวกันมากขึ้น เน้นขาว + น้ำเงิน + เทา แล้วใช้สีอื่นเป็นเพียงสีบอกสถานะเท่านั้น</p>
+                <p className="text-slate-500 mt-2 max-w-3xl">คุมโทนสีให้เหมือนกันมากขึ้น เน้นขาว + น้ำเงิน + เทา เพื่อให้หน้าสรุปยอดดูเป็นชุดเดียวกัน</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
                 <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3">
@@ -2934,7 +2946,7 @@
                 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
                   <div>
                     <h3 className="text-xl font-black text-slate-950"><i className="ri-search-eye-fill text-blue-600 mr-2"></i>จุดที่ควรตรวจสอบ</h3>
-                    <p className="text-sm text-slate-500 mt-1">พื้นหลังทุกการ์ดถูกทำให้เหมือนกัน แล้วใช้แค่แถบสี/ไอคอนเพื่อบอกประเภทปัญหา</p>
+                    <p className="text-sm text-slate-500 mt-1">ทุกการ์ดใช้โทนเดียวกัน เพื่อให้มองง่ายและไม่รู้สึกว่าสีกระโดด</p>
                   </div>
                   <div className="text-xs font-bold text-slate-400">คลิกการ์ดเพื่อเปิดฐานข้อมูลพร้อมตัวกรองอัตโนมัติ</div>
                 </div>
