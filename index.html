@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Registry v36 Dashboard Unified Issue Colors</title>
+  <title>MDEC Photo Club Registry v37 Duty Student Search</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -1465,6 +1465,7 @@
       const [editingId, setEditingId] = useState(null);
       const [saving, setSaving] = useState(false);
       const [isPrinting, setIsPrinting] = useState(false);
+      const [studentPicker, setStudentPicker] = useState({ open:false, dayKey:'', roleKey:'', slot:0, query:'' });
 
       useEffect(() => {
         const unsub = getDutyRef().onSnapshot(snapshot => {
@@ -1498,6 +1499,36 @@
       const formRoles = useMemo(() => normalizeDutyRoles(form.roleDefs, form.roleSlots), [form.roleDefs, form.roleSlots]);
       const duplicateIds = useMemo(() => duplicateStudentIdsInWeekly(form.weeklyAssignments, formRoles), [form.weeklyAssignments, formRoles]);
       const duplicateNames = duplicateIds.map(id => studentMap.get(id)).filter(Boolean).map(s => `${s.nickname || s.fullName || '-'} (${s.level || '-'} / ${s.group || '-'})`);
+      const pickerSelectedId = studentPicker.open ? ((form.weeklyAssignments?.[studentPicker.dayKey]?.[studentPicker.roleKey] || [])[studentPicker.slot] || '') : '';
+      const pickerSelectedStudent = pickerSelectedId ? studentMap.get(pickerSelectedId) : null;
+      const pickerResults = useMemo(() => {
+        const q = String(studentPicker.query || '').trim().toLowerCase();
+        if (!q) return activeStudents;
+        return activeStudents.filter(s => [s.studentId, s.fullName, s.nickname, s.level, s.group, s.major].filter(Boolean).join(' ').toLowerCase().includes(q));
+      }, [activeStudents, studentPicker.query]);
+
+      const openStudentPicker = (dayKey, roleKey, slot) => {
+        setStudentPicker({ open:true, dayKey, roleKey, slot, query:'' });
+      };
+
+      const closeStudentPicker = () => {
+        setStudentPicker(prev => ({ ...prev, open:false, query:'' }));
+      };
+
+      const chooseStudentForPicker = (studentId) => {
+        if (!studentPicker.open) return;
+        setAssignment(studentPicker.dayKey, studentPicker.roleKey, studentPicker.slot, studentId);
+        closeStudentPicker();
+      };
+
+      useEffect(() => {
+        if (!studentPicker.open) return;
+        const onKeyDown = (e) => {
+          if (e.key === 'Escape') closeStudentPicker();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+      }, [studentPicker.open]);
 
       const visibleDuties = useMemo(() => {
         const q = search.trim().toLowerCase();
@@ -1905,12 +1936,48 @@
                             <div className="space-y-2">
                               {slots === 0 ? (
                                 <div className="rounded-2xl bg-slate-100 text-slate-500 px-4 py-3 font-bold text-sm text-center">ปิดหน้าที่นี้ในสัปดาห์นี้</div>
-                              ) : Array.from({ length: slots }).map((_, idx) => (
-                                <select key={idx} value={(form.weeklyAssignments?.[day.key]?.[role.key] || [])[idx] || ''} onChange={e => setAssignment(day.key, role.key, idx, e.target.value)} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-100 outline-none focus:border-blue-500 font-bold">
-                                  <option value="">{slots > 1 ? `เลือกคนที่ ${idx + 1}` : 'เลือกนักศึกษา'}</option>
-                                  {activeStudents.map(s => <option key={s.id} value={s.id}>{s.studentId || '-'} · {studentDutyName(s)}</option>)}
-                                </select>
-                              ))}
+                              ) : Array.from({ length: slots }).map((_, idx) => {
+                                const selectedId = (form.weeklyAssignments?.[day.key]?.[role.key] || [])[idx] || '';
+                                const selectedStudent = selectedId ? studentMap.get(selectedId) : null;
+                                return (
+                                  <div key={idx} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                                    <div className="flex items-center justify-between gap-2 mb-2">
+                                      <div className="text-xs font-bold text-slate-500">{slots > 1 ? `คนที่ ${idx + 1}` : 'ผู้รับผิดชอบ'}</div>
+                                      {selectedId ? (
+                                        <button type="button" onClick={() => setAssignment(day.key, role.key, idx, '')} className="px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-100 text-[11px] font-extrabold">ล้างชื่อ</button>
+                                      ) : (
+                                        <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 text-[11px] font-extrabold">ยังไม่ได้เลือก</span>
+                                      )}
+                                    </div>
+
+                                    <button type="button" onClick={() => openStudentPicker(day.key, role.key, idx)} className="w-full text-left rounded-2xl bg-white border-2 border-slate-200 hover:border-blue-400 focus:border-blue-500 outline-none px-4 py-3 transition">
+                                      {selectedStudent ? (
+                                        <div className="flex items-center gap-3">
+                                          {selectedStudent.photo ? (
+                                            <img src={selectedStudent.photo} alt={studentDutyName(selectedStudent)} className="w-12 h-12 rounded-2xl object-cover border border-slate-200 shrink-0" />
+                                          ) : (
+                                            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg font-black shrink-0">{String((selectedStudent.nickname || selectedStudent.fullName || '?')).trim().charAt(0) || '?'}</div>
+                                          )}
+                                          <div className="min-w-0 flex-1">
+                                            <div className="font-extrabold text-slate-950 truncate">{studentDutyName(selectedStudent)}</div>
+                                            <div className="text-xs text-slate-500 truncate">{selectedStudent.studentId || '-'} • {selectedStudent.level || '-'} / {selectedStudent.group || '-'}{selectedStudent.major ? ` • ${selectedStudent.major}` : ''}</div>
+                                          </div>
+                                          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0"><i className="ri-search-line text-lg"></i></div>
+                                        </div>
+                                      ) : (
+                                        <div className="flex items-center gap-3">
+                                          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0"><i className="ri-user-search-fill"></i></div>
+                                          <div className="min-w-0 flex-1">
+                                            <div className="font-extrabold text-slate-800">ค้นหา / เลือกนักศึกษา</div>
+                                            <div className="text-xs text-slate-500">พิมพ์ชื่อเล่น ชื่อจริง หรือรหัสนักศึกษาได้</div>
+                                          </div>
+                                          <i className="ri-arrow-right-s-line text-slate-400 text-xl"></i>
+                                        </div>
+                                      )}
+                                    </button>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </div>
                         );
@@ -1986,6 +2053,73 @@
               </div>
             ) : <div className="p-12 text-center rounded-3xl bg-slate-50 border border-slate-100 text-slate-500 font-bold">ยังไม่มีตารางเวรตามเงื่อนไขที่เลือก</div>}
           </div>
+
+          {studentPicker.open && (
+            <div className="fixed inset-0 z-[95] bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="w-full max-w-4xl max-h-[88vh] rounded-[2rem] bg-white border border-slate-200 shadow-2xl overflow-hidden">
+                <div className="px-5 md:px-6 py-5 border-b border-slate-100 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                  <div>
+                    <h3 className="text-2xl font-extrabold text-slate-950"><i className="ri-user-search-fill text-blue-600 mr-2"></i>ค้นหารายชื่อนักศึกษา</h3>
+                    <p className="text-slate-500 mt-1">ช่วยเลือกชื่อได้เร็วขึ้น ไม่ต้องเลื่อนหาจากรายชื่อยาว ๆ</p>
+                  </div>
+                  <button type="button" onClick={closeStudentPicker} className="px-4 py-2 rounded-2xl bg-slate-100 text-slate-700 font-bold self-start">ปิด</button>
+                </div>
+
+                <div className="px-5 md:px-6 py-4 border-b border-slate-100 bg-slate-50">
+                  <div className="relative">
+                    <i className="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                    <input autoFocus value={studentPicker.query} onChange={e => setStudentPicker(prev => ({ ...prev, query: e.target.value }))} placeholder="ค้นหาจากรหัสนักศึกษา ชื่อจริง ชื่อเล่น ระดับชั้น กลุ่ม หรือสาขา" className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900 bg-white" />
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="px-3 py-2 rounded-full bg-blue-50 text-blue-700 border border-blue-100 text-xs font-extrabold">พบ {pickerResults.length} คน</div>
+                    {pickerSelectedStudent ? (
+                      <div className="px-3 py-2 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-extrabold">กำลังเลือกอยู่: {studentDutyName(pickerSelectedStudent)}</div>
+                    ) : (
+                      <div className="px-3 py-2 rounded-full bg-slate-100 text-slate-500 border border-slate-200 text-xs font-extrabold">ยังไม่ได้เลือกชื่อในช่องนี้</div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="p-5 md:p-6 max-h-[56vh] overflow-y-auto bg-slate-50/70">
+                  {pickerResults.length ? (
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {pickerResults.map(s => {
+                        const isActive = pickerSelectedId === s.id;
+                        return (
+                          <button type="button" key={s.id} onClick={() => chooseStudentForPicker(s.id)} className={`text-left rounded-2xl border p-4 bg-white transition hover:-translate-y-0.5 hover:shadow-md ${isActive ? 'border-blue-500 ring-2 ring-blue-100' : 'border-slate-200 hover:border-blue-300'}`}>
+                            <div className="flex items-center gap-3">
+                              {s.photo ? (
+                                <img src={s.photo} alt={studentDutyName(s)} className="w-14 h-14 rounded-2xl object-cover border border-slate-200 shrink-0" />
+                              ) : (
+                                <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl font-black shrink-0">{String((s.nickname || s.fullName || '?')).trim().charAt(0) || '?'}</div>
+                              )}
+                              <div className="min-w-0 flex-1">
+                                <div className="font-extrabold text-slate-950 truncate">{studentDutyName(s)}</div>
+                                <div className="text-sm text-slate-500 truncate">รหัส {s.studentId || '-'} • {s.level || '-'} / {s.group || '-'}</div>
+                                <div className="text-xs text-slate-400 truncate">{s.major || '-'}{s.actualInterest ? ` • ${s.actualInterest}` : ''}</div>
+                              </div>
+                              {isActive && <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0"><i className="ri-check-line text-lg"></i></div>}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
+                      <div className="w-16 h-16 mx-auto rounded-3xl bg-slate-100 text-slate-500 flex items-center justify-center text-3xl mb-4"><i className="ri-search-eye-line"></i></div>
+                      <div className="text-lg font-extrabold text-slate-900">ไม่พบรายชื่อที่ค้นหา</div>
+                      <div className="text-sm text-slate-500 mt-2">ลองพิมพ์ชื่อจริง ชื่อเล่น หรือรหัสนักศึกษาใหม่อีกครั้ง</div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="px-5 md:px-6 py-4 border-t border-slate-100 bg-white flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                  <button type="button" onClick={() => { setAssignment(studentPicker.dayKey, studentPicker.roleKey, studentPicker.slot, ''); closeStudentPicker(); }} className="px-4 py-3 rounded-2xl bg-rose-50 text-rose-700 border border-rose-100 font-bold">ล้างชื่อในช่องนี้</button>
+                  <div className="text-xs text-slate-400 font-bold">เคล็ดลับ: กดปุ่ม ESC เพื่อปิดหน้าค้นหาได้</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {isPrinting && ReactDOM.createPortal(<PrintDutySchedule duties={visibleDuties} yearText={year === 'all' ? 'ทุกปีการศึกษา' : year} onClose={() => setIsPrinting(false)} />, document.body)}
         </div>
@@ -2864,21 +2998,21 @@
       const activeRate = Math.round((stats.active / total) * 100);
 
       const issueCards = [
-        { key: 'incomplete', title: 'ข้อมูลไม่ครบ', count: stats.incomplete, icon: 'ri-error-warning-fill', accent: 'blue', desc: 'ข้อมูลสำคัญยังกรอกไม่ครบ' },
-        { key: 'noPhoto', title: 'ไม่มีรูปถ่าย', count: stats.noPhoto, icon: 'ri-image-fill', accent: 'blue', desc: 'ยังไม่มีรูปโปรไฟล์ในระบบ' },
-        { key: 'noPhone', title: 'ไม่มีเบอร์โทร', count: stats.noPhone, icon: 'ri-phone-fill', accent: 'blue', desc: 'ควรมีเบอร์ติดต่ออย่างน้อย 1 เบอร์' },
-        { key: 'noLine', title: 'ไม่มี Line ID', count: stats.noLine, icon: 'ri-chat-1-fill', accent: 'blue', desc: 'ใช้ติดต่อและประสานงาน' },
-        { key: 'noEmergency', title: 'ไม่มีเบอร์ฉุกเฉิน', count: stats.noEmergency, icon: 'ri-alarm-warning-fill', accent: 'blue', desc: 'ข้อมูลสำคัญกรณีฉุกเฉิน' },
+        { key: 'incomplete', title: 'ข้อมูลไม่ครบ', count: stats.incomplete, icon: 'ri-error-warning-fill', accent: 'amber', desc: 'ข้อมูลสำคัญยังกรอกไม่ครบ' },
+        { key: 'noPhoto', title: 'ไม่มีรูปถ่าย', count: stats.noPhoto, icon: 'ri-image-fill', accent: 'rose', desc: 'ยังไม่มีรูปโปรไฟล์ในระบบ' },
+        { key: 'noPhone', title: 'ไม่มีเบอร์โทร', count: stats.noPhone, icon: 'ri-phone-fill', accent: 'orange', desc: 'ควรมีเบอร์ติดต่ออย่างน้อย 1 เบอร์' },
+        { key: 'noLine', title: 'ไม่มี Line ID', count: stats.noLine, icon: 'ri-chat-1-fill', accent: 'emerald', desc: 'ใช้ติดต่อและประสานงาน' },
+        { key: 'noEmergency', title: 'ไม่มีเบอร์ฉุกเฉิน', count: stats.noEmergency, icon: 'ri-alarm-warning-fill', accent: 'violet', desc: 'ข้อมูลสำคัญกรณีฉุกเฉิน' },
         { key: 'noActualInterest', title: 'ยังไม่กำหนดฝ่ายจริง', count: stats.noActualInterest, icon: 'ri-briefcase-4-fill', accent: 'blue', desc: 'ยังไม่ได้สรุปบทบาทปฏิบัติงานจริง' }
       ];
 
       const accentStyles = {
-        amber: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
-        rose: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
-        orange: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
-        emerald: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
-        violet: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' },
-        blue: { stripe: 'bg-blue-500', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' }
+        amber: { stripe: 'bg-amber-400', icon: 'bg-amber-50 text-amber-600', num: 'text-slate-950', chip: 'bg-amber-50 text-amber-700 border-amber-100' },
+        rose: { stripe: 'bg-rose-400', icon: 'bg-rose-50 text-rose-600', num: 'text-slate-950', chip: 'bg-rose-50 text-rose-700 border-rose-100' },
+        orange: { stripe: 'bg-orange-400', icon: 'bg-orange-50 text-orange-600', num: 'text-slate-950', chip: 'bg-orange-50 text-orange-700 border-orange-100' },
+        emerald: { stripe: 'bg-emerald-400', icon: 'bg-emerald-50 text-emerald-600', num: 'text-slate-950', chip: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
+        violet: { stripe: 'bg-violet-400', icon: 'bg-violet-50 text-violet-600', num: 'text-slate-950', chip: 'bg-violet-50 text-violet-700 border-violet-100' },
+        blue: { stripe: 'bg-blue-400', icon: 'bg-blue-50 text-blue-600', num: 'text-slate-950', chip: 'bg-blue-50 text-blue-700 border-blue-100' }
       };
 
       const statCards = [
@@ -2889,16 +3023,16 @@
       ];
 
       const progressCards = [
-        { title: 'ข้อมูลสมบูรณ์', subtitle: 'กรอกข้อมูลหลักครบ', value: completenessRate, icon: 'ri-checkbox-circle-fill', iconWrap: 'bg-blue-50 text-blue-700', bar: 'bg-blue-500' },
+        { title: 'ข้อมูลสมบูรณ์', subtitle: 'กรอกข้อมูลหลักครบ', value: completenessRate, icon: 'ri-checkbox-circle-fill', iconWrap: 'bg-emerald-50 text-emerald-700', bar: 'bg-emerald-500' },
         { title: 'อัตรามีรูปถ่าย', subtitle: 'ช่วยให้ค้นหาง่ายขึ้น', value: photoRate, icon: 'ri-image-fill', iconWrap: 'bg-blue-50 text-blue-700', bar: 'bg-blue-500' },
-        { title: 'สมาชิกปัจจุบัน', subtitle: 'สถานะกำลังใช้งาน', value: activeRate, icon: 'ri-user-star-fill', iconWrap: 'bg-blue-50 text-blue-700', bar: 'bg-blue-500' }
+        { title: 'สมาชิกปัจจุบัน', subtitle: 'สถานะกำลังใช้งาน', value: activeRate, icon: 'ri-user-star-fill', iconWrap: 'bg-indigo-50 text-indigo-700', bar: 'bg-indigo-500' }
       ];
 
       const statusItems = [
         { label: 'กำลังศึกษา / ใช้งาน', value: stats.active, tone: 'bg-blue-500' },
-        { label: 'พักกิจกรรม', value: stats.paused, tone: 'bg-blue-500' },
-        { label: 'จบแล้ว', value: stats.graduated, tone: 'bg-blue-500' },
-        { label: 'พ้นสภาพ', value: stats.dismissed, tone: 'bg-blue-500' }
+        { label: 'พักกิจกรรม', value: stats.paused, tone: 'bg-sky-500' },
+        { label: 'จบแล้ว', value: stats.graduated, tone: 'bg-indigo-500' },
+        { label: 'พ้นสภาพ', value: stats.dismissed, tone: 'bg-slate-500' }
       ];
 
       return (
@@ -2911,7 +3045,7 @@
                   <i className="ri-pie-chart-2-fill"></i> Dashboard Overview
                 </div>
                 <h3 className="text-3xl font-black text-slate-950 leading-tight">สรุปยอดสมาชิกชมรม</h3>
-                <p className="text-slate-500 mt-2 max-w-3xl">คุมโทนสีให้เหมือนกันมากขึ้น เน้นขาว + น้ำเงิน + เทา เพื่อให้หน้าสรุปยอดดูเป็นชุดเดียวกัน</p>
+                <p className="text-slate-500 mt-2 max-w-3xl">ผมปรับโทนสีให้ไปในแนวเดียวกันมากขึ้น เน้นขาว + น้ำเงิน + เทา แล้วใช้สีอื่นเป็นเพียงสีบอกสถานะเท่านั้น</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
                 <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3">
@@ -2946,7 +3080,7 @@
                 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
                   <div>
                     <h3 className="text-xl font-black text-slate-950"><i className="ri-search-eye-fill text-blue-600 mr-2"></i>จุดที่ควรตรวจสอบ</h3>
-                    <p className="text-sm text-slate-500 mt-1">ทุกการ์ดใช้โทนเดียวกัน เพื่อให้มองง่ายและไม่รู้สึกว่าสีกระโดด</p>
+                    <p className="text-sm text-slate-500 mt-1">พื้นหลังทุกการ์ดถูกทำให้เหมือนกัน แล้วใช้แค่แถบสี/ไอคอนเพื่อบอกประเภทปัญหา</p>
                   </div>
                   <div className="text-xs font-bold text-slate-400">คลิกการ์ดเพื่อเปิดฐานข้อมูลพร้อมตัวกรองอัตโนมัติ</div>
                 </div>
