@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v64 Print Name List</title>
+  <title>MDEC Photo Club Center v65 Fix Council White Screen</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -3540,6 +3540,30 @@
       ];
       const barColor = capacity.status === 'danger' ? 'bg-rose-500' : capacity.status === 'warning' ? 'bg-amber-400' : capacity.status === 'watch' ? 'bg-blue-400' : 'bg-emerald-400';
       return <div className="space-y-5 council-audit-page"><section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7"><p className="text-xs font-extrabold tracking-[0.22em] text-blue-200 uppercase mb-2">System Health Check</p><h3 className="text-3xl md:text-4xl font-black">ตรวจตรวจสุขภาพระบบ</h3><p className="text-blue-100 mt-2">กดหน้านี้เพื่อดูทันทีว่าข้อมูลพร้อมใช้แค่ไหน ฐานข้อมูลใกล้เต็มไหม และมีอะไรต้องแก้ก่อนเปิดเทอม/ปิดปี</p></section><section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4"><div><h3 className="text-xl font-black text-slate-950">หลอดสถานะฐานข้อมูล</h3><p className="text-sm text-slate-500">ประมาณการจากข้อมูลที่เว็บอ่านได้ทั้งหมด</p></div><label className="block"><span className="text-xs font-extrabold text-slate-500">เพดานเตือน MB</span><input type="number" value={limitMb} onChange={e => { const v=Math.max(10, Number(e.target.value)||900); setLimitMb(v); localStorage.setItem('mdec_db_usage_limit_mb', String(v)); }} className="block mt-1 px-4 py-3 rounded-2xl bg-white border border-slate-200 font-bold text-slate-900"/></label></div><div className="mt-5 flex items-end justify-between"><div><div className="text-5xl font-black text-slate-950">{capacity.percent}%</div><div className="text-sm font-bold text-slate-500">{capacity.text}</div></div><div className="text-right text-sm text-slate-500 font-bold">ประมาณ {(capacity.estimatedBytes/1024/1024).toFixed(2)} MB / {limitMb} MB</div></div><div className="mt-4 h-5 rounded-full bg-slate-100 overflow-hidden"><div className={`h-full rounded-full ${barColor}`} style={{ width: `${Math.min(capacity.percent, 100)}%` }}></div></div></section><section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{issues.map(item => <button key={item.title} onClick={() => onNavigate(item.action)} className="text-left rounded-[1.6rem] bg-white border border-slate-200 soft-shadow p-5 hover:-translate-y-0.5 transition"><div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl mb-4"><i className={item.icon}></i></div><p className="font-black text-slate-950">{item.title}</p><p className="text-4xl font-black text-blue-600 mt-2">{item.value}</p><p className="text-xs text-slate-500 font-bold mt-2">กดเพื่อไปจัดการ</p></button>)}</section></div>;
+    }
+
+
+    function councilIconOptions() {
+      return ['ri-vip-crown-fill','ri-user-star-fill','ri-file-list-3-fill','ri-wallet-3-fill','ri-camera-3-fill','ri-video-on-fill','ri-megaphone-fill','ri-group-fill','ri-brush-fill','ri-mic-fill','ri-calendar-check-fill','ri-shield-star-fill','ri-star-smile-fill','ri-user-settings-fill'];
+    }
+
+    function defaultCouncilRoles() {
+      return [
+        { key:'president', title:'ประธานชมรม', subtitle:'ตัวแทนหลักของชมรม', icon:'ri-vip-crown-fill', studentId:'', note:'' },
+        { key:'vice_president', title:'รองประธานชมรม', subtitle:'ช่วยดูแลและประสานงานชมรม', icon:'ri-user-star-fill', studentId:'', note:'' },
+        { key:'secretary', title:'เลขานุการ', subtitle:'ดูแลเอกสารและการนัดหมาย', icon:'ri-file-list-3-fill', studentId:'', note:'' },
+        { key:'treasurer', title:'เหรัญญิก', subtitle:'ดูแลอุปกรณ์/งบประมาณเบื้องต้น', icon:'ri-wallet-3-fill', studentId:'', note:'' },
+        { key:'media_lead', title:'หัวหน้าฝ่ายภาพนิ่ง', subtitle:'ดูแลทีมถ่ายภาพกิจกรรม', icon:'ri-camera-3-fill', studentId:'', note:'' },
+        { key:'video_lead', title:'หัวหน้าฝ่ายวิดีโอ', subtitle:'ดูแลทีมวิดีโอและคลิปกิจกรรม', icon:'ri-video-on-fill', studentId:'', note:'' }
+      ];
+    }
+
+    function defaultElectionPositions() {
+      return [
+        { key:'president_vote', title:'ประธานชมรม', icon:'ri-vip-crown-fill', seats:1, candidates:[] },
+        { key:'vice_vote', title:'รองประธานชมรม', icon:'ri-user-star-fill', seats:1, candidates:[] },
+        { key:'secretary_vote', title:'เลขานุการ', icon:'ri-file-list-3-fill', seats:1, candidates:[] }
+      ];
     }
 
     function ClubCouncilPage({ students, currentAcademicYear, yearsList }) {
