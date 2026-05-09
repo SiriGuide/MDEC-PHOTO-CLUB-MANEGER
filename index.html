@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v54 Remove Duty Image Download</title>
+  <title>MDEC Photo Club Center v64 Print Name List</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -1098,6 +1098,844 @@
       border-color: rgba(148, 163, 184, .55) !important;
     }
   </style>
+
+  <style id="v56-duty-attendance-mobile">
+    .duty-attendance-modal input,
+    .duty-attendance-modal select,
+    .duty-attendance-modal textarea {
+      background: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: rgba(71,85,105,.9) !important;
+    }
+    .duty-attendance-person-card {
+      background: rgba(15,23,42,.96) !important;
+      color: #e5edf8 !important;
+      border-color: rgba(71,85,105,.78) !important;
+    }
+    .duty-attendance-person-card .text-slate-950,
+    .duty-attendance-person-card .text-slate-900,
+    .duty-attendance-person-card .text-slate-800,
+    .duty-attendance-person-card .text-slate-700 { color: #f8fafc !important; }
+    .duty-attendance-person-card .text-slate-600,
+    .duty-attendance-person-card .text-slate-500,
+    .duty-attendance-person-card .text-slate-400 { color: #a8b3c7 !important; }
+
+    @media (max-width: 768px) {
+      body { font-size: 15px; }
+      .mobile-stack { display: grid !important; grid-template-columns: 1fr !important; }
+      .soft-shadow { box-shadow: 0 14px 36px rgba(15,23,42,.14) !important; }
+      .club-sidebar, aside.no-print {
+        position: relative !important;
+        top: auto !important;
+        height: auto !important;
+        border-radius: 1.4rem !important;
+        padding: .85rem !important;
+      }
+      aside.no-print nav {
+        display: flex !important;
+        overflow-x: auto !important;
+        padding-bottom: .2rem;
+      }
+      .nav-pill {
+        min-width: max-content;
+        padding: .7rem .9rem !important;
+        font-size: .86rem !important;
+      }
+      main { min-width: 0 !important; }
+      .topbar-shell {
+        border-radius: 1.35rem !important;
+        padding: 1rem !important;
+      }
+      .topbar-shell h2 {
+        font-size: 1.35rem !important;
+      }
+      .rounded-\[2rem\],
+      .rounded-\[2\.2rem\],
+      .rounded-\[2\.4rem\] {
+        border-radius: 1.35rem !important;
+      }
+      .p-6, .md\:p-6, .p-7, .md\:p-7 {
+        padding: 1rem !important;
+      }
+      .grid.md\:grid-cols-2,
+      .grid.md\:grid-cols-3,
+      .grid.md\:grid-cols-4,
+      .grid.xl\:grid-cols-3,
+      .grid.xl\:grid-cols-4,
+      .grid.xl\:grid-cols-5 {
+        grid-template-columns: 1fr !important;
+      }
+      .duty-attendance-modal .attendance-day-tabs {
+        display: flex !important;
+        overflow-x: auto !important;
+        gap: .5rem !important;
+        padding-bottom: .25rem;
+      }
+      .duty-attendance-modal .attendance-day-tabs button {
+        min-width: 112px;
+      }
+      .duty-attendance-modal .attendance-status-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+      }
+      .duty-attendance-modal .attendance-card-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+
+
+  <style id="v57-duty-schedule-redesign">
+    .duty-redesign .duty-form-shell,
+    .duty-redesign .duty-side-shell,
+    .duty-redesign .duty-list-shell {
+      border-color: rgba(148,163,184,.18) !important;
+      box-shadow: 0 18px 50px rgba(2,6,23,.08) !important;
+    }
+    .duty-redesign .duty-mini-card {
+      border-radius: 1.35rem;
+      padding: 1rem;
+    }
+    .duty-redesign .duty-section-title {
+      display:flex; align-items:center; gap:.65rem; margin-bottom:.9rem;
+      font-weight: 900; color:#0f172a;
+    }
+    .duty-redesign .duty-day-tabs {
+      display:grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap:.65rem; margin-bottom:1rem;
+    }
+    .duty-redesign .duty-day-tab {
+      border:1px solid rgba(148,163,184,.24); background: rgba(248,250,252,.8); color:#334155;
+      border-radius: 1rem; padding: .85rem .75rem; text-align:left; transition: .18s ease;
+    }
+    .duty-redesign .duty-day-tab:hover { border-color: rgba(59,130,246,.35); transform: translateY(-1px); }
+    .duty-redesign .duty-day-tab.is-active {
+      background: linear-gradient(135deg, rgba(37,99,235,.16), rgba(14,165,233,.14));
+      border-color: rgba(37,99,235,.5); box-shadow: inset 0 0 0 1px rgba(37,99,235,.15);
+    }
+    .duty-redesign .duty-day-tab .day-label { display:block; font-size:.95rem; font-weight:900; color:#0f172a; }
+    .duty-redesign .duty-day-tab .day-date { display:block; font-size:.72rem; color:#64748b; margin-top:.1rem; }
+    .duty-redesign .duty-day-tab .day-count {
+      margin-top:.55rem; display:inline-flex; align-items:center; gap:.35rem; padding:.28rem .58rem; border-radius:999px;
+      background: rgba(15,23,42,.06); font-size:.72rem; font-weight:800; color:#334155;
+    }
+    .duty-redesign .duty-day-shell { border-radius: 1.6rem; background: rgba(248,250,252,.9); border:1px solid rgba(226,232,240,.88); padding:1rem; }
+    .duty-redesign .duty-day-head { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.8rem; margin-bottom:1rem; }
+    .duty-redesign .duty-role-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:.85rem; }
+    .duty-redesign .duty-role-assign-card { border-radius:1.2rem; background: rgba(255,255,255,.78); border:1px solid rgba(226,232,240,.9); padding:.85rem; }
+    .duty-redesign .duty-action-bar { display:flex; flex-wrap:wrap; gap:.5rem; }
+    .duty-redesign .duty-list-grid { display:grid; gap:.85rem; }
+    .duty-redesign .duty-week-card { border-radius:1.45rem; background: rgba(248,250,252,.95); border:1px solid rgba(226,232,240,.92); padding:1rem; }
+    .duty-redesign .duty-week-days { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:.55rem; }
+    body.dark-mode .duty-redesign .duty-day-tab { background: rgba(15,23,42,.92); border-color: rgba(71,85,105,.82); color:#cbd5e1; }
+    body.dark-mode .duty-redesign .duty-day-tab .day-label { color:#f8fafc; }
+    body.dark-mode .duty-redesign .duty-day-tab .day-date { color:#94a3b8; }
+    body.dark-mode .duty-redesign .duty-day-tab .day-count { background: rgba(255,255,255,.08); color:#dbeafe; }
+    body.dark-mode .duty-redesign .duty-day-tab.is-active { background: linear-gradient(135deg, rgba(37,99,235,.28), rgba(14,165,233,.20)); border-color: rgba(96,165,250,.75); }
+    body.dark-mode .duty-redesign .duty-day-shell,
+    body.dark-mode .duty-redesign .duty-week-card { background: rgba(15,23,42,.92); border-color: rgba(71,85,105,.74); }
+    body.dark-mode .duty-redesign .duty-role-assign-card { background: rgba(15,23,42,.82); border-color: rgba(71,85,105,.7); }
+    @media (max-width: 1279px) {
+      .duty-redesign .duty-day-tabs { display:flex; overflow-x:auto; padding-bottom:.25rem; }
+      .duty-redesign .duty-day-tab { min-width: 135px; flex: 0 0 auto; }
+    }
+    @media (max-width: 767px) {
+      .duty-redesign .duty-week-days { grid-template-columns: 1fr; }
+      .duty-redesign .duty-role-grid { grid-template-columns: 1fr; }
+      .duty-redesign .duty-day-shell { padding:.85rem; }
+    }
+  </style>
+
+
+  <style id="v58-smart-command-center">
+    .smart-command-fab {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 70;
+      display: inline-flex;
+      align-items: center;
+      gap: .65rem;
+      padding: .9rem 1.05rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+      color: #fff;
+      font-weight: 900;
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow: 0 18px 42px rgba(37,99,235,.34);
+      transition: transform .2s ease, filter .2s ease;
+    }
+    .smart-command-fab:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .smart-command-fab kbd {
+      border-radius: .75rem;
+      padding: .25rem .45rem;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.18);
+      font-size: .72rem;
+      font-weight: 900;
+    }
+    .smart-command-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: min(7vh, 60px) 16px 16px;
+      background: rgba(2,6,23,.72);
+      backdrop-filter: blur(10px);
+    }
+    .smart-command-panel {
+      width: min(980px, 100%);
+      max-height: min(86vh, 780px);
+      overflow: hidden;
+      border-radius: 2rem;
+      background: #0f172a;
+      border: 1px solid rgba(148,163,184,.32);
+      box-shadow: 0 28px 90px rgba(0,0,0,.48);
+      color: #e5edf8;
+    }
+    .smart-command-input-wrap {
+      position: relative;
+      padding: 18px;
+      border-bottom: 1px solid rgba(148,163,184,.18);
+      background: linear-gradient(180deg, rgba(30,41,59,.98), rgba(15,23,42,.98));
+    }
+    .smart-command-input-wrap i {
+      position: absolute;
+      left: 34px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #93c5fd;
+      font-size: 1.25rem;
+    }
+    .smart-command-input {
+      width: 100%;
+      padding: 16px 18px 16px 48px;
+      border-radius: 1.35rem;
+      background: rgba(2,6,23,.75) !important;
+      color: #f8fafc !important;
+      border: 1px solid rgba(96,165,250,.35) !important;
+      outline: none;
+      font-weight: 800;
+    }
+    .smart-command-input::placeholder { color: #94a3b8 !important; }
+    .smart-command-body {
+      padding: 18px;
+      overflow-y: auto;
+      max-height: calc(min(86vh, 780px) - 98px);
+    }
+    .smart-command-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+    }
+    .smart-command-section {
+      border-radius: 1.5rem;
+      background: rgba(30,41,59,.72);
+      border: 1px solid rgba(148,163,184,.18);
+      padding: 14px;
+    }
+    .smart-command-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #dbeafe;
+      font-size: .78rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    .smart-command-list { display: grid; gap: 8px; }
+    .smart-command-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      border-radius: 1.1rem;
+      background: rgba(15,23,42,.78);
+      border: 1px solid rgba(71,85,105,.7);
+      color: #e5edf8;
+      padding: 12px;
+      transition: .18s ease;
+    }
+    .smart-command-item:hover {
+      background: rgba(37,99,235,.22);
+      border-color: rgba(96,165,250,.55);
+      transform: translateY(-1px);
+    }
+    .smart-command-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      color: #fff;
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      box-shadow: 0 10px 24px rgba(37,99,235,.22);
+      font-size: 1.2rem;
+    }
+    .smart-command-item-title { font-weight: 900; color: #f8fafc; line-height: 1.25; display:block; }
+    .smart-command-item-desc { font-size: .78rem; color: #a8b3c7; margin-top: 2px; line-height: 1.35; display:block; }
+    .smart-command-kpi-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .smart-command-kpi { border-radius: 1.2rem; padding: 13px; background: rgba(15,23,42,.72); border: 1px solid rgba(71,85,105,.65); }
+    .smart-command-kpi .label { color:#94a3b8; font-size:.75rem; font-weight:800; }
+    .smart-command-kpi .value { color:#f8fafc; font-size:1.85rem; line-height:1; font-weight:900; margin-top:7px; }
+    .smart-command-hint {
+      border-radius: 1.15rem;
+      background: rgba(37,99,235,.16);
+      border: 1px solid rgba(96,165,250,.25);
+      color: #dbeafe;
+      padding: 12px;
+      font-size: .82rem;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+    @media (max-width: 840px) {
+      .smart-command-grid { grid-template-columns: 1fr; }
+      .smart-command-fab { right: 14px; bottom: 14px; padding: .82rem .95rem; }
+      .smart-command-fab span { display: none; }
+      .smart-command-fab kbd { display: none; }
+      .smart-command-backdrop { align-items: stretch; padding: 10px; }
+      .smart-command-panel { border-radius: 1.4rem; max-height: calc(100dvh - 20px); }
+      .smart-command-body { max-height: calc(100dvh - 110px); }
+    }
+    @media print { .smart-command-fab, .smart-command-backdrop { display: none !important; } }
+  </style>
+
+
+  <style id="v59-duty-exception-mode">
+    .duty-attendance-modal .exception-info-card {
+      background: rgba(6, 78, 59, .40) !important;
+      border-color: rgba(16, 185, 129, .36) !important;
+      color: #d1fae5 !important;
+    }
+    @media (max-width: 640px) {
+      .duty-attendance-modal .attendance-status-grid button { min-height: 48px; }
+    }
+  </style>
+
+
+  <style id="v60-smart-suite-all-features">
+    .smart-suite-shell .smart-tab {
+      border-radius: 1.15rem;
+      padding: .9rem 1rem;
+      font-weight: 800;
+      border: 1px solid rgba(148,163,184,.22);
+      background: rgba(255,255,255,.88);
+      color: #334155;
+      transition: .18s ease;
+    }
+    .smart-suite-shell .smart-tab:hover { transform: translateY(-1px); border-color: rgba(59,130,246,.42); }
+    .smart-suite-shell .smart-tab.is-active {
+      color:#fff;
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      border-color: rgba(96,165,250,.6);
+      box-shadow: 0 16px 34px rgba(37,99,235,.24);
+    }
+    .smart-suite-shell .smart-panel,
+    .today-command-shell .today-panel {
+      border-radius: 2rem;
+      background: rgba(255,255,255,.95);
+      border: 1px solid rgba(203,213,225,.86);
+      box-shadow: 0 20px 60px rgba(15,23,42,.08);
+    }
+    .smart-suite-shell .smart-card,
+    .today-command-shell .today-card {
+      border-radius: 1.45rem;
+      background: rgba(248,250,252,.92);
+      border: 1px solid rgba(226,232,240,.88);
+    }
+    .smart-suite-shell .student-rank-card {
+      border-radius: 1.35rem;
+      background: rgba(248,250,252,.96);
+      border: 1px solid rgba(226,232,240,.88);
+    }
+    .smart-suite-shell .smart-mini-stat {
+      border-radius: 1.25rem;
+      background: rgba(248,250,252,.92);
+      border: 1px solid rgba(226,232,240,.88);
+      padding: 1rem;
+    }
+    .smart-suite-shell .wizard-step {
+      border-radius: 1.2rem;
+      border: 1px solid rgba(226,232,240,.88);
+      background: rgba(248,250,252,.96);
+      padding: 1rem;
+    }
+    .smart-suite-shell .wizard-step.done {
+      background: rgba(16,185,129,.10);
+      border-color: rgba(52,211,153,.34);
+    }
+    .smart-suite-shell .line-preview {
+      white-space: pre-wrap;
+      border-radius: 1.35rem;
+      background: #020617;
+      color: #e2e8f0;
+      border: 1px solid rgba(71,85,105,.72);
+      padding: 1rem;
+      font-weight: 700;
+      line-height: 1.75;
+      max-height: 420px;
+      overflow:auto;
+    }
+    .smart-suite-shell .smart-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 .6rem;
+    }
+    .smart-suite-shell .smart-table td,
+    .smart-suite-shell .smart-table th {
+      padding: .85rem 1rem;
+      text-align: left;
+    }
+    .smart-suite-shell .smart-table tr {
+      border-radius: 1rem;
+    }
+    body.dark-mode .smart-suite-shell .smart-panel,
+    body.dark-mode .today-command-shell .today-panel,
+    body.dark-mode .smart-suite-shell .smart-card,
+    body.dark-mode .today-command-shell .today-card,
+    body.dark-mode .smart-suite-shell .student-rank-card,
+    body.dark-mode .smart-suite-shell .smart-mini-stat,
+    body.dark-mode .smart-suite-shell .wizard-step {
+      background: rgba(15,23,42,.94) !important;
+      border-color: rgba(71,85,105,.78) !important;
+      color: #e5edf8 !important;
+    }
+    body.dark-mode .smart-suite-shell .smart-tab {
+      background: rgba(15,23,42,.94);
+      color: #cbd5e1;
+      border-color: rgba(71,85,105,.78);
+    }
+    body.dark-mode .smart-suite-shell .smart-tab.is-active { color:#fff; background: linear-gradient(135deg,#2563eb,#0284c7); }
+    body.dark-mode .smart-suite-shell .smart-table td,
+    body.dark-mode .smart-suite-shell .smart-table th { color: #e5edf8; }
+    @media (max-width: 767px) {
+      .smart-suite-shell .smart-tab { padding: .8rem .85rem; font-size: .88rem; }
+      .smart-suite-shell .smart-panel,
+      .today-command-shell .today-panel { border-radius: 1.45rem; }
+    }
+  </style>
+
+
+  <style id="v61-polish-stability">
+    /* v61: Polish & Stability — menu grouping, mobile comfort, consistent dark surfaces */
+    .nav-group { width: 100%; }
+    .nav-group-title {
+      display: none;
+      padding: .75rem .75rem .35rem;
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-weight: 900;
+      color: rgba(191, 219, 254, .72);
+    }
+    .nav-group-items { display: flex; gap: .5rem; }
+    @media (min-width: 1024px) {
+      .nav-group-title { display: block; }
+      .nav-group-items { flex-direction: column; }
+      .club-sidebar nav { padding-right: .15rem; }
+    }
+    @media (max-width: 1023px) {
+      .nav-group { width: auto; flex: 0 0 auto; }
+      .nav-group-items { flex-direction: row; }
+      .nav-group-title { display: none; }
+      .nav-pill { min-height: 46px; }
+    }
+
+    .v61-card {
+      border-radius: 1.65rem;
+      border: 1px solid rgba(148, 163, 184, .18);
+      background: rgba(255,255,255,.94);
+      box-shadow: 0 18px 50px rgba(15,23,42,.07);
+    }
+    body.dark-mode .v61-card {
+      background: rgba(15,23,42,.94) !important;
+      color: #e5edf8 !important;
+      border-color: rgba(71,85,105,.78) !important;
+      box-shadow: 0 22px 64px rgba(0,0,0,.28);
+    }
+    .v61-action {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      min-height: 48px; border-radius: 1rem; padding: .75rem 1rem; font-weight: 900;
+      transition: transform .16s ease, filter .16s ease;
+    }
+    .v61-action:hover { transform: translateY(-1px); }
+    .v61-primary { background: #2563eb; color: white; }
+    .v61-secondary { background: rgba(15,23,42,.08); color: #0f172a; border: 1px solid rgba(148,163,184,.24); }
+    body.dark-mode .v61-secondary { background: rgba(30,41,59,.94); color: #e5edf8; border-color: rgba(71,85,105,.78); }
+    .v61-danger { background: #991b1b; color: #fee2e2; }
+    .v61-muted { color: #64748b; }
+    body.dark-mode .v61-muted { color: #a8b3c7 !important; }
+    .v61-check-item {
+      border-radius: 1.2rem; padding: 1rem; border: 1px solid rgba(148,163,184,.20);
+      background: rgba(248,250,252,.88);
+    }
+    body.dark-mode .v61-check-item {
+      background: rgba(30,41,59,.75) !important; border-color: rgba(71,85,105,.72) !important;
+    }
+    .v61-mobile-safe button, .v61-mobile-safe a { touch-action: manipulation; }
+    @media (max-width: 640px) {
+      .v61-mobile-safe .v61-action { width: 100%; }
+      .topbar-shell { padding: 1rem !important; border-radius: 1.4rem !important; }
+      .smart-command-fab { right: .75rem !important; bottom: .75rem !important; }
+      .club-sidebar { border-radius: 1.4rem !important; padding: .8rem !important; }
+      .nav-pill span { font-size: .88rem; }
+    }
+
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode textarea {
+      background: rgba(15,23,42,.96) !important;
+      color: #f8fafc !important;
+      border-color: rgba(71,85,105,.9) !important;
+    }
+    body.dark-mode input::placeholder,
+    body.dark-mode textarea::placeholder { color: #94a3b8 !important; }
+
+    .v61-backup-lock {
+      border: 1px solid rgba(251,191,36,.35);
+      background: linear-gradient(135deg, rgba(251,191,36,.12), rgba(15,23,42,.04));
+    }
+    body.dark-mode .v61-backup-lock {
+      background: linear-gradient(135deg, rgba(251,191,36,.14), rgba(15,23,42,.92)) !important;
+      color: #fde68a !important;
+      border-color: rgba(251,191,36,.32) !important;
+    }
+  </style>
+
+
+  <style id="v62-final-ui-audit-mobile-polish">
+    /* v62 Final UI Audit + Mobile Polish
+       เป้าหมาย: ลดสีหลุด, บังคับ contrast, ทำมือถือให้กดง่ายขึ้น และทำหน้า Backup/Today ใช้งานจริงชัดขึ้น */
+    :root {
+      --mdec-bg: #07111f;
+      --mdec-panel: rgba(15, 23, 42, .94);
+      --mdec-panel-2: rgba(30, 41, 59, .92);
+      --mdec-border: rgba(71, 85, 105, .82);
+      --mdec-text: #e5edf8;
+      --mdec-muted: #a8b3c7;
+      --mdec-blue: #2563eb;
+      --mdec-blue-soft: #93c5fd;
+      --mdec-danger: #dc2626;
+      --mdec-warning: #d97706;
+      --mdec-success: #059669;
+    }
+
+    @media screen {
+      body.dark-mode {
+        background:
+          radial-gradient(circle at 10% 0%, rgba(37,99,235,.18), transparent 28%),
+          radial-gradient(circle at 90% 18%, rgba(14,165,233,.12), transparent 28%),
+          linear-gradient(180deg, #06101e 0%, #07111f 50%, #091525 100%) !important;
+        color: var(--mdec-text) !important;
+      }
+
+      body.dark-mode main,
+      body.dark-mode .animate-fade-in,
+      body.dark-mode .space-y-5,
+      body.dark-mode .space-y-4,
+      body.dark-mode .space-y-3 {
+        color: var(--mdec-text) !important;
+      }
+
+      /* Surface Audit: จับกล่องสีขาว/สีอ่อนที่หลุดในทุกหน้าให้กลับมาอ่านง่าย */
+      body.dark-mode .bg-white,
+      body.dark-mode .bg-white\/70,
+      body.dark-mode .bg-white\/80,
+      body.dark-mode .bg-white\/85,
+      body.dark-mode .bg-white\/90,
+      body.dark-mode .bg-white\/95,
+      body.dark-mode [class*="bg-white/"],
+      body.dark-mode .bg-slate-50,
+      body.dark-mode .bg-slate-100,
+      body.dark-mode .bg-blue-50,
+      body.dark-mode .bg-cyan-50,
+      body.dark-mode .bg-sky-50,
+      body.dark-mode .bg-indigo-50,
+      body.dark-mode .bg-emerald-50,
+      body.dark-mode .bg-green-50,
+      body.dark-mode .bg-yellow-50,
+      body.dark-mode .bg-amber-50,
+      body.dark-mode .bg-orange-50,
+      body.dark-mode .bg-red-50,
+      body.dark-mode .bg-rose-50,
+      body.dark-mode .bg-purple-50,
+      body.dark-mode .bg-violet-50,
+      body.dark-mode .bg-pink-50 {
+        background: var(--mdec-panel) !important;
+        color: var(--mdec-text) !important;
+        border-color: var(--mdec-border) !important;
+      }
+
+      body.dark-mode .bg-slate-950,
+      body.dark-mode .bg-slate-900,
+      body.dark-mode .bg-slate-800 {
+        background: #020617 !important;
+        color: #f8fafc !important;
+        border-color: var(--mdec-border) !important;
+      }
+
+      body.dark-mode .text-slate-950,
+      body.dark-mode .text-slate-900,
+      body.dark-mode .text-slate-800,
+      body.dark-mode .text-slate-700,
+      body.dark-mode .text-blue-950,
+      body.dark-mode .text-blue-900,
+      body.dark-mode .text-blue-800,
+      body.dark-mode .text-blue-700,
+      body.dark-mode .text-indigo-900,
+      body.dark-mode .text-emerald-900,
+      body.dark-mode .text-red-900,
+      body.dark-mode .text-orange-900,
+      body.dark-mode .text-yellow-900 {
+        color: #f8fafc !important;
+      }
+
+      body.dark-mode .text-slate-600,
+      body.dark-mode .text-slate-500,
+      body.dark-mode .text-slate-400,
+      body.dark-mode .text-blue-600,
+      body.dark-mode .text-blue-500,
+      body.dark-mode .text-sky-600,
+      body.dark-mode .text-cyan-600 {
+        color: var(--mdec-muted) !important;
+      }
+
+      body.dark-mode .text-blue-400,
+      body.dark-mode .text-blue-300,
+      body.dark-mode .text-blue-200,
+      body.dark-mode .text-blue-100,
+      body.dark-mode .text-cyan-300,
+      body.dark-mode .text-cyan-200,
+      body.dark-mode .text-cyan-100 {
+        color: #dbeafe !important;
+      }
+
+      body.dark-mode .border,
+      body.dark-mode .border-white,
+      body.dark-mode .border-slate-100,
+      body.dark-mode .border-slate-200,
+      body.dark-mode .border-blue-100,
+      body.dark-mode .border-blue-200 {
+        border-color: var(--mdec-border) !important;
+      }
+
+      /* Form fields: อ่านง่ายทุกหน้า */
+      body.dark-mode input,
+      body.dark-mode select,
+      body.dark-mode textarea,
+      body.dark-mode .candidate-number-field,
+      body.dark-mode .candidate-text-field {
+        background: rgba(2, 6, 23, .72) !important;
+        color: #f8fafc !important;
+        border-color: rgba(100, 116, 139, .85) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+      }
+      body.dark-mode input::placeholder,
+      body.dark-mode textarea::placeholder { color: #94a3b8 !important; }
+      body.dark-mode select option { background: #020617 !important; color: #f8fafc !important; }
+
+      /* Buttons: แยกปุ่มหลัก/รอง/อันตรายให้เห็นชัด */
+      body.dark-mode button.bg-white,
+      body.dark-mode button.bg-white\/10,
+      body.dark-mode button.bg-white\/15,
+      body.dark-mode button.bg-slate-100,
+      body.dark-mode button.bg-slate-200,
+      body.dark-mode a.bg-white,
+      body.dark-mode .bg-white.text-slate-700,
+      body.dark-mode .bg-white.text-blue-700 {
+        background: rgba(30, 41, 59, .96) !important;
+        color: #e2e8f0 !important;
+        border-color: var(--mdec-border) !important;
+      }
+      body.dark-mode button.bg-blue-600,
+      body.dark-mode button.bg-blue-700,
+      body.dark-mode a.bg-blue-600,
+      body.dark-mode .bg-blue-600 {
+        background: #2563eb !important;
+        color: #ffffff !important;
+      }
+      body.dark-mode button.bg-rose-50,
+      body.dark-mode button.bg-red-50,
+      body.dark-mode .bg-rose-50.text-rose-700,
+      body.dark-mode .bg-red-50.text-red-700 {
+        background: rgba(127, 29, 29, .72) !important;
+        color: #fecaca !important;
+        border-color: rgba(248,113,113,.45) !important;
+      }
+
+      body.dark-mode table,
+      body.dark-mode thead,
+      body.dark-mode tbody,
+      body.dark-mode tr,
+      body.dark-mode td,
+      body.dark-mode th {
+        color: var(--mdec-text) !important;
+        border-color: var(--mdec-border) !important;
+      }
+      body.dark-mode tr:hover { background: rgba(37, 99, 235, .16) !important; }
+
+      /* หน้า Today / เช้าวันนี้: ให้เป็นหน้าที่เปิดแล้วรู้เรื่องใน 5 วิ */
+      body.dark-mode .today-command-card,
+      body.dark-mode .today-duty-card,
+      body.dark-mode .today-action-card {
+        background: rgba(15, 23, 42, .96) !important;
+        border-color: rgba(96,165,250,.25) !important;
+        color: var(--mdec-text) !important;
+      }
+
+      /* Backup / Year manager: บังคับคำเตือนให้ชัด */
+      body.dark-mode .v61-backup-lock,
+      body.dark-mode .year-card,
+      body.dark-mode .backup-card,
+      body.dark-mode .health-card {
+        background: rgba(2, 6, 23, .55) !important;
+        color: var(--mdec-text) !important;
+        border-color: rgba(96,165,250,.26) !important;
+      }
+
+      /* Mobile polish */
+      @media (max-width: 768px) {
+        body { -webkit-text-size-adjust: 100%; }
+        .soft-shadow { box-shadow: 0 14px 36px rgba(2,6,23,.22) !important; }
+        main { min-width: 0 !important; }
+        aside nav button,
+        .nav-pill,
+        button,
+        a[role="button"] {
+          min-height: 44px;
+        }
+        input,
+        select,
+        textarea {
+          min-height: 46px;
+          font-size: 16px !important; /* กัน iPhone zoom */
+        }
+        .rounded-\[2rem\],
+        .rounded-\[2\.2rem\],
+        .rounded-\[2\.4rem\] { border-radius: 1.35rem !important; }
+        .p-7 { padding: 1rem !important; }
+        .p-6 { padding: 1rem !important; }
+        .md\:p-7,
+        .md\:p-6,
+        .md\:p-5 { padding: 1rem !important; }
+        .text-5xl { font-size: 2.2rem !important; }
+        .text-4xl { font-size: 2rem !important; }
+        .text-3xl { font-size: 1.65rem !important; }
+        .grid { min-width: 0; }
+        .overflow-x-auto { -webkit-overflow-scrolling: touch; }
+        .fixed.inset-0 .max-h-\[92vh\],
+        .fixed.inset-0 .max-h-\[88vh\] {
+          max-height: 94dvh !important;
+        }
+        .fixed.inset-0 { padding: .65rem !important; }
+        .mobile-stack,
+        .mobile-stack > * { width: 100% !important; }
+      }
+
+      @media (max-width: 480px) {
+        .px-5 { padding-left: .9rem !important; padding-right: .9rem !important; }
+        .py-5 { padding-top: .9rem !important; padding-bottom: .9rem !important; }
+        .gap-5 { gap: .85rem !important; }
+        .gap-4 { gap: .75rem !important; }
+        .grid.sm\:grid-cols-2,
+        .grid.md\:grid-cols-2,
+        .grid.md\:grid-cols-3,
+        .grid.md\:grid-cols-4,
+        .grid.xl\:grid-cols-3,
+        .grid.xl\:grid-cols-4,
+        .grid.xl\:grid-cols-6 {
+          grid-template-columns: 1fr !important;
+        }
+      }
+    }
+  </style>
+
+
+  <style id="v63-duty-management-split-sections">
+    .duty-step-nav {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .75rem;
+    }
+    .duty-step-btn {
+      border: 1px solid rgba(148,163,184,.28);
+      background: rgba(248,250,252,.92);
+      color: #334155;
+      border-radius: 1.25rem;
+      padding: .95rem 1rem;
+      text-align: left;
+      transition: .18s ease;
+      min-height: 76px;
+    }
+    .duty-step-btn:hover { transform: translateY(-1px); border-color: rgba(59,130,246,.42); }
+    .duty-step-btn.is-active {
+      background: linear-gradient(135deg, rgba(37,99,235,.16), rgba(14,165,233,.12));
+      border-color: rgba(59,130,246,.62);
+      box-shadow: inset 0 0 0 1px rgba(59,130,246,.16), 0 10px 24px rgba(37,99,235,.10);
+      color: #0f172a;
+    }
+    .duty-step-btn .step-title { display:block; font-weight: 900; font-size: .95rem; line-height: 1.2; }
+    .duty-step-btn .step-desc { display:block; color:#64748b; font-size:.75rem; margin-top:.28rem; line-height:1.35; }
+    .duty-panel-note {
+      border-radius: 1.25rem;
+      padding: .9rem 1rem;
+      border: 1px solid rgba(191,219,254,.5);
+      background: rgba(239,246,255,.72);
+      color: #1e3a8a;
+      font-size: .86rem;
+      font-weight: 700;
+    }
+    body.dark-mode .duty-step-btn {
+      background: rgba(15,23,42,.88);
+      border-color: rgba(71,85,105,.82);
+      color: #cbd5e1;
+    }
+    body.dark-mode .duty-step-btn.is-active {
+      background: linear-gradient(135deg, rgba(37,99,235,.28), rgba(14,165,233,.20));
+      border-color: rgba(96,165,250,.7);
+      color: #f8fafc;
+    }
+    body.dark-mode .duty-step-btn .step-desc { color:#a8b3c7; }
+    body.dark-mode .duty-panel-note {
+      background: rgba(30,64,175,.20);
+      border-color: rgba(96,165,250,.42);
+      color: #dbeafe;
+    }
+    @media (max-width: 900px) {
+      .duty-step-nav { display:flex; overflow-x:auto; padding-bottom:.25rem; }
+      .duty-step-btn { min-width: 190px; flex:0 0 auto; }
+    }
+  </style>
+
+
+  <style id="v64-print-name-list">
+    .name-list-report .report-summary { display: none; }
+    .name-list-table { font-size: 10px; }
+    .name-list-table th,
+    .name-list-table td { padding: 5px 6px; }
+    .name-list-table td { height: 26px; }
+    .name-list-table .print-name { font-size: 10.5px; font-weight: 700; }
+    @media print {
+      .name-list-report { page: signPortrait; }
+      .name-list-report .report-header { padding-bottom: 6px; margin-bottom: 6px; border-bottom-width: 1.5px; }
+      .name-list-report .report-logo { width: 96px; height: 34px; border-radius: 11px; padding: 5px 8px; }
+      .name-list-report .report-title { font-size: 16px; line-height: 1.18; }
+      .name-list-report .report-subtitle { font-size: 9.5px; margin-top: 1px; }
+      .name-list-report .report-meta { font-size: 9.2px; line-height: 1.35; }
+      .name-list-report .report-note { font-size: 8.8px; margin: 3px 0 4px; }
+      .name-list-table { font-size: 9.2px; table-layout: fixed; }
+      .name-list-table th,
+      .name-list-table td { padding: 3.5px 5px; }
+      .name-list-table td { height: 23px; }
+    }
+  </style>
+
 </head>
 <body class="text-slate-800 selection:bg-blue-200">
   <div id="root"></div>
@@ -1130,6 +1968,8 @@
     const getDutyRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('duty_rosters');
     const getDutyTemplatesRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('duty_templates');
     const getActivitiesRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('club_activities');
+    const getWorksRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('member_works');
+    const getChangeLogsRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('change_logs');
     const getCouncilRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('club_council');
     const getSettingsRef = () => db.collection('artifacts').doc(appId).collection('public').doc('settings');
 
@@ -1141,6 +1981,19 @@
       { value: 'graduated', label: 'จบแล้ว' },
       { value: 'dismissed', label: 'พ้นสภาพ' }
     ];
+
+    async function logSystemAction(action, detail = {}) {
+      try {
+        await getChangeLogsRef().add({
+          action,
+          detail,
+          createdAt: new Date().toISOString(),
+          createdBy: 'staff'
+        });
+      } catch (err) {
+        console.warn('log action failed', err);
+      }
+    }
 
 
     function thaiAcademicYearNow() {
@@ -1271,6 +2124,16 @@
       { key: 'fri', label: 'วันศุกร์', shortLabel: 'ศุกร์', offset: 4 },
       { key: 'sat', label: 'วันเสาร์', shortLabel: 'เสาร์', offset: 5 }
     ];
+
+    const dutyAttendanceOptions = [
+      { key: 'late', label: 'สาย', icon: 'ri-time-fill', pill: 'bg-amber-900 text-amber-100 border-amber-700', button: 'bg-amber-500 hover:bg-amber-600 text-slate-950' },
+      { key: 'absent', label: 'ขาด', icon: 'ri-close-circle-fill', pill: 'bg-rose-900 text-rose-100 border-rose-700', button: 'bg-rose-600 hover:bg-rose-700 text-white' },
+      { key: 'leave', label: 'ลา', icon: 'ri-calendar-close-fill', pill: 'bg-sky-900 text-sky-100 border-sky-700', button: 'bg-sky-600 hover:bg-sky-700 text-white' },
+      { key: 'not_found', label: 'ไม่พบตัว', icon: 'ri-search-eye-fill', pill: 'bg-orange-900 text-orange-100 border-orange-700', button: 'bg-orange-600 hover:bg-orange-700 text-white' },
+      { key: 'substitute', label: 'ทำแทน', icon: 'ri-user-shared-fill', pill: 'bg-violet-900 text-violet-100 border-violet-700', button: 'bg-violet-600 hover:bg-violet-700 text-white' }
+    ];
+
+    const dutyNormalAttendance = { key: '', label: 'ปกติ', icon: 'ri-checkbox-circle-fill', pill: 'bg-emerald-900 text-emerald-100 border-emerald-700', button: 'bg-emerald-600 hover:bg-emerald-700 text-white' };
 
     const dutyTableTypes = [
       { key: 'A', label: 'ตาราง A', tone: 'blue' },
@@ -1693,6 +2556,7 @@
       const [detailStudent, setDetailStudent] = useState(null);
       const [studentToDelete, setStudentToDelete] = useState(null);
       const [isPrintingRoster, setIsPrintingRoster] = useState(false);
+      const [commandOpen, setCommandOpen] = useState(false);
 
       useEffect(() => {
         if (!user) return;
@@ -1749,18 +2613,42 @@
       };
 
       const navItems = [
-        { id:'home', label:'หน้าแรกชมรม', icon:'ri-home-5-fill' },
-        { id:'add', label:'เพิ่มสมาชิก', icon:'ri-user-add-fill' },
-        { id:'members', label:'ฐานข้อมูล', icon:'ri-folder-user-fill' },
-        { id:'activities', label:'กิจกรรมชมรม', icon:'ri-calendar-event-fill' },
-        { id:'council', label:'สภาชมรม', icon:'ri-vip-crown-fill' },
-        { id:'duty', label:'ตารางเวรตอนเช้า', icon:'ri-calendar-schedule-fill' },
-        { id:'dutyDisplay', label:'จอแสดงเวรเช้า', icon:'ri-tv-2-fill' },
-        { id:'dashboard', label:'สรุปยอด', icon:'ri-pie-chart-2-fill' },
-        { id:'year', label:'จัดการปี', icon:'ri-calendar-check-fill' },
-        { id:'settings', label:'ตั้งค่าระบบ', icon:'ri-settings-3-fill' },
-        { id:'manual', label:'คู่มือ', icon:'ri-book-open-fill' }
+        { id:'home', label:'หน้าแรกชมรม', icon:'ri-home-5-fill', group:'งานวันนี้' },
+        { id:'today', label:'เช้าวันนี้', icon:'ri-sun-foggy-fill', group:'งานวันนี้' },
+        { id:'duty', label:'ตารางเวรตอนเช้า', icon:'ri-calendar-schedule-fill', group:'งานวันนี้' },
+        { id:'activities', label:'กิจกรรมชมรม', icon:'ri-calendar-event-fill', group:'งานวันนี้' },
+        { id:'add', label:'เพิ่มสมาชิก', icon:'ri-user-add-fill', group:'ข้อมูลชมรม' },
+        { id:'members', label:'ฐานข้อมูลสมาชิก', icon:'ri-folder-user-fill', group:'ข้อมูลชมรม' },
+        { id:'works', label:'ผลงานสมาชิก', icon:'ri-gallery-fill', group:'ข้อมูลชมรม' },
+        { id:'council', label:'เลือกตั้ง / สภาชมรม', icon:'ri-vip-crown-fill', group:'ข้อมูลชมรม' },
+        { id:'dutyDisplay', label:'จอแสดงเวรเช้า', icon:'ri-tv-2-fill', group:'เครื่องมือ' },
+        { id:'smart', label:'เครื่องมือช่วยจัดการ', icon:'ri-sparkling-2-fill', group:'เครื่องมือ' },
+        { id:'dashboard', label:'สรุปยอด', icon:'ri-pie-chart-2-fill', group:'รายงาน' },
+        { id:'annual', label:'สรุปประจำปี', icon:'ri-file-chart-fill', group:'รายงาน' },
+        { id:'health', label:'ตรวจสุขภาพระบบ', icon:'ri-heart-pulse-fill', group:'รายงาน' },
+        { id:'logs', label:'ประวัติระบบ', icon:'ri-history-fill', group:'รายงาน' },
+        { id:'year', label:'จัดการปี / Backup', icon:'ri-calendar-check-fill', group:'ตั้งค่า' },
+        { id:'settings', label:'ตั้งค่าระบบ', icon:'ri-settings-3-fill', group:'ตั้งค่า' },
+        { id:'manual', label:'คู่มือเริ่มใช้งานเร็ว', icon:'ri-book-open-fill', group:'ตั้งค่า' }
       ];
+      const navGroups = ['งานวันนี้','ข้อมูลชมรม','เครื่องมือ','รายงาน','ตั้งค่า'].map(group => ({
+        group,
+        items: navItems.filter(item => item.group === group)
+      })).filter(group => group.items.length);
+
+      useEffect(() => {
+        const onKeyDown = (event) => {
+          const key = String(event.key || '').toLowerCase();
+          if ((event.ctrlKey || event.metaKey) && key === 'k') {
+            event.preventDefault();
+            setCommandOpen(true);
+          }
+          if (key === 'escape') setCommandOpen(false);
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+      }, []);
+
 
       return (
         <div className="min-h-screen bg-transparent">
@@ -1799,12 +2687,19 @@
                     </div>
                   </div>
 
-                  <nav className="flex lg:flex-col gap-2 overflow-x-auto no-scrollbar w-full">
-                    {navItems.map(item => (
-                      <button key={item.id} onClick={() => setActiveTab(item.id)} className={`nav-pill shrink-0 flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition ${activeTab === item.id ? 'is-active' : 'is-idle'}`}>
-                        <i className={`${item.icon} text-xl`}></i>
-                        <span className="whitespace-nowrap">{item.label}</span>
-                      </button>
+                  <nav className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto no-scrollbar w-full pr-0 lg:pr-1">
+                    {navGroups.map(group => (
+                      <div key={group.group} className="nav-group">
+                        <div className="nav-group-title">{group.group}</div>
+                        <div className="nav-group-items">
+                          {group.items.map(item => (
+                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={`nav-pill shrink-0 flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition ${activeTab === item.id ? 'is-active' : 'is-idle'}`}>
+                              <i className={`${item.icon} text-xl`}></i>
+                              <span className="whitespace-nowrap">{item.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </nav>
 
@@ -1857,9 +2752,15 @@
                         />
                       )}
                       {activeTab === 'activities' && <ClubActivitiesPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
+                      {activeTab === 'works' && <MemberWorksPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
                       {activeTab === 'council' && <ClubCouncilPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
+                      {activeTab === 'today' && <TodayMorningPage students={students} currentAcademicYear={currentAcademicYear} onNavigate={setActiveTab} />}
                       {activeTab === 'duty' && <DutySchedulePage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
+                      {activeTab === 'smart' && <SmartClubToolsPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} onNavigate={setActiveTab} />}
                       {activeTab === 'dashboard' && <DashboardPage students={students} yearsList={yearsList} currentAcademicYear={currentAcademicYear} onIssueFilter={(key) => { setFilterPhoto(key); setActiveTab('members'); }} />}
+                      {activeTab === 'annual' && <AnnualSummaryPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
+                      {activeTab === 'health' && <SystemHealthPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} onNavigate={setActiveTab} />}
+                      {activeTab === 'logs' && <ChangeLogsPage currentAcademicYear={currentAcademicYear} />}
                       {activeTab === 'year' && <YearManager students={students} yearsList={yearsList} currentAcademicYear={currentAcademicYear} setCurrentAcademicYear={setCurrentAcademicYear} />}
                       {activeTab === 'settings' && <SettingsPage majors={majors} setMajors={setMajors} currentAcademicYear={currentAcademicYear} setCurrentAcademicYear={setCurrentAcademicYear} />}
                       {activeTab === 'manual' && <ManualPage />}
@@ -1877,13 +2778,113 @@
           {detailStudent && <DetailModal student={detailStudent} onClose={() => setDetailStudent(null)} onEdit={(s) => { setDetailStudent(null); setEditingStudent(s); }} onStatusChange={handleQuickStatusChange} />}
           {editingStudent && <EditModal student={editingStudent} majors={majors} currentAcademicYear={currentAcademicYear} allStudents={students} onClose={() => setEditingStudent(null)} />}
           {studentToDelete && <DeleteModal student={studentToDelete} onCancel={() => setStudentToDelete(null)} onConfirm={handleDeleteStudent} />}
+
+          <button type="button" onClick={() => setCommandOpen(true)} className="smart-command-fab no-print" title="เปิด Smart Command Center">
+            <i className="ri-sparkling-2-fill text-xl"></i>
+            <span>Smart Command</span>
+            <kbd>Ctrl K</kbd>
+          </button>
+
+          {commandOpen && (
+            <SmartCommandPalette
+              navItems={navItems}
+              activeTab={activeTab}
+              students={students}
+              currentAcademicYear={currentAcademicYear}
+              onClose={() => setCommandOpen(false)}
+              onNavigate={(id) => { setActiveTab(id); setCommandOpen(false); }}
+            />
+          )}
+        </div>
+      );
+    }
+
+    function SmartCommandPalette({ navItems, activeTab, students, currentAcademicYear, onNavigate, onClose }) {
+      const [query, setQuery] = useState('');
+      const currentStudents = useMemo(() => students.filter(s => String(s.academicYear || '') === String(currentAcademicYear)), [students, currentAcademicYear]);
+      const activeStudents = currentStudents.filter(s => (s.status || 'active') === 'active');
+      const noPhoto = currentStudents.filter(s => !s.photo).length;
+      const incomplete = currentStudents.filter(s => isIncompleteStudent(s)).length;
+      const actions = [
+        { id:'add', title:'เพิ่มสมาชิกใหม่', desc:'คีย์ข้อมูลจากใบสมัครและเพิ่มรูปนักศึกษา', icon:'ri-user-add-fill', keywords:'เพิ่ม สมาชิก สมัคร นักศึกษา' },
+        { id:'members', title:'ค้นหา / แก้ไขสมาชิก', desc:'เปิดฐานข้อมูลสมาชิกเพื่อค้นหา แก้ไข หรือเปลี่ยนสถานะ', icon:'ri-folder-user-fill', keywords:'ฐานข้อมูล ค้นหา แก้ไข สมาชิก รายชื่อ' },
+        { id:'duty', title:'จัดตารางเวรตอนเช้า', desc:'จัดเวรรายสัปดาห์ บันทึกปัญหาเวร และดูรายการย้อนหลัง', icon:'ri-calendar-schedule-fill', keywords:'เวร ตาราง บันทึกปัญหาเวร ตอนเช้า' },
+        { id:'dutyDisplay', title:'เปิดจอแสดงเวรเช้า', desc:'เปิดหน้าแสดงตารางเวรแบบเต็มจอสำหรับให้นักศึกษาดู', icon:'ri-tv-2-fill', keywords:'จอ เวร แสดง เต็มจอ' },
+        { id:'activities', title:'บันทึกกิจกรรมชมรม', desc:'เพิ่มกิจกรรม เช็คชื่อ และแนบอัลบั้มกิจกรรม', icon:'ri-calendar-event-fill', keywords:'กิจกรรม เช็คชื่อ อัลบั้ม' },
+        { id:'works', title:'บันทึกผลงานสมาชิก', desc:'เก็บผลงานภาพถ่าย วิดีโอ และงานสื่อของชมรม', icon:'ri-gallery-fill', keywords:'ผลงาน ภาพ วิดีโอ portfolio' },
+        { id:'council', title:'เลือกตั้ง / สภาชมรม', desc:'จัดผู้สมัคร ใส่คะแนน และแสดงบอร์ดสภาชมรม', icon:'ri-vip-crown-fill', keywords:'เลือกตั้ง สภา ประธาน คะแนน' },
+        { id:'health', title:'ตรวจตรวจสุขภาพระบบ', desc:'เช็กข้อมูลไม่ครบ ฐานข้อมูล ตารางเวร และสถานะระบบ', icon:'ri-heart-pulse-fill', keywords:'สุขภาพ ตรวจ ระบบ เตือน ฐานข้อมูล' },
+        { id:'annual', title:'สรุปประจำปี', desc:'ดูภาพรวมสมาชิก กิจกรรม ผลงาน และตารางเวรประจำปี', icon:'ri-file-chart-fill', keywords:'สรุป ปี รายงาน ประจำปี' },
+        { id:'year', title:'สำรองข้อมูล / จัดการปี', desc:'Backup ข้อมูลรายปี ตรวจความจุ และเตรียมล้างข้อมูล', icon:'ri-database-2-fill', keywords:'สำรอง backup ล้างข้อมูล ปี' }
+      ];
+      const normalized = String(query || '').trim().toLowerCase();
+      const filteredActions = actions.filter(item => !normalized || [item.title, item.desc, item.keywords].join(' ').toLowerCase().includes(normalized));
+      const quickNav = navItems.filter(item => !normalized || item.label.toLowerCase().includes(normalized));
+
+      return (
+        <div className="smart-command-backdrop no-print" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+          <div className="smart-command-panel animate-fade-in">
+            <div className="smart-command-input-wrap">
+              <i className="ri-search-2-line"></i>
+              <input autoFocus value={query} onChange={e => setQuery(e.target.value)} className="smart-command-input" placeholder="พิมพ์คำสั่ง เช่น เวร, สมาชิก, เลือกตั้ง, สำรอง, ตรวจสุขภาพระบบ..." />
+            </div>
+            <div className="smart-command-body">
+              <div className="smart-command-grid">
+                <div className="smart-command-section">
+                  <div className="smart-command-title"><span>คำสั่งด่วน</span><span>{filteredActions.length} รายการ</span></div>
+                  <div className="smart-command-list">
+                    {filteredActions.map(item => (
+                      <button key={item.id} type="button" onClick={() => onNavigate(item.id)} className="smart-command-item">
+                        <span className="smart-command-icon"><i className={item.icon}></i></span>
+                        <span className="min-w-0 flex-1">
+                          <span className="smart-command-item-title">{item.title}</span>
+                          <span className="smart-command-item-desc">{item.desc}</span>
+                        </span>
+                        <i className="ri-arrow-right-s-line text-xl text-blue-200"></i>
+                      </button>
+                    ))}
+                    {!filteredActions.length && <div className="smart-command-hint">ไม่พบคำสั่งที่ค้นหา ลองพิมพ์คำว่า “สมาชิก”, “เวร”, “กิจกรรม”, “สำรอง” หรือ “เลือกตั้ง”</div>}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="smart-command-section">
+                    <div className="smart-command-title"><span>ภาพรวมเร็ว</span><span>ปี {currentAcademicYear}</span></div>
+                    <div className="smart-command-kpi-grid">
+                      <div className="smart-command-kpi"><div className="label">สมาชิกทั้งหมด</div><div className="value">{currentStudents.length}</div></div>
+                      <div className="smart-command-kpi"><div className="label">สมาชิกปัจจุบัน</div><div className="value">{activeStudents.length}</div></div>
+                      <div className="smart-command-kpi"><div className="label">ไม่มีรูป</div><div className="value">{noPhoto}</div></div>
+                      <div className="smart-command-kpi"><div className="label">ข้อมูลไม่ครบ</div><div className="value">{incomplete}</div></div>
+                    </div>
+                  </div>
+
+                  <div className="smart-command-section">
+                    <div className="smart-command-title"><span>เมนูทั้งหมด</span><span>{quickNav.length}</span></div>
+                    <div className="smart-command-list">
+                      {quickNav.map(item => (
+                        <button key={item.id} type="button" onClick={() => onNavigate(item.id)} className="smart-command-item">
+                          <span className="smart-command-icon"><i className={item.icon}></i></span>
+                          <span className="smart-command-item-title">{item.label}</span>
+                          {activeTab === item.id && <span className="ml-auto text-xs font-black text-blue-200">กำลังเปิดอยู่</span>}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="smart-command-hint">
+                    ทิป: กด <b>Ctrl + K</b> เพื่อเปิดหน้านี้ได้ทุกหน้า และกด <b>Esc</b> เพื่อปิด เหมาะกับตอนใช้เว็บในงานจริงแล้วอยากกระโดดไปเมนูอื่นเร็ว ๆ
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }
 
     function TopBar({ activeTab, currentAcademicYear, theme, toggleTheme, onLogout }) {
       const titleMap = {
-        home: 'หน้าแรกชมรม', add: 'เพิ่มสมาชิกใหม่', members: 'ฐานข้อมูลสมาชิก', activities: 'กิจกรรมชมรม', council: 'เลือกตั้ง / สภาชมรม', duty: 'ตารางเวรตอนเช้า', dutyDisplay: 'จอแสดงตารางเวรตอนเช้า', dashboard: 'สรุปยอดสมาชิก', year: 'จัดการปีการศึกษา', settings: 'ตั้งค่าระบบ', manual: 'คู่มือเจ้าหน้าที่'
+        home: 'หน้าแรกชมรม', add: 'เพิ่มสมาชิกใหม่', members: 'ฐานข้อมูลสมาชิก', activities: 'กิจกรรมชมรม', works: 'ผลงานสมาชิก', council: 'เลือกตั้ง / สภาชมรม', today: 'เช้าวันนี้', duty: 'ตารางเวรตอนเช้า', dutyDisplay: 'จอแสดงตารางเวรตอนเช้า', smart: 'เครื่องมือช่วยจัดการ', dashboard: 'สรุปยอดสมาชิก', annual: 'สรุปประจำปี', health: 'ตรวจสุขภาพระบบ', logs: 'ประวัติระบบ', year: 'จัดการปีการศึกษา', settings: 'ตั้งค่าระบบ', manual: 'คู่มือเจ้าหน้าที่'
       };
       return (
         <header className="topbar-shell no-print rounded-[2rem] backdrop-blur-xl soft-shadow p-5 md:p-6 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
@@ -1953,34 +2954,83 @@
 
     function ClubHomePage({ students, currentAcademicYear, onNavigate }) {
       const [limitMb, setLimitMb] = useState(() => Number(localStorage.getItem('mdec_db_usage_limit_mb') || 900));
+      const [duties, setDuties] = useState([]);
+      const [activities, setActivities] = useState([]);
+      const [works, setWorks] = useState([]);
+      const [council, setCouncil] = useState(null);
+
+      useEffect(() => {
+        const unsubDuty = getDutyRef().onSnapshot(s => setDuties(s.docs.map(d => ({ id:d.id, ...d.data() }))), err => console.error('home duty load failed', err));
+        const unsubAct = getActivitiesRef().onSnapshot(s => setActivities(s.docs.map(d => ({ id:d.id, ...d.data() }))), err => console.error('home activity load failed', err));
+        const unsubWorks = getWorksRef().onSnapshot(s => setWorks(s.docs.map(d => ({ id:d.id, ...d.data() }))), err => console.error('home works load failed', err));
+        const unsubCouncil = getCouncilRef().doc(String(currentAcademicYear)).onSnapshot(doc => setCouncil(doc.exists ? doc.data() : null), err => console.error('home council load failed', err));
+        return () => { unsubDuty(); unsubAct(); unsubWorks(); unsubCouncil(); };
+      }, [currentAcademicYear]);
+
       const stats = useMemo(() => buildStats(students, currentAcademicYear), [students, currentAcademicYear]);
       const capacity = useMemo(() => estimateCapacitySnapshot(students, limitMb), [students, limitMb]);
-      const barColor = capacity.status === 'danger' ? 'bg-rose-500' : capacity.status === 'warning' ? 'bg-amber-400' : capacity.status === 'watch' ? 'bg-blue-400' : 'bg-emerald-400';
       const updateLimit = (value) => {
         const next = Math.max(10, Math.min(10000, Number(value) || 900));
         setLimitMb(next);
         localStorage.setItem('mdec_db_usage_limit_mb', String(next));
       };
+
+      const today = todayFileDate();
+      const todayObj = new Date(`${today}T00:00:00`);
+      const dayMap = { 1:'mon', 2:'tue', 3:'wed', 4:'thu', 5:'fri', 6:'sat' };
+      const todayDayKey = dayMap[todayObj.getDay()] || '';
+      const todayDay = dutyDays.find(d => d.key === todayDayKey);
+      const weekStart = getWeekStartDate(today);
+      const currentDuty = duties.find(d => String(d.academicYear || '') === String(currentAcademicYear) && getWeekStartDate(d.date || today) === weekStart);
+      const currentDutyRoles = currentDuty ? getDutyRoles(currentDuty) : [];
+      const currentWeekly = currentDuty ? getDutyWeeklyAssignments(currentDuty) : {};
+      const todayDutyPeople = currentDuty && todayDayKey ? currentDutyRoles.flatMap(role => ((currentWeekly?.[todayDayKey]?.[role.key] || []).filter(Boolean).map((person, idx) => ({ role, person, idx })))) : [];
+      const dutyExceptions = currentDuty && todayDayKey ? currentDutyRoles.reduce((sum, role) => {
+        const statuses = (((currentDuty.dutyAttendance || {})[todayDayKey] || {})[role.key] || []);
+        return sum + statuses.filter(s => s && s !== 'present').length;
+      }, 0) : 0;
+
+      const yearActivities = activities.filter(a => String(a.academicYear || '') === String(currentAcademicYear));
+      const openActivities = yearActivities.filter(a => !['done','completed','closed','เสร็จแล้ว','ปิดงานแล้ว'].includes(String(a.status || '').toLowerCase()));
+      const yearWorks = works.filter(w => String(w.academicYear || '') === String(currentAcademicYear));
+      const councilRoles = Array.isArray(council?.roles) ? council.roles : [];
+      const emptyCouncil = councilRoles.filter(r => !r.studentId).length;
+      const barColor = capacity.status === 'danger' ? 'bg-rose-500' : capacity.status === 'warning' ? 'bg-amber-400' : capacity.status === 'watch' ? 'bg-blue-400' : 'bg-emerald-400';
+
+      const alerts = [
+        { title:'สมาชิกไม่มีรูป', value:stats.noPhoto, desc:'ควรเก็บรูปให้ครบก่อนเริ่มใช้งานจริง', icon:'ri-image-add-fill', action:'members' },
+        { title:'ข้อมูลสมาชิกไม่ครบ', value:stats.incomplete, desc:'ใช้สำหรับติดตามข้อมูลสำคัญ เช่น เบอร์ / Line / เบอร์ฉุกเฉิน', icon:'ri-error-warning-fill', action:'dashboard' },
+        { title:'กิจกรรมยังไม่ปิดสถานะ', value:openActivities.length, desc:'ตรวจสอบกิจกรรมที่ยังไม่จบหรือยังไม่เช็คชื่อ', icon:'ri-calendar-todo-fill', action:'activities' },
+        { title:'ตำแหน่งสภาว่าง', value:emptyCouncil, desc:'ตำแหน่งในบอร์ดสภาที่ยังไม่ได้เลือกนักศึกษา', icon:'ri-vip-crown-fill', action:'council' }
+      ];
+
+      const todayTasks = [
+        { title:'เปิดโหมดเช้าวันนี้', desc:'ดูเวรของวันนี้และบันทึกเฉพาะปัญหา', icon:'ri-sun-foggy-fill', action:'today', primary:true },
+        { title:'บันทึกปัญหาเวร', desc:'สาย / ขาด / ลา / ไม่พบตัว / ทำแทน', icon:'ri-user-follow-fill', action:'duty' },
+        { title:'เพิ่มกิจกรรมชมรม', desc:'บันทึกงานที่ชมรมช่วยงานวันนี้', icon:'ri-calendar-event-fill', action:'activities' },
+        { title:'สำรองข้อมูล', desc:'ตรวจความจุฐานข้อมูลและ Backup ก่อนล้างปี', icon:'ri-database-2-fill', action:'year' }
+      ];
+
       return (
-        <div className="space-y-5 home-audit-page">
+        <div className="space-y-5 home-audit-page v61-mobile-safe">
           <section className="rounded-[2.2rem] bg-slate-950 text-white soft-shadow p-6 md:p-8 overflow-hidden relative">
             <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-500/20 blur-3xl"></div>
             <div className="relative z-10 grid xl:grid-cols-[1fr_420px] gap-6 items-center">
               <div>
-                <p className="text-xs font-extrabold tracking-[0.24em] text-blue-200 uppercase mb-3">MDEC Photo Club Center</p>
-                <h1 className="text-4xl md:text-6xl font-black leading-none">ศูนย์บริหารชมรม</h1>
-                <p className="text-blue-100 mt-4 max-w-3xl">หน้าแรกสำหรับอาจารย์ผู้ดูแล ใช้ดูภาพรวมสมาชิก ตารางเวร สภาชมรม การเลือกตั้ง และสถานะฐานข้อมูลในที่เดียว</p>
+                <p className="text-xs font-extrabold tracking-[0.24em] text-blue-200 uppercase mb-3">Today Command Center</p>
+                <h1 className="text-4xl md:text-6xl font-black leading-none">วันนี้ต้องทำอะไร</h1>
+                <p className="text-blue-100 mt-4 max-w-3xl">หน้าแรกถูกปรับให้เป็นศูนย์บัญชาการของอาจารย์ เปิดมาแล้วเห็นเวรวันนี้ งานค้าง ตรวจสุขภาพระบบ และปุ่มลัดที่ใช้บ่อยทันที</p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <button onClick={() => onNavigate('add')} className="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold"><i className="ri-user-add-fill mr-1"></i>เพิ่มสมาชิก</button>
-                  <button onClick={() => onNavigate('duty')} className="px-5 py-3 rounded-2xl bg-white text-slate-950 hover:bg-blue-50 font-extrabold"><i className="ri-calendar-schedule-fill mr-1"></i>จัดตารางเวร</button>
-                  <button onClick={() => onNavigate('council')} className="px-5 py-3 rounded-2xl bg-white/10 border border-white/10 hover:bg-white/15 text-white font-extrabold"><i className="ri-vip-crown-fill mr-1"></i>เลือกตั้ง / สภา</button>
+                  <button onClick={() => onNavigate('today')} className="v61-action v61-primary"><i className="ri-sun-foggy-fill"></i>เช้าวันนี้</button>
+                  <button onClick={() => onNavigate('duty')} className="v61-action bg-white text-slate-950 hover:bg-blue-50"><i className="ri-calendar-schedule-fill"></i>จัด / บันทึกเวร</button>
+                  <button onClick={() => onNavigate('health')} className="v61-action bg-white/10 border border-white/10 text-white hover:bg-white/15"><i className="ri-heart-pulse-fill"></i>ตรวจตรวจสุขภาพระบบ</button>
                 </div>
               </div>
               <div className="rounded-[2rem] bg-white/8 border border-white/10 p-5">
                 <div className="flex items-start justify-between gap-3 mb-4">
                   <div>
                     <p className="text-xs text-blue-200 font-extrabold uppercase tracking-wide">Database Capacity</p>
-                    <h3 className="text-2xl font-black mt-1">สถานะฐานข้อมูล</h3>
+                    <h3 className="text-2xl font-black mt-1">หลอดสถานะฐานข้อมูล</h3>
                   </div>
                   <div className="text-right">
                     <p className="text-4xl font-black">{capacity.percent}%</p>
@@ -2004,51 +3054,93 @@
             </div>
           </section>
 
-          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
+          <section className="grid xl:grid-cols-[1.1fr_.9fr] gap-5">
+            <div className="v61-card p-5 md:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <div>
+                  <h3 className="text-2xl font-black text-slate-950"><i className="ri-sun-foggy-fill text-blue-600 mr-2"></i>เวรเช้าวันนี้</h3>
+                  <p className="v61-muted text-sm">{todayDay ? `${todayDay.label} • ${formatThaiDate(today)}` : `วันนี้ไม่อยู่ในช่วงเวร จันทร์–เสาร์`}</p>
+                </div>
+                <button onClick={() => onNavigate('today')} className="v61-action v61-primary"><i className="ri-eye-fill"></i>เปิดหน้าเช้าวันนี้</button>
+              </div>
+              {currentDuty && todayDay && todayDutyPeople.length ? (
+                <div className="space-y-3">
+                  {todayDutyPeople.slice(0, 8).map((item, idx) => (
+                    <div key={`${item.role.key}-${idx}`} className="v61-check-item flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="font-black text-slate-950 truncate">{item.person.nickname || item.person.fullName || '-'}</div>
+                        <div className="text-sm v61-muted truncate">{item.role.shortTitle || item.role.title} • {item.person.level || '-'} / {item.person.group || '-'}</div>
+                      </div>
+                      <span className="px-3 py-1.5 rounded-full bg-emerald-900 text-emerald-100 text-xs font-black">ปกติอัตโนมัติ</span>
+                    </div>
+                  ))}
+                  {todayDutyPeople.length > 8 && <div className="text-sm font-bold v61-muted text-center">และอีก {todayDutyPeople.length - 8} คน</div>}
+                  <div className="rounded-2xl bg-slate-950 text-white p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div><div className="text-sm text-blue-100 font-bold">ปัญหาที่บันทึกวันนี้</div><div className="text-3xl font-black">{dutyExceptions}</div></div>
+                    <button onClick={() => onNavigate('duty')} className="v61-action bg-white text-slate-950"><i className="ri-user-follow-fill"></i>บันทึกเฉพาะปัญหา</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-3xl border border-dashed border-slate-300 p-8 text-center">
+                  <div className="w-16 h-16 mx-auto rounded-3xl bg-blue-50 text-blue-700 flex items-center justify-center text-3xl mb-3"><i className="ri-calendar-close-fill"></i></div>
+                  <div className="font-black text-slate-950">ยังไม่มีเวรเช้าของวันนี้</div>
+                  <p className="text-sm v61-muted mt-1">ไปที่หน้าตารางเวรเพื่อสร้างหรือเรียกใช้ตาราง A/B</p>
+                  <button onClick={() => onNavigate('duty')} className="v61-action v61-primary mt-4"><i className="ri-add-line"></i>จัดตารางเวร</button>
+                </div>
+              )}
+            </div>
+
+            <div className="v61-card p-5 md:p-6">
+              <h3 className="text-2xl font-black text-slate-950 mb-4"><i className="ri-flashlight-fill text-blue-600 mr-2"></i>ปุ่มลัดงานวันนี้</h3>
+              <div className="grid sm:grid-cols-2 gap-3">
+                {todayTasks.map(task => (
+                  <button key={task.title} onClick={() => onNavigate(task.action)} className={`text-left rounded-2xl p-4 border transition hover:-translate-y-0.5 ${task.primary ? 'bg-blue-600 text-white border-blue-500' : 'bg-slate-50 text-slate-900 border-slate-200'}`}>
+                    <i className={`${task.icon} text-2xl`}></i>
+                    <div className="font-black mt-2">{task.title}</div>
+                    <div className={`text-xs mt-1 ${task.primary ? 'text-blue-100' : 'text-slate-500'}`}>{task.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
             <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl mb-4"><i className="ri-team-fill"></i></div><p className="text-sm text-slate-500 font-bold">สมาชิกปีปัจจุบัน</p><p className="text-4xl font-black text-slate-950 mt-1">{stats.total}</p></div>
             <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl mb-4"><i className="ri-user-star-fill"></i></div><p className="text-sm text-slate-500 font-bold">สมาชิกปัจจุบัน</p><p className="text-4xl font-black text-slate-950 mt-1">{stats.active}</p></div>
-            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl mb-4"><i className="ri-image-add-fill"></i></div><p className="text-sm text-slate-500 font-bold">ยังไม่มีรูป</p><p className="text-4xl font-black text-slate-950 mt-1">{stats.noPhoto}</p></div>
-            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl mb-4"><i className="ri-alert-fill"></i></div><p className="text-sm text-slate-500 font-bold">ข้อมูลไม่ครบ</p><p className="text-4xl font-black text-slate-950 mt-1">{stats.incomplete}</p></div>
-          </div>
+            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl mb-4"><i className="ri-calendar-event-fill"></i></div><p className="text-sm text-slate-500 font-bold">กิจกรรมปีนี้</p><p className="text-4xl font-black text-slate-950 mt-1">{yearActivities.length}</p></div>
+            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl mb-4"><i className="ri-gallery-fill"></i></div><p className="text-sm text-slate-500 font-bold">ผลงานปีนี้</p><p className="text-4xl font-black text-slate-950 mt-1">{yearWorks.length}</p></div>
+          </section>
 
-          <section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6">
-            <h3 className="text-xl font-black text-slate-950 mb-4"><i className="ri-flashlight-fill text-blue-600 mr-2"></i>ปุ่มลัดระบบชมรม</h3>
-            <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-3">
-              {[['members','ฐานข้อมูลสมาชิก','ri-folder-user-fill'],['dashboard','สรุปยอด / จุดที่ต้องแก้','ri-pie-chart-2-fill'],['dutyDisplay','จอแสดงเวรเช้า','ri-tv-2-fill'],['year','สำรองและล้างข้อมูลรายปี','ri-database-2-fill']].map(([id,label,icon]) => (
-                <button key={id} onClick={() => onNavigate(id)} className="text-left rounded-2xl border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-200 p-4 transition">
-                  <i className={`${icon} text-2xl text-blue-600`}></i>
-                  <div className="font-extrabold text-slate-950 mt-3">{label}</div>
-                </button>
-              ))}
+          <section className="grid xl:grid-cols-[1fr_.75fr] gap-5">
+            <div className="v61-card p-5 md:p-6">
+              <h3 className="text-xl font-black text-slate-950 mb-4"><i className="ri-alarm-warning-fill text-blue-600 mr-2"></i>สิ่งที่ควรตรวจวันนี้</h3>
+              <div className="grid md:grid-cols-2 gap-3">
+                {alerts.map(alert => (
+                  <button key={alert.title} onClick={() => onNavigate(alert.action)} className="v61-check-item text-left">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl"><i className={alert.icon}></i></div>
+                      <div className="text-3xl font-black text-slate-950">{alert.value}</div>
+                    </div>
+                    <div className="font-black text-slate-950 mt-3">{alert.title}</div>
+                    <div className="text-xs v61-muted mt-1">{alert.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="v61-card p-5 md:p-6">
+              <h3 className="text-xl font-black text-slate-950 mb-4"><i className="ri-list-check-3 text-blue-600 mr-2"></i>Checklist ใช้งานจริง</h3>
+              <div className="space-y-3 text-sm">
+                <div className="v61-check-item"><b>ก่อนเข้าแถว:</b> เปิด “เช้าวันนี้” ดูคนรับผิดชอบเวร</div>
+                <div className="v61-check-item"><b>หลังเข้าแถว:</b> บันทึกเฉพาะปัญหา เช่น สาย / ขาด / ไม่พบตัว</div>
+                <div className="v61-check-item"><b>ระหว่างวัน:</b> เพิ่มกิจกรรมและเช็คชื่อกิจกรรมที่เกิดขึ้นจริง</div>
+                <div className="v61-check-item"><b>ทุกสัปดาห์:</b> ตรวจตรวจสุขภาพระบบและ Backup เมื่อข้อมูลเริ่มเยอะ</div>
+              </div>
             </div>
           </section>
         </div>
       );
     }
-
-    function councilIconOptions() {
-      return ['ri-vip-crown-fill','ri-user-star-fill','ri-file-list-3-fill','ri-wallet-3-fill','ri-camera-3-fill','ri-video-on-fill','ri-megaphone-fill','ri-group-fill','ri-brush-fill','ri-mic-fill','ri-calendar-check-fill','ri-shield-star-fill','ri-star-smile-fill','ri-user-settings-fill'];
-    }
-
-    function defaultCouncilRoles() {
-      return [
-        { key:'president', title:'ประธานชมรม', subtitle:'ตัวแทนหลักของชมรม', icon:'ri-vip-crown-fill', studentId:'', note:'' },
-        { key:'vice_president', title:'รองประธานชมรม', subtitle:'ช่วยดูแลและประสานงานชมรม', icon:'ri-user-star-fill', studentId:'', note:'' },
-        { key:'secretary', title:'เลขานุการ', subtitle:'ดูแลเอกสารและการนัดหมาย', icon:'ri-file-list-3-fill', studentId:'', note:'' },
-        { key:'treasurer', title:'เหรัญญิก', subtitle:'ดูแลอุปกรณ์/งบประมาณเบื้องต้น', icon:'ri-wallet-3-fill', studentId:'', note:'' },
-        { key:'media_lead', title:'หัวหน้าฝ่ายภาพนิ่ง', subtitle:'ดูแลทีมถ่ายภาพกิจกรรม', icon:'ri-camera-3-fill', studentId:'', note:'' },
-        { key:'video_lead', title:'หัวหน้าฝ่ายวิดีโอ', subtitle:'ดูแลทีมวิดีโอและคลิปกิจกรรม', icon:'ri-video-on-fill', studentId:'', note:'' }
-      ];
-    }
-
-    function defaultElectionPositions() {
-      return [
-        { key:'president_vote', title:'ประธานชมรม', icon:'ri-vip-crown-fill', seats:1, candidates:[] },
-        { key:'vice_vote', title:'รองประธานชมรม', icon:'ri-user-star-fill', seats:1, candidates:[] },
-        { key:'secretary_vote', title:'เลขานุการ', icon:'ri-file-list-3-fill', seats:1, candidates:[] }
-      ];
-    }
-
 
     function ClubActivitiesPage({ students, currentAcademicYear, yearsList }) {
       const emptyForm = () => ({
@@ -2062,6 +3154,7 @@
         albumUrl: '',
         cover: '',
         participants: [],
+        attendance: {},
         note: ''
       });
       const activityTypes = ['ถ่ายภาพกิจกรรม', 'ถ่ายวิดีโอ', 'งานประชาสัมพันธ์', 'ช่วยงานหน้าเสาธง', 'อบรม/เวิร์กช็อป', 'ประชุมชมรม', 'กิจกรรมอื่น ๆ'];
@@ -2126,11 +3219,16 @@
         setForm(prev => {
           const current = Array.isArray(prev.participants) ? prev.participants : [];
           if (current.includes(studentId)) return prev;
-          return { ...prev, participants: [...current, studentId] };
+          return { ...prev, participants: [...current, studentId], attendance: { ...(prev.attendance || {}), [studentId]: (prev.attendance || {})[studentId] || 'มา' } };
         });
         setSelectedStudentToAdd('');
       };
-      const removeParticipant = (studentId) => setForm(prev => ({ ...prev, participants: (prev.participants || []).filter(id => id !== studentId) }));
+      const removeParticipant = (studentId) => setForm(prev => {
+        const nextAttendance = { ...(prev.attendance || {}) };
+        delete nextAttendance[studentId];
+        return { ...prev, participants: (prev.participants || []).filter(id => id !== studentId), attendance: nextAttendance };
+      });
+      const setAttendance = (studentId, status) => setForm(prev => ({ ...prev, attendance: { ...(prev.attendance || {}), [studentId]: status } }));
 
       const handleCoverUpload = (file) => {
         if (!file) return;
@@ -2154,12 +3252,14 @@
           title: form.title.trim(),
           academicYear: String(form.academicYear || year || currentAcademicYear),
           participants: Array.isArray(form.participants) ? form.participants : [],
+          attendance: form.attendance || {},
           updatedAt: new Date().toISOString(),
           updatedBy: 'staff'
         };
         try {
           if (editingId) await getActivitiesRef().doc(editingId).update(payload);
           else await getActivitiesRef().add({ ...payload, createdAt: new Date().toISOString() });
+          await logSystemAction(editingId ? 'อัปเดตกิจกรรมชมรม' : 'เพิ่มกิจกรรมชมรม', { title: payload.title, academicYear: payload.academicYear, type: payload.type });
           alert(editingId ? 'อัปเดตกิจกรรมเรียบร้อย' : 'บันทึกกิจกรรมเรียบร้อย');
           resetForm();
         } catch (err) {
@@ -2169,23 +3269,24 @@
 
       const editActivity = (activity) => {
         setEditingId(activity.id);
-        setForm({ ...emptyForm(), ...activity, participants: Array.isArray(activity.participants) ? activity.participants : [] });
+        setForm({ ...emptyForm(), ...activity, participants: Array.isArray(activity.participants) ? activity.participants : [], attendance: activity.attendance || {} });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
       const deleteActivity = async (activity) => {
         if (!confirm(`ลบกิจกรรม "${activity.title}" ใช่ไหม?`)) return;
-        try { await getActivitiesRef().doc(activity.id).delete(); }
+        try { await getActivitiesRef().doc(activity.id).delete(); await logSystemAction('ลบกิจกรรมชมรม', { title: activity.title, academicYear: activity.academicYear }); }
         catch (err) { alert('ลบกิจกรรมไม่สำเร็จ: ' + (err.message || err)); }
       };
 
       const exportActivitiesCSV = () => {
         if (!filteredActivities.length) return alert('ยังไม่มีกิจกรรมให้ส่งออก');
-        const headers = ['ปีการศึกษา','วันที่','ชื่อกิจกรรม','ประเภท','สถานที่','สถานะ','จำนวนสมาชิก','รายชื่อสมาชิก','อัลบั้ม/ลิงก์','รายละเอียด'];
+        const headers = ['ปีการศึกษา','วันที่','ชื่อกิจกรรม','ประเภท','สถานที่','สถานะ','จำนวนสมาชิก','รายชื่อสมาชิก','สถานะเข้าร่วม','อัลบั้ม/ลิงก์','รายละเอียด'];
         const esc = (v) => `"${String(v ?? '').replace(/"/g,'""')}"`;
         const rows = filteredActivities.map(a => {
           const names = (a.participants || []).map(id => studentDutyName(studentMap.get(id) || {})).filter(Boolean).join(' / ');
-          return [a.academicYear, a.date, a.title, a.type, a.location, a.status, (a.participants || []).length, names, a.albumUrl, a.description].map(esc).join(',');
+          const attendance = (a.participants || []).map(id => `${studentDutyName(studentMap.get(id) || {})}: ${(a.attendance || {})[id] || 'มา'}`).join(' / ');
+          return [a.academicYear, a.date, a.title, a.type, a.location, a.status, (a.participants || []).length, names, attendance, a.albumUrl, a.description].map(esc).join(',');
         });
         downloadFile(`MDEC_Club_Activities_${year}_${todayFileDate()}.csv`, '\ufeff' + [headers.map(esc).join(','), ...rows].join('\n'), 'text/csv;charset=utf-8');
       };
@@ -2249,10 +3350,10 @@
                 </div>
                 <div className="text-sm text-slate-500 font-bold">เลือกแล้ว {(form.participants || []).length} คน</div>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 grid md:grid-cols-2 xl:grid-cols-3 gap-3">
                 {(form.participants || []).length ? (form.participants || []).map(id => {
                   const s = studentMap.get(id);
-                  return <button type="button" key={id} onClick={() => removeParticipant(id)} className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-bold text-sm hover:bg-rose-50 hover:text-rose-700 hover:border-rose-100"><i className="ri-user-fill"></i>{s ? studentDutyName(s) : id}<i className="ri-close-line"></i></button>;
+                  return <div key={id} className="rounded-2xl bg-white border border-slate-200 p-3"><div className="flex items-center justify-between gap-2 mb-2"><div className="font-extrabold text-slate-950 truncate"><i className="ri-user-fill text-blue-600 mr-1"></i>{s ? studentDutyName(s) : id}</div><button type="button" onClick={() => removeParticipant(id)} className="px-2 py-1 rounded-xl bg-rose-50 text-rose-700 border border-rose-100 text-xs font-bold">ลบ</button></div><select value={(form.attendance || {})[id] || 'มา'} onChange={e => setAttendance(id, e.target.value)} className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 font-bold text-slate-900"><option>มา</option><option>สาย</option><option>ขาด</option><option>ลา</option></select></div>;
                 }) : <div className="text-sm text-slate-500 font-bold">ยังไม่ได้เพิ่มสมาชิกที่เข้าร่วม</div>}
               </div>
             </div>
@@ -2311,6 +3412,134 @@
           </section>
         </div>
       );
+    }
+
+
+    function MemberWorksPage({ students, currentAcademicYear, yearsList }) {
+      const emptyForm = () => ({ title:'', date: todayFileDate(), academicYear: currentAcademicYear, type:'ภาพถ่าย', studentId:'', url:'', cover:'', description:'', status:'เผยแพร่แล้ว', note:'' });
+      const workTypes = ['ภาพถ่าย', 'วิดีโอ', 'โปสเตอร์/กราฟิก', 'งานไลฟ์สด', 'งานประชาสัมพันธ์', 'งานอื่น ๆ'];
+      const workStatuses = ['ร่าง', 'กำลังทำ', 'เผยแพร่แล้ว', 'เก็บเข้าพอร์ต'];
+      const [works, setWorks] = useState([]);
+      const [year, setYear] = useState(currentAcademicYear);
+      const [query, setQuery] = useState('');
+      const [form, setForm] = useState(emptyForm());
+      const [editingId, setEditingId] = useState(null);
+      const [saving, setSaving] = useState(false);
+      const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
+      const yearOptions = useMemo(() => [...new Set([currentAcademicYear, ...(yearsList || []), ...works.map(w => w.academicYear)].filter(Boolean))], [currentAcademicYear, yearsList, works]);
+      const activeStudents = useMemo(() => students.filter(s => String(s.academicYear || currentAcademicYear) === String(year)).sort((a,b) => String(a.fullName || '').localeCompare(String(b.fullName || ''), 'th')), [students, year, currentAcademicYear]);
+      useEffect(() => {
+        const unsub = getWorksRef().onSnapshot(snapshot => {
+          const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          data.sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
+          setWorks(data);
+        }, err => alert('โหลดผลงานสมาชิกไม่สำเร็จ: ' + (err.message || err)));
+        return () => unsub();
+      }, []);
+      useEffect(() => { if (!editingId) setForm(prev => ({ ...prev, academicYear: year })); }, [year, editingId]);
+      const filtered = useMemo(() => {
+        const q = String(query || '').trim().toLowerCase();
+        return works.filter(w => String(w.academicYear || '') === String(year || '')).filter(w => {
+          if (!q) return true;
+          const s = studentMap.get(w.studentId);
+          return [w.title, w.type, w.status, w.description, w.url, s?.studentId, s?.fullName, s?.nickname].filter(Boolean).join(' ').toLowerCase().includes(q);
+        });
+      }, [works, year, query, studentMap]);
+      const stats = useMemo(() => ({ total: filtered.length, published: filtered.filter(w => w.status === 'เผยแพร่แล้ว' || w.status === 'เก็บเข้าพอร์ต').length, members: new Set(filtered.map(w => w.studentId).filter(Boolean)).size, photos: filtered.filter(w => w.type === 'ภาพถ่าย').length }), [filtered]);
+      const updateForm = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
+      const handleCoverUpload = (file) => {
+        if (!file) return;
+        if (!file.type.startsWith('image/')) return alert('กรุณาเลือกไฟล์รูปภาพ');
+        const reader = new FileReader(); reader.onload = () => updateForm('cover', reader.result); reader.readAsDataURL(file);
+      };
+      const resetForm = () => { setForm({ ...emptyForm(), academicYear: year }); setEditingId(null); };
+      const saveWork = async () => {
+        if (!form.title.trim()) return alert('กรุณากรอกชื่อผลงาน');
+        setSaving(true);
+        const payload = { ...form, title: form.title.trim(), academicYear: String(form.academicYear || year || currentAcademicYear), updatedAt: new Date().toISOString(), updatedBy:'staff' };
+        try {
+          if (editingId) await getWorksRef().doc(editingId).update(payload); else await getWorksRef().add({ ...payload, createdAt: new Date().toISOString() });
+          await logSystemAction(editingId ? 'อัปเดตผลงานสมาชิก' : 'เพิ่มผลงานสมาชิก', { title: payload.title, academicYear: payload.academicYear, type: payload.type });
+          alert(editingId ? 'อัปเดตผลงานเรียบร้อย' : 'บันทึกผลงานเรียบร้อย'); resetForm();
+        } catch (err) { alert('บันทึกผลงานไม่สำเร็จ: ' + (err.message || err)); }
+        finally { setSaving(false); }
+      };
+      const editWork = (w) => { setEditingId(w.id); setForm({ ...emptyForm(), ...w }); window.scrollTo({ top:0, behavior:'smooth' }); };
+      const deleteWork = async (w) => { if (!confirm(`ลบผลงาน "${w.title}" ใช่ไหม?`)) return; try { await getWorksRef().doc(w.id).delete(); await logSystemAction('ลบผลงานสมาชิก', { title:w.title, academicYear:w.academicYear }); } catch (err) { alert('ลบผลงานไม่สำเร็จ: ' + (err.message || err)); } };
+      const exportCSV = () => {
+        const esc = v => `"${String(v ?? '').replace(/"/g,'""')}"`;
+        const headers = ['ปีการศึกษา','วันที่','ชื่อผลงาน','ประเภท','เจ้าของผลงาน','สถานะ','ลิงก์','รายละเอียด'];
+        const rows = filtered.map(w => { const s = studentMap.get(w.studentId); return [w.academicYear, w.date, w.title, w.type, s ? studentDutyName(s) : '', w.status, w.url, w.description].map(esc).join(','); });
+        downloadFile(`MDEC_Member_Works_${year}_${todayFileDate()}.csv`, '\ufeff' + [headers.map(esc).join(','), ...rows].join('\n'), 'text/csv;charset=utf-8');
+      };
+      return (
+        <div className="space-y-5 council-audit-page">
+          <section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7 overflow-hidden relative"><div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-blue-500/20 blur-3xl"></div><div className="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5"><div><p className="text-xs font-extrabold tracking-[0.22em] text-blue-200 uppercase mb-2">Member Portfolio</p><h3 className="text-3xl md:text-4xl font-black">ผลงานสมาชิก</h3><p className="text-blue-100 mt-2 max-w-3xl">เก็บผลงานภาพถ่าย วิดีโอ โปสเตอร์ หรืองานสื่อที่นักศึกษามีส่วนร่วม เพื่อทำพอร์ตชมรมและสรุปประจำปี</p></div><div className="grid sm:grid-cols-4 gap-3"><div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">ผลงานทั้งหมด</p><p className="text-3xl font-black">{stats.total}</p></div><div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">เผยแพร่/เข้าพอร์ต</p><p className="text-3xl font-black">{stats.published}</p></div><div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">สมาชิกมีผลงาน</p><p className="text-3xl font-black">{stats.members}</p></div><div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">ภาพถ่าย</p><p className="text-3xl font-black">{stats.photos}</p></div></div></div></section>
+          <section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="flex justify-between gap-3 mb-5"><div><h3 className="text-xl font-black text-slate-950"><i className="ri-gallery-fill text-blue-600 mr-2"></i>{editingId ? 'แก้ไขผลงาน' : 'เพิ่มผลงาน'}</h3><p className="text-sm text-slate-500">บันทึกผลงานพร้อมเจ้าของผลงานและลิงก์ที่เกี่ยวข้อง</p></div><button type="button" onClick={resetForm} className="px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ล้างฟอร์ม</button></div><div className="grid md:grid-cols-4 gap-4"><Input label="ชื่อผลงาน" value={form.title} onChange={v => updateForm('title', v)} className="md:col-span-2" placeholder="เช่น ภาพถ่ายกิจกรรมปฐมนิเทศ" /><Input label="วันที่" type="date" value={form.date} onChange={v => updateForm('date', v)} /><Select label="ปีการศึกษา" value={form.academicYear} onChange={v => { updateForm('academicYear', v); setYear(v); }} options={yearOptions.length ? yearOptions : [currentAcademicYear]} /><Select label="ประเภท" value={form.type} onChange={v => updateForm('type', v)} options={workTypes} /><Select label="สถานะ" value={form.status} onChange={v => updateForm('status', v)} options={workStatuses} /><label className="block md:col-span-2"><span className="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wide">เจ้าของผลงาน</span><select value={form.studentId || ''} onChange={e => updateForm('studentId', e.target.value)} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900"><option value="">เลือกสมาชิก</option>{activeStudents.map(s => <option key={s.id} value={s.id}>{s.studentId || '-'} · {studentDutyName(s)} · {s.level || '-'}/{s.group || '-'}</option>)}</select></label><Input label="ลิงก์ผลงาน / อัลบั้ม" value={form.url} onChange={v => updateForm('url', v)} className="md:col-span-2" placeholder="วางลิงก์ Google Photos, Drive, YouTube ฯลฯ" /><label className="block md:col-span-2"><span className="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wide">ภาพปกผลงาน</span><input type="file" accept="image/*" onChange={e => handleCoverUpload(e.target.files?.[0])} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900" /></label><TextArea label="รายละเอียดผลงาน" value={form.description} onChange={v => updateForm('description', v)} className="md:col-span-2" /><TextArea label="หมายเหตุ" value={form.note} onChange={v => updateForm('note', v)} className="md:col-span-2" /></div><div className="mt-5 flex gap-3"><button type="button" onClick={saveWork} disabled={saving} className="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold disabled:opacity-60"><i className="ri-save-3-fill mr-1"></i>{saving ? 'กำลังบันทึก...' : editingId ? 'อัปเดตผลงาน' : 'บันทึกผลงาน'}</button><button type="button" onClick={exportCSV} className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold"><i className="ri-file-excel-2-fill mr-1"></i>โหลด CSV</button></div></section>
+          <section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4 mb-5"><div><h3 className="text-xl font-black text-slate-950"><i className="ri-image-2-fill text-blue-600 mr-2"></i>รายการผลงาน</h3><p className="text-sm text-slate-500">ค้นหาและจัดการผลงานย้อนหลัง</p></div><div className="grid sm:grid-cols-[190px_minmax(260px,1fr)] gap-3 w-full xl:w-auto"><select value={year} onChange={e => setYear(e.target.value)} className="px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900">{yearOptions.map(y => <option key={y} value={y}>ปีการศึกษา {y}</option>)}</select><input value={query} onChange={e => setQuery(e.target.value)} placeholder="ค้นหาผลงาน เจ้าของ ประเภท หรือสถานะ" className="px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900" /></div></div>{filtered.length ? <div className="grid xl:grid-cols-3 md:grid-cols-2 gap-4">{filtered.map(w => { const s = studentMap.get(w.studentId); return <div key={w.id} className="rounded-[1.8rem] bg-slate-50 border border-slate-200 overflow-hidden"><div className="h-44 bg-slate-900 text-white flex items-center justify-center text-4xl">{w.cover ? <img src={w.cover} className="w-full h-full object-cover" /> : <i className="ri-gallery-fill"></i>}</div><div className="p-5"><div className="text-xs font-extrabold text-blue-600 uppercase tracking-wide">{w.type} • {formatThaiDate(w.date)}</div><h4 className="text-xl font-black text-slate-950 truncate">{w.title}</h4><p className="text-sm text-slate-500 mt-1"><i className="ri-user-fill mr-1"></i>{s ? studentDutyName(s) : 'ไม่ระบุเจ้าของผลงาน'}</p><p className="text-sm text-slate-600 mt-3 line-clamp-2">{w.description || 'ยังไม่มีรายละเอียด'}</p><div className="mt-4 flex flex-wrap gap-2">{w.url && <a href={w.url} target="_blank" rel="noreferrer" className="px-4 py-2 rounded-2xl bg-blue-600 text-white font-extrabold text-sm"><i className="ri-external-link-line mr-1"></i>เปิดลิงก์</a>}<button onClick={() => editWork(w)} className="px-4 py-2 rounded-2xl bg-white text-blue-700 border border-blue-100 font-extrabold text-sm">แก้ไข</button><button onClick={() => deleteWork(w)} className="px-4 py-2 rounded-2xl bg-rose-50 text-rose-700 border border-rose-100 font-extrabold text-sm">ลบ</button></div></div></div>; })}</div> : <div className="rounded-3xl bg-slate-50 border border-dashed border-slate-300 p-12 text-center"><div className="text-xl font-black text-slate-950">ยังไม่มีผลงานในปีนี้</div><p className="text-slate-500 mt-2">เริ่มจากการเพิ่มผลงานแรกด้านบนได้เลย</p></div>}</section>
+        </div>
+      );
+    }
+
+    function ChangeLogsPage({ currentAcademicYear }) {
+      const [logs, setLogs] = useState([]);
+      const [query, setQuery] = useState('');
+      const [manual, setManual] = useState('');
+      useEffect(() => {
+        const unsub = getChangeLogsRef().orderBy('createdAt','desc').limit(200).onSnapshot(snapshot => setLogs(snapshot.docs.map(doc => ({ id:doc.id, ...doc.data() }))), err => alert('โหลดประวัติระบบไม่สำเร็จ: ' + (err.message || err)));
+        return () => unsub();
+      }, []);
+      const filtered = logs.filter(log => !query.trim() || [log.action, JSON.stringify(log.detail || {}), log.createdAt].join(' ').toLowerCase().includes(query.trim().toLowerCase()));
+      const saveManual = async () => { if (!manual.trim()) return; await logSystemAction('บันทึกหมายเหตุระบบ', { note: manual.trim(), academicYear: currentAcademicYear }); setManual(''); };
+      return <div className="space-y-5 council-audit-page"><section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7"><p className="text-xs font-extrabold tracking-[0.22em] text-blue-200 uppercase mb-2">System History</p><h3 className="text-3xl md:text-4xl font-black">ประวัติระบบ</h3><p className="text-blue-100 mt-2">ใช้ย้อนดูการบันทึกสำคัญ เช่น กิจกรรม ผลงาน การลบข้อมูล และหมายเหตุจากเจ้าหน้าที่</p></section><section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="grid md:grid-cols-[1fr_auto] gap-3"><input value={manual} onChange={e => setManual(e.target.value)} placeholder="พิมพ์หมายเหตุระบบ เช่น สำรองข้อมูลแล้ว / ตรวจรูปสมาชิกแล้ว" className="px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 font-bold text-slate-900"/><button onClick={saveManual} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-extrabold">บันทึกหมายเหตุ</button></div><input value={query} onChange={e => setQuery(e.target.value)} placeholder="ค้นหาประวัติระบบ" className="mt-4 w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 font-bold text-slate-900"/></section><section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="space-y-3">{filtered.length ? filtered.map(log => <div key={log.id} className="rounded-2xl bg-slate-50 border border-slate-200 p-4"><div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2"><div className="font-black text-slate-950"><i className="ri-history-fill text-blue-600 mr-2"></i>{log.action}</div><div className="text-xs text-slate-500 font-bold">{log.createdAt ? new Date(log.createdAt).toLocaleString('th-TH') : '-'}</div></div><pre className="mt-2 text-xs text-slate-500 whitespace-pre-wrap break-words">{JSON.stringify(log.detail || {}, null, 2)}</pre></div>) : <div className="text-center p-10 text-slate-500 font-bold">ยังไม่มีประวัติระบบ</div>}</div></section></div>;
+    }
+
+    function AnnualSummaryPage({ students, currentAcademicYear, yearsList }) {
+      const [year, setYear] = useState(currentAcademicYear);
+      const [activities, setActivities] = useState([]);
+      const [duties, setDuties] = useState([]);
+      const [works, setWorks] = useState([]);
+      const [council, setCouncil] = useState(null);
+      const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
+      useEffect(() => { const ua = getActivitiesRef().onSnapshot(s => setActivities(s.docs.map(d => ({id:d.id,...d.data()})))); const ud = getDutyRef().onSnapshot(s => setDuties(s.docs.map(d => ({id:d.id,...d.data()})))); const uw = getWorksRef().onSnapshot(s => setWorks(s.docs.map(d => ({id:d.id,...d.data()})))); return () => { ua(); ud(); uw(); }; }, []);
+      useEffect(() => { const unsub = getCouncilRef().doc(String(year)).onSnapshot(doc => setCouncil(doc.exists ? { id:doc.id, ...doc.data() } : null)); return () => unsub(); }, [year]);
+      const yearOptions = useMemo(() => [...new Set([currentAcademicYear, ...(yearsList || []), ...activities.map(a => a.academicYear), ...works.map(w => w.academicYear)].filter(Boolean))], [currentAcademicYear, yearsList, activities, works]);
+      const stats = useMemo(() => {
+        const st = buildStats(students, year);
+        const acts = activities.filter(a => String(a.academicYear || '') === String(year));
+        const dutyYear = duties.filter(d => String(d.academicYear || '') === String(year));
+        const workYear = works.filter(w => String(w.academicYear || '') === String(year));
+        const memberScore = {};
+        acts.forEach(a => (a.participants || []).forEach(id => memberScore[id] = (memberScore[id] || 0) + 1));
+        workYear.forEach(w => { if (w.studentId) memberScore[w.studentId] = (memberScore[w.studentId] || 0) + 1; });
+        const topMembers = Object.entries(memberScore).sort((a,b) => b[1]-a[1]).slice(0, 8).map(([id,count]) => ({ student: studentMap.get(id), count }));
+        return { st, acts, dutyYear, workYear, topMembers, councilCount: (council?.roles || []).filter(r => r.studentId).length };
+      }, [students, year, activities, duties, works, council, studentMap]);
+      const exportSummary = () => {
+        const lines = [`สรุปประจำปีการศึกษา ${year}`, `สมาชิกทั้งหมด: ${stats.st.total}`, `สมาชิกปัจจุบัน: ${stats.st.active}`, `กิจกรรมชมรม: ${stats.acts.length}`, `ผลงานสมาชิก: ${stats.workYear.length}`, `ตารางเวร: ${stats.dutyYear.length}`, `สภาชมรมที่ระบุรายชื่อ: ${stats.councilCount}`];
+        downloadFile(`MDEC_Annual_Summary_${year}_${todayFileDate()}.txt`, lines.join('\n'), 'text/plain;charset=utf-8');
+      };
+      return <div className="space-y-5 council-audit-page"><section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7"><div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4"><div><p className="text-xs font-extrabold tracking-[0.22em] text-blue-200 uppercase mb-2">Annual Summary</p><h3 className="text-3xl md:text-4xl font-black">สรุปประจำปี</h3><p className="text-blue-100 mt-2">รวมข้อมูลสมาชิก กิจกรรม ผลงาน ตารางเวร และสภาชมรม เพื่อใช้ปิดปีการศึกษา</p></div><div className="flex gap-3"><select value={year} onChange={e => setYear(e.target.value)} className="px-4 py-3 rounded-2xl bg-white/10 border border-white/10 font-bold text-white">{yearOptions.map(y => <option key={y} value={y}>ปีการศึกษา {y}</option>)}</select><button onClick={exportSummary} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-extrabold">โหลดสรุป</button></div></div></section><section className="grid md:grid-cols-3 xl:grid-cols-6 gap-4">{[['สมาชิกทั้งหมด',stats.st.total,'ri-team-fill'],['สมาชิกปัจจุบัน',stats.st.active,'ri-user-star-fill'],['กิจกรรม',stats.acts.length,'ri-calendar-event-fill'],['ผลงาน',stats.workYear.length,'ri-gallery-fill'],['ตารางเวร',stats.dutyYear.length,'ri-calendar-schedule-fill'],['สภาชมรม',stats.councilCount,'ri-vip-crown-fill']].map(([label,value,icon]) => <div key={label} className="rounded-[1.6rem] bg-white border border-slate-200 soft-shadow p-5"><div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl mb-4"><i className={icon}></i></div><p className="text-sm text-slate-500 font-bold">{label}</p><p className="text-4xl font-black text-slate-950">{value}</p></div>)}</section><section className="grid xl:grid-cols-2 gap-5"><div className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><h3 className="text-xl font-black text-slate-950 mb-4"><i className="ri-medal-fill text-blue-600 mr-2"></i>สมาชิกที่มีส่วนร่วมมากสุด</h3><div className="space-y-3">{stats.topMembers.length ? stats.topMembers.map((item,idx) => <div key={idx} className="rounded-2xl bg-slate-50 border border-slate-200 p-4 flex items-center justify-between"><div><div className="font-black text-slate-950">{idx+1}. {item.student ? studentDutyName(item.student) : 'ไม่พบสมาชิก'}</div><div className="text-xs text-slate-500">รวมกิจกรรม/ผลงาน</div></div><div className="text-2xl font-black text-blue-600">{item.count}</div></div>) : <div className="text-slate-500 font-bold">ยังไม่มีข้อมูลการมีส่วนร่วม</div>}</div></div><div className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><h3 className="text-xl font-black text-slate-950 mb-4"><i className="ri-list-check-3 text-blue-600 mr-2"></i>สิ่งที่ควรทำก่อนปิดปี</h3><div className="space-y-3 text-sm font-bold text-slate-700"><div className="rounded-2xl bg-slate-50 border border-slate-200 p-4">1. ตรวจข้อมูลสมาชิกที่ยังไม่ครบ</div><div className="rounded-2xl bg-slate-50 border border-slate-200 p-4">2. ตรวจรูปและสถานะสมาชิก</div><div className="rounded-2xl bg-slate-50 border border-slate-200 p-4">3. Export/Backup ข้อมูลทั้งหมด</div><div className="rounded-2xl bg-slate-50 border border-slate-200 p-4">4. สรุปกิจกรรมและผลงานประจำปี</div></div></div></section></div>;
+    }
+
+    function SystemHealthPage({ students, currentAcademicYear, yearsList, onNavigate }) {
+      const [limitMb, setLimitMb] = useState(() => Number(localStorage.getItem('mdec_db_usage_limit_mb') || 900));
+      const [activities, setActivities] = useState([]); const [duties, setDuties] = useState([]); const [works, setWorks] = useState([]); const [council, setCouncil] = useState(null);
+      useEffect(() => { const ua = getActivitiesRef().onSnapshot(s => setActivities(s.docs.map(d => ({id:d.id,...d.data()})))); const ud = getDutyRef().onSnapshot(s => setDuties(s.docs.map(d => ({id:d.id,...d.data()})))); const uw = getWorksRef().onSnapshot(s => setWorks(s.docs.map(d => ({id:d.id,...d.data()})))); const uc = getCouncilRef().doc(String(currentAcademicYear)).onSnapshot(d => setCouncil(d.exists ? d.data() : null)); return () => { ua(); ud(); uw(); uc(); }; }, [currentAcademicYear]);
+      const capacity = useMemo(() => estimateCapacitySnapshot([...students, ...activities, ...duties, ...works, council || {}], limitMb), [students, activities, duties, works, council, limitMb]);
+      const stats = useMemo(() => buildStats(students, currentAcademicYear), [students, currentAcademicYear]);
+      const openActivities = activities.filter(a => String(a.academicYear) === String(currentAcademicYear) && ['วางแผน','กำลังดำเนินการ'].includes(a.status)).length;
+      const emptyCouncil = (council?.roles || []).filter(r => !r.studentId).length;
+      const issues = [
+        { title:'ข้อมูลสมาชิกไม่ครบ', value:stats.incomplete, action:'members', icon:'ri-error-warning-fill' },
+        { title:'สมาชิกยังไม่มีรูป', value:stats.noPhoto, action:'members', icon:'ri-image-add-fill' },
+        { title:'กิจกรรมยังไม่ปิดสถานะ', value:openActivities, action:'activities', icon:'ri-calendar-event-fill' },
+        { title:'ตำแหน่งสภาที่ยังว่าง', value:emptyCouncil, action:'council', icon:'ri-vip-crown-fill' },
+        { title:'ตารางเวรในปีนี้', value:duties.filter(d => String(d.academicYear) === String(currentAcademicYear)).length, action:'duty', icon:'ri-calendar-schedule-fill' },
+        { title:'ผลงานสมาชิกในปีนี้', value:works.filter(w => String(w.academicYear) === String(currentAcademicYear)).length, action:'works', icon:'ri-gallery-fill' }
+      ];
+      const barColor = capacity.status === 'danger' ? 'bg-rose-500' : capacity.status === 'warning' ? 'bg-amber-400' : capacity.status === 'watch' ? 'bg-blue-400' : 'bg-emerald-400';
+      return <div className="space-y-5 council-audit-page"><section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7"><p className="text-xs font-extrabold tracking-[0.22em] text-blue-200 uppercase mb-2">System Health Check</p><h3 className="text-3xl md:text-4xl font-black">ตรวจตรวจสุขภาพระบบ</h3><p className="text-blue-100 mt-2">กดหน้านี้เพื่อดูทันทีว่าข้อมูลพร้อมใช้แค่ไหน ฐานข้อมูลใกล้เต็มไหม และมีอะไรต้องแก้ก่อนเปิดเทอม/ปิดปี</p></section><section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4"><div><h3 className="text-xl font-black text-slate-950">หลอดสถานะฐานข้อมูล</h3><p className="text-sm text-slate-500">ประมาณการจากข้อมูลที่เว็บอ่านได้ทั้งหมด</p></div><label className="block"><span className="text-xs font-extrabold text-slate-500">เพดานเตือน MB</span><input type="number" value={limitMb} onChange={e => { const v=Math.max(10, Number(e.target.value)||900); setLimitMb(v); localStorage.setItem('mdec_db_usage_limit_mb', String(v)); }} className="block mt-1 px-4 py-3 rounded-2xl bg-white border border-slate-200 font-bold text-slate-900"/></label></div><div className="mt-5 flex items-end justify-between"><div><div className="text-5xl font-black text-slate-950">{capacity.percent}%</div><div className="text-sm font-bold text-slate-500">{capacity.text}</div></div><div className="text-right text-sm text-slate-500 font-bold">ประมาณ {(capacity.estimatedBytes/1024/1024).toFixed(2)} MB / {limitMb} MB</div></div><div className="mt-4 h-5 rounded-full bg-slate-100 overflow-hidden"><div className={`h-full rounded-full ${barColor}`} style={{ width: `${Math.min(capacity.percent, 100)}%` }}></div></div></section><section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{issues.map(item => <button key={item.title} onClick={() => onNavigate(item.action)} className="text-left rounded-[1.6rem] bg-white border border-slate-200 soft-shadow p-5 hover:-translate-y-0.5 transition"><div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl mb-4"><i className={item.icon}></i></div><p className="font-black text-slate-950">{item.title}</p><p className="text-4xl font-black text-blue-600 mt-2">{item.value}</p><p className="text-xs text-slate-500 font-bold mt-2">กดเพื่อไปจัดการ</p></button>)}</section></div>;
     }
 
     function ClubCouncilPage({ students, currentAcademicYear, yearsList }) {
@@ -2575,6 +3804,448 @@
       );
     }
 
+
+    function safeStudentInitial(s) {
+      return String((s?.nickname || s?.fullName || '?')).trim().charAt(0) || '?';
+    }
+
+    function copyTextToClipboard(text, successMessage='คัดลอกข้อความแล้ว') {
+      const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try { document.execCommand('copy'); alert(successMessage); }
+        catch (err) { alert('คัดลอกไม่สำเร็จ กรุณาคัดลอกเอง'); }
+        ta.remove();
+      };
+      if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(() => alert(successMessage)).catch(fallback);
+      else fallback();
+    }
+
+    function dutyStatusLabel(key) {
+      const option = dutyAttendanceOptions.find(o => o.key === key);
+      if (!key || key === 'present') return 'ปกติ';
+      return option?.label || key;
+    }
+
+    function getTodayDutyKey() {
+      const d = new Date();
+      const day = d.getDay();
+      if (day === 1) return 'mon';
+      if (day === 2) return 'tue';
+      if (day === 3) return 'wed';
+      if (day === 4) return 'thu';
+      if (day === 5) return 'fri';
+      if (day === 6) return 'sat';
+      return 'mon';
+    }
+
+    function dutyEntriesForDay(duty, dayKey) {
+      const roles = getDutyRoles(duty || {});
+      const weekly = getDutyWeeklyAssignments(duty || {});
+      const items = [];
+      roles.forEach(role => {
+        const people = (weekly?.[dayKey]?.[role.key] || []).filter(Boolean);
+        people.forEach((person, index) => items.push({ role, person, index, dayKey }));
+      });
+      return items;
+    }
+
+    function allDutyEntries(duty) {
+      const items = [];
+      dutyDays.forEach(day => dutyEntriesForDay(duty, day.key).forEach(item => items.push({ ...item, day })));
+      return items;
+    }
+
+    function buildDutyResponsibilityStats(students, duties = [], activities = [], works = [], targetYear) {
+      const map = new Map((students || []).map(s => [s.id, {
+        student: s, assigned:0, present:0, late:0, absent:0, leave:0, not_found:0, substitute:0,
+        activities:0, works:0, score:0, timeline:[]
+      }]));
+      const addTimeline = (id, item) => {
+        if (!map.has(id)) return;
+        const row = map.get(id);
+        row.timeline.push(item);
+      };
+      (duties || []).filter(d => !targetYear || String(d.academicYear || '') === String(targetYear)).forEach(duty => {
+        const roles = getDutyRoles(duty);
+        const weekly = getDutyWeeklyAssignments(duty);
+        dutyDays.forEach(day => {
+          roles.forEach(role => {
+            const people = (weekly?.[day.key]?.[role.key] || []).filter(Boolean);
+            people.forEach((person, index) => {
+              const id = person.id;
+              if (!map.has(id)) return;
+              const row = map.get(id);
+              row.assigned += 1;
+              const status = (((duty?.dutyAttendance || {})[day.key] || {})[role.key] || [])[index] || 'present';
+              if (status === 'late') { row.late += 1; row.score -= 1; }
+              else if (status === 'absent') { row.absent += 1; row.score -= 3; }
+              else if (status === 'leave') { row.leave += 1; }
+              else if (status === 'not_found') { row.not_found += 1; row.score -= 2; }
+              else if (status === 'substitute') { row.substitute += 1; row.score += 2; }
+              else { row.present += 1; row.score += 1; }
+              addTimeline(id, { date: getDutyDayDate(duty.date, day.key), type:'เวรเช้า', title:`${day.label} • ${role.shortTitle || role.title}`, status: dutyStatusLabel(status) });
+            });
+          });
+        });
+      });
+      (activities || []).filter(a => !targetYear || String(a.academicYear || '') === String(targetYear)).forEach(activity => {
+        (activity.participants || []).forEach(id => {
+          if (!map.has(id)) return;
+          const row = map.get(id);
+          row.activities += 1;
+          const status = (activity.attendance || {})[id] || 'present';
+          if (status === 'present' || status === 'มา') row.score += 1;
+          else if (status === 'late' || status === 'สาย') row.score -= 1;
+          else if (status === 'absent' || status === 'ขาด') row.score -= 2;
+          addTimeline(id, { date: activity.date, type:'กิจกรรม', title: activity.title || 'กิจกรรมชมรม', status: status });
+        });
+      });
+      (works || []).filter(w => !targetYear || String(w.academicYear || '') === String(targetYear)).forEach(work => {
+        (work.members || work.participants || work.studentIds || []).forEach(id => {
+          if (!map.has(id)) return;
+          const row = map.get(id);
+          row.works += 1;
+          row.score += 2;
+          addTimeline(id, { date: work.date || work.createdAt || '', type:'ผลงาน', title: work.title || 'ผลงานสมาชิก', status:'บันทึกผลงาน' });
+        });
+      });
+      return [...map.values()].sort((a,b) => b.score - a.score || b.present - a.present || String(a.student.fullName || '').localeCompare(String(b.student.fullName || ''), 'th'));
+    }
+
+    function TodayMorningPage({ students, currentAcademicYear, onNavigate }) {
+      const [duties, setDuties] = useState([]);
+      const [loading, setLoading] = useState(true);
+      useEffect(() => {
+        const unsub = getDutyRef().onSnapshot(snapshot => {
+          const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          data.sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+          setDuties(data);
+          setLoading(false);
+        }, err => { console.error(err); setLoading(false); });
+        return () => unsub();
+      }, []);
+      const today = todayFileDate();
+      const todayKey = getTodayDutyKey();
+      const todayDay = dutyDays.find(d => d.key === todayKey) || dutyDays[0];
+      const weekStart = getWeekStartDate(today);
+      const todayDuty = duties.find(d => String(d.academicYear || '') === String(currentAcademicYear) && getWeekStartDate(d.date) === weekStart) || duties.find(d => String(d.academicYear || '') === String(currentAcademicYear));
+      const todayEntries = todayDuty ? dutyEntriesForDay(todayDuty, todayKey) : [];
+      const problems = todayEntries.filter(item => {
+        const status = (((todayDuty?.dutyAttendance || {})[todayKey] || {})[item.role.key] || [])[item.index] || '';
+        return status && status !== 'present';
+      });
+      const lineText = todayDuty ? [
+        `ตารางเวรตอนเช้า ${todayDay.label}`,
+        `วันที่ ${formatThaiDate(getDutyDayDate(todayDuty.date, todayKey))}`,
+        '',
+        ...getDutyRoles(todayDuty).map(role => `${role.shortTitle || role.title}: ${dailyDutyRoleText(getDutyWeeklyAssignments(todayDuty), todayKey, role.key)}`),
+        '',
+        'หมายเหตุ: ขอให้นักศึกษามาพร้อมก่อนเวลา และรับผิดชอบหน้าที่ของตนเอง'
+      ].join('\n') : '';
+
+      return (
+        <div className="today-command-shell space-y-5">
+          <section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7 overflow-hidden relative">
+            <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-blue-500/20 blur-3xl"></div>
+            <div className="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
+              <div>
+                <p className="text-xs uppercase tracking-[0.22em] text-blue-200 font-extrabold mb-2">Today Morning Command</p>
+                <h3 className="text-3xl md:text-4xl font-black">เช้าวันนี้</h3>
+                <p className="text-blue-100 mt-2">หน้าเดียวสำหรับเปิดตอนเช้า ดูเวรวันนี้ บันทึกเฉพาะปัญหา และคัดลอกข้อความส่ง LINE ได้ทันที</p>
+              </div>
+              <div className="grid sm:grid-cols-3 gap-3">
+                <div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">วันนี้</p><p className="text-2xl font-black">{todayDay.label}</p></div>
+                <div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">มีเวร</p><p className="text-2xl font-black">{todayEntries.length}</p></div>
+                <div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">ปัญหา</p><p className="text-2xl font-black">{problems.length}</p></div>
+              </div>
+            </div>
+          </section>
+
+          {loading ? <div className="today-panel p-10 text-center font-bold text-slate-500">กำลังโหลดเวรเช้าวันนี้...</div> : todayDuty ? (
+            <section className="grid xl:grid-cols-[1.2fr_.8fr] gap-5">
+              <div className="today-panel p-5 md:p-6">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
+                  <div><h3 className="text-2xl font-black text-slate-950"><i className="ri-sun-foggy-fill text-blue-600 mr-2"></i>{todayDay.label} • {formatThaiDate(getDutyDayDate(todayDuty.date, todayKey))}</h3><p className="text-slate-500">ถ้าเด็กมาปกติไม่ต้องกดอะไร ระบบถือว่าปกติอัตโนมัติ</p></div>
+                  <div className="flex gap-2 flex-wrap">
+                    <button onClick={() => copyTextToClipboard(lineText, 'คัดลอกข้อความ LINE แล้ว')} className="px-4 py-3 rounded-2xl bg-emerald-600 text-white font-extrabold"><i className="ri-line-fill mr-1"></i>คัดลอก LINE</button>
+                    <button onClick={() => onNavigate('duty')} className="px-4 py-3 rounded-2xl bg-blue-600 text-white font-extrabold"><i className="ri-user-follow-fill mr-1"></i>บันทึกปัญหา</button>
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-3">
+                  {todayEntries.length ? todayEntries.map((item, idx) => {
+                    const status = (((todayDuty?.dutyAttendance || {})[todayKey] || {})[item.role.key] || [])[item.index] || '';
+                    const option = dutyAttendanceOptions.find(o => o.key === status);
+                    return (
+                      <div key={`${item.role.key}-${idx}`} className="today-card p-4 flex items-center gap-3">
+                        {item.person.photo ? <img src={item.person.photo} className="w-14 h-14 rounded-2xl object-cover border border-slate-200 shrink-0" /> : <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl font-black shrink-0">{safeStudentInitial(item.person)}</div>}
+                        <div className="min-w-0 flex-1">
+                          <div className="font-black text-slate-950 truncate">{studentDutyName(item.person)}</div>
+                          <div className="text-xs text-slate-500 truncate">{item.role.shortTitle || item.role.title} • {item.person.level || '-'} / {item.person.group || '-'}</div>
+                        </div>
+                        <span className={`px-3 py-1.5 rounded-full border text-xs font-extrabold ${option ? option.pill : 'bg-emerald-900 text-emerald-100 border-emerald-700'}`}>{option ? option.label : 'ปกติ'}</span>
+                      </div>
+                    );
+                  }) : <div className="today-card p-8 text-center text-slate-500 font-bold md:col-span-2">ยังไม่มีรายชื่อเวรวันนี้</div>}
+                </div>
+              </div>
+              <div className="today-panel p-5 md:p-6">
+                <h3 className="text-xl font-black text-slate-950 mb-3"><i className="ri-alert-fill text-amber-500 mr-2"></i>บันทึกปัญหาวันนี้</h3>
+                {problems.length ? <div className="space-y-3">{problems.map((item, idx) => {
+                  const status = (((todayDuty?.dutyAttendance || {})[todayKey] || {})[item.role.key] || [])[item.index] || '';
+                  return <div key={idx} className="today-card p-4"><div className="font-black text-slate-950">{studentDutyName(item.person)}</div><div className="text-sm text-slate-500">{item.role.title} • {dutyStatusLabel(status)}</div></div>;
+                })}</div> : <div className="today-card p-8 text-center"><div className="text-3xl mb-2">✅</div><div className="font-black text-slate-950">ยังไม่มีปัญหาที่บันทึก</div><p className="text-sm text-slate-500">ถ้าทุกคนมาปกติ ไม่ต้องทำอะไรเพิ่ม</p></div>}
+              </div>
+            </section>
+          ) : (
+            <div className="today-panel p-10 text-center">
+              <div className="text-5xl mb-3">🗓️</div>
+              <h3 className="text-2xl font-black text-slate-950">ยังไม่มีตารางเวรของสัปดาห์นี้</h3>
+              <p className="text-slate-500 mt-2">ไปที่หน้าตารางเวรตอนเช้าเพื่อสร้างตารางก่อน</p>
+              <button onClick={() => onNavigate('duty')} className="mt-5 px-5 py-3 rounded-2xl bg-blue-600 text-white font-extrabold">ไปจัดตารางเวร</button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function SmartClubToolsPage({ students, currentAcademicYear, yearsList, onNavigate }) {
+      const [duties, setDuties] = useState([]);
+      const [activities, setActivities] = useState([]);
+      const [works, setWorks] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [tab, setTab] = useState('auto');
+      const [year, setYear] = useState(currentAcademicYear);
+      const [autoDate, setAutoDate] = useState(getWeekStartDate(todayFileDate()));
+      const [generated, setGenerated] = useState(null);
+      const [savingPlan, setSavingPlan] = useState(false);
+      const [month, setMonth] = useState(String(new Date().getMonth()+1).padStart(2,'0'));
+      const [wizard, setWizard] = useState({ checked:false, backup:false, report:false, confirm:false });
+      const [timelineStudentId, setTimelineStudentId] = useState('');
+
+      useEffect(() => {
+        const unsubDuty = getDutyRef().onSnapshot(s => { setDuties(s.docs.map(d => ({ id:d.id, ...d.data() }))); setLoading(false); }, () => setLoading(false));
+        const unsubAct = getActivitiesRef().onSnapshot(s => setActivities(s.docs.map(d => ({ id:d.id, ...d.data() }))), () => {});
+        const unsubWork = getWorksRef().onSnapshot(s => setWorks(s.docs.map(d => ({ id:d.id, ...d.data() }))), () => {});
+        return () => { unsubDuty(); unsubAct(); unsubWork(); };
+      }, []);
+
+      const activeStudents = useMemo(() => students.filter(s => String(s.academicYear || '') === String(year) && !['dismissed','graduated'].includes(s.status || 'active')), [students, year]);
+      const responsibility = useMemo(() => buildDutyResponsibilityStats(students, duties, activities, works, year), [students, duties, activities, works, year]);
+      const responsibilityMap = useMemo(() => new Map(responsibility.map(r => [r.student.id, r])), [responsibility]);
+      const yearOptions = useMemo(() => [...new Set([currentAcademicYear, ...yearsList, ...duties.map(d => d.academicYear)].filter(Boolean))], [currentAcademicYear, yearsList, duties]);
+      const latestDuty = useMemo(() => duties.filter(d => String(d.academicYear || '') === String(year)).sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')))[0], [duties, year]);
+
+      const makeLineText = (duty, dayKey='mon') => {
+        if (!duty) return 'ยังไม่มีตารางเวร';
+        const day = dutyDays.find(d => d.key === dayKey) || dutyDays[0];
+        const weekly = getDutyWeeklyAssignments(duty);
+        return [
+          `ตารางเวรตอนเช้า ${day.label}`,
+          `วันที่ ${formatThaiDate(getDutyDayDate(duty.date, day.key))}`,
+          '',
+          ...getDutyRoles(duty).map(role => `${role.shortTitle || role.title}: ${dailyDutyRoleText(weekly, day.key, role.key)}`),
+          '',
+          'ขอให้นักศึกษามาพร้อมก่อนเวลา และรับผิดชอบหน้าที่ของตนเอง'
+        ].join('\n');
+      };
+
+      const generateSmartDuty = () => {
+        if (!activeStudents.length) return alert('ยังไม่มีนักศึกษาที่พร้อมใช้งานในปีนี้');
+        const roles = defaultDutyRoles();
+        const roleSlots = defaultDutyRoleSlots(roles);
+        const weeklyAssignments = {};
+        const usedThisWeek = new Set();
+        const countByStudent = new Map();
+        duties.forEach(duty => allDutyEntries(duty).forEach(item => countByStudent.set(item.person.id, (countByStudent.get(item.person.id) || 0) + 1)));
+        const scoreOf = (student) => {
+          const resp = responsibilityMap.get(student.id);
+          const assignedPenalty = countByStudent.get(student.id) || 0;
+          const bad = (resp?.late || 0) + (resp?.absent || 0) * 3 + (resp?.not_found || 0) * 2;
+          const good = (resp?.substitute || 0) + (resp?.present || 0) * .2;
+          return assignedPenalty * 4 + bad * 2 - good;
+        };
+        dutyDays.forEach(day => {
+          weeklyAssignments[day.key] = {};
+          const usedToday = new Set();
+          roles.forEach(role => {
+            const slots = Number(roleSlots[role.key] || 1);
+            weeklyAssignments[day.key][role.key] = [];
+            for (let i=0; i<slots; i++) {
+              const pool = [...activeStudents].sort((a,b) => {
+                const aUsedWeek = usedThisWeek.has(a.id) ? 8 : 0;
+                const bUsedWeek = usedThisWeek.has(b.id) ? 8 : 0;
+                const aUsedDay = usedToday.has(a.id) ? 999 : 0;
+                const bUsedDay = usedToday.has(b.id) ? 999 : 0;
+                return (scoreOf(a)+aUsedWeek+aUsedDay+Math.random()) - (scoreOf(b)+bUsedWeek+bUsedDay+Math.random());
+              });
+              const selected = pool[0];
+              if (!selected) continue;
+              usedToday.add(selected.id);
+              usedThisWeek.add(selected.id);
+              weeklyAssignments[day.key][role.key].push({
+                id:selected.id, studentId:selected.studentId || '', fullName:selected.fullName || '', nickname:selected.nickname || '',
+                level:selected.level || '', group:selected.group || '', major:selected.major || '', phone:selected.phone || '',
+                lineId:selected.lineId || '', actualInterest:selected.actualInterest || selected.interest || '', photo:selected.photo || null
+              });
+            }
+          });
+        });
+        setGenerated({ date:getWeekStartDate(autoDate), academicYear:year, scheduleType:'AUTO', roleDefs:roles, roleSlots, weeklyAssignments });
+        setTab('auto');
+      };
+
+      const generatedLineText = generated ? [
+        `ตารางเวรตอนเช้า สัปดาห์ ${formatThaiWeekRange(generated.date)}`,
+        `ปีการศึกษา ${year}`,
+        '',
+        ...dutyDays.flatMap(day => [`${day.label} (${formatThaiDate(getDutyDayDate(generated.date, day.key))})`, ...generated.roleDefs.map(role => `- ${role.shortTitle || role.title}: ${dailyDutyRoleText(generated.weeklyAssignments, day.key, role.key)}`), ''])
+      ].join('\n') : '';
+
+      const saveGeneratedDuty = async () => {
+        if (!generated) return alert('ยังไม่มีตารางที่สร้างอัตโนมัติ');
+        if (!confirm('บันทึกตารางเวรอัตโนมัติเป็นตารางจริงใช่ไหม?')) return;
+        setSavingPlan(true);
+        try {
+          await getDutyRef().add({ ...generated, scheduleType:'A', note:'สร้างโดยระบบจัดเวรอัตโนมัติ', assignments: generated.weeklyAssignments.mon || {}, locked:false, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), createdBy:'smart_auto' });
+          alert('บันทึกตารางเวรอัตโนมัติเรียบร้อย');
+          onNavigate('duty');
+        } catch(err) { alert('บันทึกไม่สำเร็จ: ' + (err.message || err)); }
+        finally { setSavingPlan(false); }
+      };
+
+      const topResponsibility = responsibility.filter(r => String(r.student.academicYear || '') === String(year)).slice(0, 20);
+      const standby = responsibility.filter(r => String(r.student.academicYear || '') === String(year) && !['dismissed','graduated'].includes(r.student.status || 'active')).sort((a,b) => (b.score + b.substitute*2 + b.present) - (a.score + a.substitute*2 + a.present)).slice(0, 12);
+      const monthlyRows = responsibility.map(r => {
+        const monthItems = r.timeline.filter(t => String(t.date || '').slice(5,7) === month);
+        return { ...r, monthlyCount: monthItems.length, monthlyScore: monthItems.reduce((sum, item) => sum + (item.type === 'ผลงาน' ? 2 : 1), 0) };
+      }).filter(r => r.monthlyCount > 0).sort((a,b) => b.monthlyScore - a.monthlyScore).slice(0, 10);
+      const selectedTimeline = timelineStudentId ? responsibilityMap.get(timelineStudentId) : topResponsibility[0];
+
+      const backupPayload = () => JSON.stringify({
+        exportedAt: new Date().toISOString(),
+        academicYear: year,
+        students: students.filter(s => String(s.academicYear || '') === String(year)),
+        duties: duties.filter(d => String(d.academicYear || '') === String(year)),
+        activities: activities.filter(a => String(a.academicYear || '') === String(year)),
+        works: works.filter(w => String(w.academicYear || '') === String(year))
+      }, null, 2);
+
+      const tabs = [
+        ['auto','จัดเวรอัตโนมัติ','ri-magic-fill'],
+        ['line','ข้อความ LINE','ri-line-fill'],
+        ['score','คะแนนรับผิดชอบ','ri-medal-fill'],
+        ['standby','ทีมสำรอง','ri-team-fill'],
+        ['timeline','Timeline รายคน','ri-route-fill'],
+        ['monthly','เด็กเด่นรายเดือน','ri-trophy-fill'],
+        ['wizard','ปิดปีการศึกษา','ri-checkbox-multiple-fill']
+      ];
+
+      return (
+        <div className="smart-suite-shell space-y-5">
+          <section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7 overflow-hidden relative">
+            <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-blue-500/20 blur-3xl"></div>
+            <div className="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
+              <div><p className="text-xs uppercase tracking-[0.22em] text-blue-200 font-extrabold mb-2">Smart Club Tools</p><h3 className="text-3xl md:text-4xl font-black">เครื่องมือช่วยจัดการของชมรม</h3><p className="text-blue-100 mt-2">รวมจัดเวรอัตโนมัติ ข้อความ LINE คะแนนความรับผิดชอบ ทีมสำรอง เด็กเด่น และขั้นตอนปิดปี</p></div>
+              <div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">ปีการศึกษา</p><select value={year} onChange={e => setYear(e.target.value)} className="mt-1 bg-transparent text-white text-2xl font-black outline-none">{yearOptions.map(y => <option key={y} value={y}>ปี {y}</option>)}</select></div>
+            </div>
+          </section>
+
+          <section className="grid md:grid-cols-2 xl:grid-cols-4 gap-3">
+            <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">สมาชิกพร้อมใช้งาน</p><p className="text-3xl font-black text-slate-950">{activeStudents.length}</p></div>
+            <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">ตารางเวรทั้งหมด</p><p className="text-3xl font-black text-slate-950">{duties.filter(d => String(d.academicYear || '') === String(year)).length}</p></div>
+            <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">กิจกรรมปีนี้</p><p className="text-3xl font-black text-slate-950">{activities.filter(a => String(a.academicYear || '') === String(year)).length}</p></div>
+            <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">ผลงานปีนี้</p><p className="text-3xl font-black text-slate-950">{works.filter(w => String(w.academicYear || '') === String(year)).length}</p></div>
+          </section>
+
+          <div className="smart-panel p-3">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-2">
+              {tabs.map(([key,label,icon]) => <button key={key} onClick={() => setTab(key)} className={`smart-tab ${tab === key ? 'is-active' : ''}`}><i className={`${icon} mr-1`}></i>{label}</button>)}
+            </div>
+          </div>
+
+          {tab === 'auto' && (
+            <section className="smart-panel p-5 md:p-6 space-y-5">
+              <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div><h3 className="text-2xl font-black text-slate-950"><i className="ri-magic-fill text-blue-600 mr-2"></i>จัดเวรอัตโนมัติแบบฉลาด</h3><p className="text-slate-500">ระบบจะพยายามกระจายเวรไม่ให้ซ้ำหน้า และถ่วงน้ำหนักจากประวัติรับผิดชอบ/ขาด/สาย</p></div>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Input label="เริ่มสัปดาห์" type="date" value={autoDate} onChange={v => setAutoDate(getWeekStartDate(v))} />
+                  <button onClick={generateSmartDuty} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-extrabold self-end"><i className="ri-sparkling-fill mr-1"></i>สร้างตาราง</button>
+                </div>
+              </div>
+              {generated ? (
+                <div className="grid xl:grid-cols-[1.2fr_.8fr] gap-5">
+                  <div className="space-y-3">
+                    {dutyDays.map(day => <div key={day.key} className="smart-card p-4"><h4 className="font-black text-slate-950 mb-2">{day.label} • {formatThaiDate(getDutyDayDate(generated.date, day.key))}</h4><div className="grid md:grid-cols-2 gap-2">{generated.roleDefs.map(role => <div key={role.key} className="rounded-2xl bg-white/70 border border-slate-200 p-3"><div className="text-xs text-slate-500 font-bold">{role.shortTitle || role.title}</div><div className="font-extrabold text-slate-950">{dailyDutyRoleText(generated.weeklyAssignments, day.key, role.key)}</div></div>)}</div></div>)}
+                  </div>
+                  <div className="space-y-3">
+                    <div className="line-preview">{generatedLineText}</div>
+                    <button onClick={() => copyTextToClipboard(generatedLineText, 'คัดลอกตารางอัตโนมัติแล้ว')} className="w-full py-3 rounded-2xl bg-emerald-600 text-white font-extrabold"><i className="ri-clipboard-fill mr-1"></i>คัดลอกข้อความ</button>
+                    <button disabled={savingPlan} onClick={saveGeneratedDuty} className="w-full py-3 rounded-2xl bg-blue-600 text-white font-extrabold disabled:opacity-60"><i className="ri-save-3-fill mr-1"></i>{savingPlan ? 'กำลังบันทึก...' : 'บันทึกเป็นตารางจริง'}</button>
+                  </div>
+                </div>
+              ) : <div className="smart-card p-10 text-center text-slate-500 font-bold">กด “สร้างตาราง” เพื่อให้ระบบจัดเวรทั้งสัปดาห์ให้อัตโนมัติ</div>}
+            </section>
+          )}
+
+          {tab === 'line' && (
+            <section className="smart-panel p-5 md:p-6 grid xl:grid-cols-[.9fr_1.1fr] gap-5">
+              <div><h3 className="text-2xl font-black text-slate-950 mb-2"><i className="ri-line-fill text-emerald-500 mr-2"></i>สร้างข้อความส่ง LINE</h3><p className="text-slate-500 mb-4">เอาไว้คัดลอกไปส่งในกลุ่มนักศึกษา</p>{latestDuty ? <div className="space-y-2">{dutyDays.map(day => <button key={day.key} onClick={() => copyTextToClipboard(makeLineText(latestDuty, day.key), `คัดลอกข้อความ ${day.label} แล้ว`)} className="w-full text-left smart-card p-4 hover:border-blue-400"><div className="font-black text-slate-950">{day.label}</div><div className="text-sm text-slate-500">{formatThaiDate(getDutyDayDate(latestDuty.date, day.key))}</div></button>)}</div> : <div className="smart-card p-8 text-center text-slate-500">ยังไม่มีตารางเวร</div>}</div>
+              <div><div className="line-preview">{makeLineText(latestDuty, getTodayDutyKey())}</div><button onClick={() => copyTextToClipboard(makeLineText(latestDuty, getTodayDutyKey()), 'คัดลอกข้อความวันนี้แล้ว')} className="mt-3 w-full py-3 rounded-2xl bg-emerald-600 text-white font-extrabold">คัดลอกข้อความวันนี้</button></div>
+            </section>
+          )}
+
+          {tab === 'score' && (
+            <section className="smart-panel p-5 md:p-6">
+              <h3 className="text-2xl font-black text-slate-950 mb-4"><i className="ri-medal-fill text-blue-600 mr-2"></i>คะแนนความรับผิดชอบรายคน</h3>
+              <div className="space-y-3">{topResponsibility.map((row, idx) => <div key={row.student.id} className="student-rank-card p-4 flex flex-col md:flex-row md:items-center gap-3 md:justify-between"><div className="flex items-center gap-3">{row.student.photo ? <img src={row.student.photo} className="w-14 h-14 rounded-2xl object-cover" /> : <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl font-black">{safeStudentInitial(row.student)}</div>}<div><div className="font-black text-slate-950">{idx+1}. {studentDutyName(row.student)}</div><div className="text-sm text-slate-500">เวร {row.assigned} • ปกติ {row.present} • สาย {row.late} • ขาด {row.absent} • ไม่พบตัว {row.not_found} • กิจกรรม {row.activities} • ผลงาน {row.works}</div></div></div><div className="text-3xl font-black text-blue-600">{row.score}</div></div>)}</div>
+            </section>
+          )}
+
+          {tab === 'standby' && (
+            <section className="smart-panel p-5 md:p-6">
+              <h3 className="text-2xl font-black text-slate-950 mb-4"><i className="ri-team-fill text-blue-600 mr-2"></i>ทีมสำรอง / ทีมสำรองพร้อมช่วยงานด่วน</h3>
+              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">{standby.map(row => <div key={row.student.id} className="student-rank-card p-4 flex items-center gap-3">{row.student.photo ? <img src={row.student.photo} className="w-16 h-16 rounded-2xl object-cover" /> : <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl font-black">{safeStudentInitial(row.student)}</div>}<div className="min-w-0"><div className="font-black text-slate-950 truncate">{studentDutyName(row.student)}</div><div className="text-sm text-slate-500 truncate">{row.student.level || '-'} / {row.student.group || '-'} • {row.student.actualInterest || row.student.interest || '-'}</div><div className="text-xs text-blue-600 font-bold">คะแนน {row.score} • ทำแทน {row.substitute}</div></div></div>)}</div>
+            </section>
+          )}
+
+          {tab === 'timeline' && (
+            <section className="smart-panel p-5 md:p-6 grid xl:grid-cols-[320px_1fr] gap-5">
+              <div><h3 className="text-2xl font-black text-slate-950 mb-3"><i className="ri-route-fill text-blue-600 mr-2"></i>Timeline รายคน</h3><select value={timelineStudentId || selectedTimeline?.student?.id || ''} onChange={e => setTimelineStudentId(e.target.value)} className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 font-bold">{topResponsibility.map(r => <option key={r.student.id} value={r.student.id}>{studentDutyName(r.student)}</option>)}</select></div>
+              <div className="space-y-3">{(selectedTimeline?.timeline || []).sort((a,b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0,30).map((item,idx) => <div key={idx} className="student-rank-card p-4"><div className="text-xs text-slate-500 font-bold">{formatThaiDate(item.date)} • {item.type}</div><div className="font-black text-slate-950">{item.title}</div><div className="text-sm text-blue-600 font-bold">{item.status}</div></div>)}{!(selectedTimeline?.timeline || []).length && <div className="student-rank-card p-8 text-center text-slate-500 font-bold">ยังไม่มี Timeline</div>}</div>
+            </section>
+          )}
+
+          {tab === 'monthly' && (
+            <section className="smart-panel p-5 md:p-6">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"><h3 className="text-2xl font-black text-slate-950"><i className="ri-trophy-fill text-blue-600 mr-2"></i>เด็กเด่นประจำเดือน</h3><select value={month} onChange={e => setMonth(e.target.value)} className="px-4 py-3 rounded-2xl bg-white border border-slate-200 font-bold">{Array.from({length:12}).map((_,i) => <option key={i} value={String(i+1).padStart(2,'0')}>เดือน {i+1}</option>)}</select></div>
+              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">{monthlyRows.map((row,idx) => <div key={row.student.id} className="student-rank-card p-4"><div className="text-sm text-blue-600 font-black">อันดับ {idx+1}</div><div className="text-xl font-black text-slate-950">{studentDutyName(row.student)}</div><div className="text-sm text-slate-500">มีส่วนร่วม {row.monthlyCount} รายการ • คะแนนเดือน {row.monthlyScore}</div></div>)}</div>
+              {!monthlyRows.length && <div className="student-rank-card p-8 text-center text-slate-500 font-bold">เดือนนี้ยังไม่มีข้อมูลกิจกรรม/เวร/ผลงาน</div>}
+            </section>
+          )}
+
+          {tab === 'wizard' && (
+            <section className="smart-panel p-5 md:p-6">
+              <h3 className="text-2xl font-black text-slate-950 mb-4"><i className="ri-checkbox-multiple-fill text-blue-600 mr-2"></i>ปิดปีการศึกษาแบบ Wizard</h3>
+              <div className="grid lg:grid-cols-2 gap-4">
+                {[['checked','1. ตรวจข้อมูลค้าง','ตรวจสมาชิกไม่มีรูป ข้อมูลไม่ครบ กิจกรรมยังไม่ปิดสถานะ'],['backup','2. สำรองข้อมูล','ดาวน์โหลดไฟล์สำรองของปีนี้'],['report','3. สรุปรายงานประจำปี','ใช้ข้อมูลสรุปประจำปีและเด็กเด่น'],['confirm','4. ยืนยันก่อนล้างข้อมูล','ยืนยันว่าเก็บไฟล์สำรองแล้วก่อนจัดการปีใหม่']].map(([key,title,desc]) => <button key={key} onClick={() => setWizard(prev => ({ ...prev, [key]: !prev[key] }))} className={`wizard-step text-left ${wizard[key] ? 'done' : ''}`}><div className="font-black text-slate-950">{wizard[key] ? '✅ ' : ''}{title}</div><div className="text-sm text-slate-500">{desc}</div></button>)}
+              </div>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button onClick={() => downloadFile(`MDEC_Backup_${year}_${todayFileDate()}.json`, backupPayload(), 'application/json;charset=utf-8')} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-extrabold"><i className="ri-download-cloud-2-fill mr-1"></i>ดาวน์โหลด Backup ปีนี้</button>
+                <button onClick={() => onNavigate('annual')} className="px-5 py-3 rounded-2xl bg-slate-950 text-white font-extrabold"><i className="ri-file-chart-fill mr-1"></i>ไปหน้าสรุปประจำปี</button>
+                <button onClick={() => onNavigate('year')} className="px-5 py-3 rounded-2xl bg-rose-900 text-rose-100 font-extrabold"><i className="ri-database-2-fill mr-1"></i>ไปจัดการปี/ล้างข้อมูล</button>
+              </div>
+            </section>
+          )}
+        </div>
+      );
+    }
+
     function DutySchedulePage({ students, currentAcademicYear, yearsList }) {
       const [duties, setDuties] = useState([]);
       const [templates, setTemplates] = useState({});
@@ -2586,6 +4257,10 @@
       const [saving, setSaving] = useState(false);
       const [isPrinting, setIsPrinting] = useState(false);
       const [studentPicker, setStudentPicker] = useState({ open:false, dayKey:'', roleKey:'', slot:0, query:'' });
+      const [attendanceDutyId, setAttendanceDutyId] = useState(null);
+      const [attendanceDayKey, setAttendanceDayKey] = useState(dutyDays[0].key);
+      const [plannerDayKey, setPlannerDayKey] = useState(dutyDays[0].key);
+      const [dutyManagePanel, setDutyManagePanel] = useState('planner');
 
       useEffect(() => {
         const unsub = getDutyRef().onSnapshot(snapshot => {
@@ -2619,6 +4294,8 @@
       const formRoles = useMemo(() => normalizeDutyRoles(form.roleDefs, form.roleSlots), [form.roleDefs, form.roleSlots]);
       const duplicateIds = useMemo(() => duplicateStudentIdsInWeekly(form.weeklyAssignments, formRoles), [form.weeklyAssignments, formRoles]);
       const duplicateNames = duplicateIds.map(id => studentMap.get(id)).filter(Boolean).map(s => `${s.nickname || s.fullName || '-'} (${s.level || '-'} / ${s.group || '-'})`);
+      const plannerDay = dutyDays.find(d => d.key === plannerDayKey) || dutyDays[0];
+      const countAssignmentsForDay = (dayKey) => formRoles.reduce((sum, role) => sum + (((form.weeklyAssignments?.[dayKey]?.[role.key] || []).filter(Boolean)).length), 0);
       const pickerSelectedId = studentPicker.open ? ((form.weeklyAssignments?.[studentPicker.dayKey]?.[studentPicker.roleKey] || [])[studentPicker.slot] || '') : '';
       const pickerSelectedStudent = pickerSelectedId ? studentMap.get(pickerSelectedId) : null;
       const pickerResults = useMemo(() => {
@@ -2626,6 +4303,60 @@
         if (!q) return activeStudents;
         return activeStudents.filter(s => [s.studentId, s.fullName, s.nickname, s.level, s.group, s.major].filter(Boolean).join(' ').toLowerCase().includes(q));
       }, [activeStudents, studentPicker.query]);
+
+      const attendanceDuty = useMemo(() => duties.find(d => d.id === attendanceDutyId) || null, [duties, attendanceDutyId]);
+
+      const openDutyAttendance = (duty) => {
+        setAttendanceDutyId(duty.id);
+        setAttendanceDayKey(dutyDays[0].key);
+      };
+
+      const closeDutyAttendance = () => {
+        setAttendanceDutyId(null);
+      };
+
+      const dutyAttendanceStatus = (duty, dayKey, roleKey, index) => {
+        return (((duty?.dutyAttendance || {})[dayKey] || {})[roleKey] || [])[index] || '';
+      };
+
+      const setDutyAttendanceStatus = async (duty, dayKey, roleKey, index, status) => {
+        if (!duty?.id) return;
+        const current = duty.dutyAttendance || {};
+        const nextDay = { ...(current[dayKey] || {}) };
+        const nextRole = [ ...(nextDay[roleKey] || []) ];
+        if (!status || status === 'present') {
+          nextRole[index] = '';
+        } else {
+          nextRole[index] = status;
+        }
+        nextDay[roleKey] = nextRole;
+        const next = { ...current, [dayKey]: nextDay };
+        await getDutyRef().doc(duty.id).update({
+          dutyAttendance: next,
+          updatedAt: new Date().toISOString()
+        });
+      };
+
+      const dutyAttendanceSummary = (duty) => {
+        const weekly = getDutyWeeklyAssignments(duty);
+        const roles = getDutyRoles(duty);
+        const summary = { total:0, present:0, late:0, absent:0, leave:0, not_found:0, substitute:0, problems:0 };
+        dutyDays.forEach(day => {
+          roles.forEach(role => {
+            const people = (weekly?.[day.key]?.[role.key] || []).filter(Boolean);
+            people.forEach((_, index) => {
+              summary.total += 1;
+              const status = dutyAttendanceStatus(duty, day.key, role.key, index);
+              if (!status || status === 'present') summary.present += 1;
+              else if (summary[status] !== undefined) {
+                summary[status] += 1;
+                summary.problems += 1;
+              } else summary.present += 1;
+            });
+          });
+        });
+        return summary;
+      };
 
       const openStudentPicker = (dayKey, roleKey, slot) => {
         setStudentPicker({ open:true, dayKey, roleKey, slot, query:'' });
@@ -2793,8 +4524,40 @@
         applyTemplate(type, form.academicYear);
       };
 
+      const autoFillCurrentDutyForm = () => {
+        if (!activeStudents.length) return alert('ยังไม่มีรายชื่อนักศึกษาที่พร้อมใช้งาน');
+        const previousCounts = new Map();
+        duties.forEach(duty => allDutyEntries(duty).forEach(item => previousCounts.set(item.person.id, (previousCounts.get(item.person.id) || 0) + 1)));
+        const nextWeekly = {};
+        const usedWeek = new Set();
+        dutyDays.forEach(day => {
+          nextWeekly[day.key] = {};
+          const usedDay = new Set();
+          formRoles.forEach(role => {
+            const slots = getRoleSlotCount(role, form.roleSlots);
+            nextWeekly[day.key][role.key] = [];
+            for (let i=0; i<slots; i++) {
+              const selected = [...activeStudents].sort((a,b) => {
+                const aScore = (previousCounts.get(a.id) || 0) * 5 + (usedWeek.has(a.id) ? 6 : 0) + (usedDay.has(a.id) ? 999 : 0) + Math.random();
+                const bScore = (previousCounts.get(b.id) || 0) * 5 + (usedWeek.has(b.id) ? 6 : 0) + (usedDay.has(b.id) ? 999 : 0) + Math.random();
+                return aScore - bScore;
+              })[0];
+              if (!selected) continue;
+              usedDay.add(selected.id);
+              usedWeek.add(selected.id);
+              nextWeekly[day.key][role.key].push(selected.id);
+            }
+          });
+        });
+        setForm(prev => ({ ...prev, weeklyAssignments: nextWeekly }));
+        alert('ระบบจัดเวรอัตโนมัติให้แล้ว ตรวจแก้ชื่อก่อนบันทึกได้เลย');
+      };
+
+
       const resetForm = () => {
         setEditingId(null);
+        setPlannerDayKey(dutyDays[0].key);
+        setDutyManagePanel('planner');
         setForm(createDutyForm(currentAcademicYear));
       };
 
@@ -2851,6 +4614,7 @@
             roleSlots: normalizeRoleSlots(form.roleSlots, form.roleDefs),
             weeklyAssignments,
             assignments: weeklyAssignments.mon || {},
+            locked: editingId ? !!duties.find(d => d.id === editingId)?.locked : false,
             updatedAt: new Date().toISOString(),
             createdBy: 'staff'
           };
@@ -2865,6 +4629,9 @@
       };
 
       const editDuty = (duty) => {
+        if (duty.locked && !confirm('ตารางนี้ถูกล็อกไว้ ต้องการแก้ไขตารางนี้ต่อไหม?')) return;
+        setPlannerDayKey(dutyDays[0].key);
+        setDutyManagePanel('planner');
         setEditingId(duty.id);
         const roleDefs = getDutyRoles(duty);
         const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
@@ -2873,6 +4640,8 @@
       };
 
       const duplicateDuty = (duty) => {
+        setPlannerDayKey(dutyDays[0].key);
+        setDutyManagePanel('planner');
         setEditingId(null);
         const roleDefs = getDutyRoles(duty);
         const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
@@ -2885,15 +4654,44 @@
         await getDutyRef().doc(duty.id).delete();
       };
 
+      const toggleDutyLock = async (duty) => {
+        if (!duty?.id) return;
+        const next = !duty.locked;
+        if (next && !confirm('ล็อกตารางนี้ใช่ไหม? หลังล็อกจะแก้ไขยากขึ้นเพื่อลดการเผลอแก้ตารางจริง')) return;
+        await getDutyRef().doc(duty.id).update({ locked: next, lockedAt: next ? new Date().toISOString() : null });
+      };
+
       const exportCSV = () => {
         if (!visibleDuties.length) return alert('ไม่มีตารางเวรให้ส่งออก');
         downloadFile(`MDEC_Morning_Weekly_Daily_Duty_${year === 'all' ? 'All' : year}_${todayFileDate()}.csv`, dutiesToCSV(visibleDuties), 'text/csv;charset=utf-8');
       };
 
       return (
-        <div className="space-y-0 duty-contrast-page">
-          <div className="grid xl:grid-cols-[1.1fr_.9fr] gap-5">
-            <form onSubmit={handleSave} className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-7 space-y-6">
+        <div className="space-y-5 duty-contrast-page duty-redesign">
+          <section className="bg-white rounded-[2rem] soft-shadow border border-white p-4 md:p-5">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+              <div>
+                <h3 className="text-2xl font-extrabold text-slate-950"><i className="ri-calendar-schedule-fill text-blue-600 mr-2"></i>จัดการตารางเวรตอนเช้า</h3>
+                <p className="text-slate-500">แยกงานเป็นขั้นตอน เพื่อให้หน้าไม่รกและใช้งานบนมือถือได้ง่ายขึ้น</p>
+              </div>
+              <button type="button" onClick={autoFillCurrentDutyForm} className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-700"><i className="ri-magic-fill mr-1"></i>จัดเวรอัตโนมัติ</button>
+            </div>
+            <div className="duty-step-nav">
+              {[
+                ['planner','จัดเวรรายวัน','เลือกวันและจัดคน'],
+                ['roles','ตำแหน่งเวร','ตั้งหน้าที่และจำนวนคน'],
+                ['templates','ตาราง A/B','เรียกใช้และบันทึกแบบ'],
+                ['list','รายการย้อนหลัง','เช็คเวรและจัดการตาราง']
+              ].map(([key,title,desc]) => (
+                <button key={key} type="button" onClick={() => setDutyManagePanel(key)} className={`duty-step-btn ${dutyManagePanel === key ? 'is-active' : ''}`}>
+                  <span className="step-title">{title}</span>
+                  <span className="step-desc">{desc}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+          <div className={`grid xl:grid-cols-[1.1fr_.9fr] gap-5 ${dutyManagePanel === 'list' ? 'hidden' : ''}`}> 
+            <form onSubmit={handleSave} className="duty-form-shell bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-7 space-y-6">
               <div className="flex flex-col md:flex-row gap-4 md:items-start md:justify-between">
                 <div>
                   <h3 className="text-2xl font-extrabold text-slate-950"><i className="ri-calendar-schedule-fill text-blue-600 mr-2"></i>{editingId ? 'แก้ไขตารางเวรตอนเช้า' : 'เพิ่มตารางเวรตอนเช้าประจำสัปดาห์'}</h3>
@@ -2909,6 +4707,9 @@
                 <Input label="หมายเหตุประจำสัปดาห์" value={form.note} onChange={v => setForm(prev => ({ ...prev, note: v }))} placeholder="เช่น สัปดาห์เปิดเทอม / สอบกลางภาค" />
               </div>
 
+
+
+              {dutyManagePanel === 'roles' && (
 
               <div className="rounded-3xl bg-blue-50 border border-blue-100 p-4">
                 <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
@@ -3011,6 +4812,9 @@
                   })}
                 </div>
               </div>
+              )}
+
+              {dutyManagePanel === 'templates' && (
 
               <div className="rounded-3xl bg-slate-50 border border-slate-100 p-4">
                 <div className="flex flex-col xl:flex-row gap-3 xl:items-center xl:justify-between">
@@ -3027,85 +4831,118 @@
                   {dutyTableTypes.map(t => <button key={t.key} type="button" onClick={() => saveTemplate(t.key)} className="px-4 py-2 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 font-bold"><i className="ri-save-3-line mr-1"></i>บันทึกทั้งสัปดาห์เป็น{t.label}</button>)}
                 </div>
               </div>
+              )}
+
+              {dutyManagePanel === 'planner' && (<>
 
               {!activeStudents.length && <div className="rounded-3xl bg-orange-50 border border-orange-100 text-orange-800 p-4 text-sm"><i className="ri-alert-fill mr-2"></i>ยังไม่มีรายชื่อนักศึกษาปีการศึกษา {form.academicYear} หรือยังไม่ได้เพิ่มสมาชิก</div>}
               {duplicateIds.length > 0 && <div className="rounded-3xl bg-yellow-50 border border-yellow-100 text-yellow-800 p-4 text-sm"><i className="ri-alert-fill mr-2"></i><b>พบชื่อซ้ำในสัปดาห์นี้:</b> {duplicateNames.join(' / ') || `${duplicateIds.length} คน`} <span className="text-yellow-700">ถ้าจงใจให้ทำซ้ำยังบันทึกได้</span></div>}
 
-              <div className="space-y-4">
-                {dutyDays.map((day, dayIndex) => (
-                  <div key={day.key} className="rounded-[1.7rem] bg-slate-50 border border-slate-100 p-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                      <div>
-                        <h4 className="font-extrabold text-slate-950 text-lg"><i className="ri-calendar-event-fill text-blue-600 mr-2"></i>{day.label}</h4>
-                        <p className="text-sm text-slate-500">{formatThaiDate(getDutyDayDate(form.date, day.key))}</p>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {dayIndex > 0 && <button type="button" onClick={() => copyDay(dutyDays[dayIndex - 1].key, day.key)} className="px-3 py-2 rounded-xl bg-white/80 text-blue-700 border border-blue-100 font-bold text-xs"><i className="ri-file-copy-2-fill mr-1"></i>คัดลอกจากวันก่อน</button>}
-                        <button type="button" onClick={() => clearDay(day.key)} className="px-3 py-2 rounded-xl bg-white/80 text-slate-600 border border-slate-100 font-bold text-xs"><i className="ri-eraser-fill mr-1"></i>ล้างวันนี้</button>
-                      </div>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-3">
-                      {formRoles.map(role => {
-                        const slots = getRoleSlotCount(role, form.roleSlots);
-                        return (
-                          <div key={`${day.key}-${role.key}`} className="rounded-2xl bg-white/70 border border-slate-100 p-3">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center"><i className={role.icon}></i></div>
-                              <div><p className="font-extrabold text-slate-950 leading-tight">{role.title}</p><p className="text-xs text-slate-500">{slots ? `เลือกได้ ${slots} คน` : 'ไม่ใช้หน้าที่นี้'}</p></div>
-                            </div>
-                            <div className="space-y-2">
-                              {slots === 0 ? (
-                                <div className="rounded-2xl bg-slate-100 text-slate-500 px-4 py-3 font-bold text-sm text-center">ปิดหน้าที่นี้ในสัปดาห์นี้</div>
-                              ) : Array.from({ length: slots }).map((_, idx) => {
-                                const selectedId = (form.weeklyAssignments?.[day.key]?.[role.key] || [])[idx] || '';
-                                const selectedStudent = selectedId ? studentMap.get(selectedId) : null;
-                                return (
-                                  <div key={idx} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                                    <div className="flex items-center justify-between gap-2 mb-2">
-                                      <div className="text-xs font-bold text-slate-500">{slots > 1 ? `คนที่ ${idx + 1}` : 'ผู้รับผิดชอบ'}</div>
-                                      {selectedId ? (
-                                        <button type="button" onClick={() => setAssignment(day.key, role.key, idx, '')} className="px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-100 text-[11px] font-extrabold">ล้างชื่อ</button>
-                                      ) : (
-                                        <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 text-[11px] font-extrabold">ยังไม่ได้เลือก</span>
-                                      )}
-                                    </div>
+              <div className="rounded-[1.7rem] bg-slate-50 border border-slate-100 p-4 md:p-5">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                  <div>
+                    <h4 className="duty-section-title text-lg"><i className="ri-layout-grid-fill text-blue-600"></i>จัดเวรแบบแยกวัน</h4>
+                    <p className="text-sm text-slate-500">เลือกวันก่อน แล้วค่อยจัดคนในวันนั้น จะช่วยให้หน้าจอดูโล่งและจัดตารางง่ายขึ้น</p>
+                  </div>
+                  <div className="duty-action-bar">
+                    <span className="px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs font-extrabold text-slate-700">จัดอยู่: {plannerDay.label}</span>
+                  </div>
+                </div>
 
-                                    <button type="button" onClick={() => openStudentPicker(day.key, role.key, idx)} className="w-full text-left rounded-2xl bg-white border-2 border-slate-200 hover:border-blue-400 focus:border-blue-500 outline-none px-4 py-3 transition">
-                                      {selectedStudent ? (
-                                        <div className="flex items-center gap-3">
-                                          {selectedStudent.photo ? (
-                                            <img src={selectedStudent.photo} alt={studentDutyName(selectedStudent)} className="w-12 h-12 rounded-2xl object-cover border border-slate-200 shrink-0" />
-                                          ) : (
-                                            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg font-black shrink-0">{String((selectedStudent.nickname || selectedStudent.fullName || '?')).trim().charAt(0) || '?'}</div>
-                                          )}
-                                          <div className="min-w-0 flex-1">
-                                            <div className="font-extrabold text-slate-950 truncate">{studentDutyName(selectedStudent)}</div>
-                                            <div className="text-xs text-slate-500 truncate">{selectedStudent.studentId || '-'} • {selectedStudent.level || '-'} / {selectedStudent.group || '-'}{selectedStudent.major ? ` • ${selectedStudent.major}` : ''}</div>
-                                          </div>
-                                          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0"><i className="ri-search-line text-lg"></i></div>
-                                        </div>
-                                      ) : (
-                                        <div className="flex items-center gap-3">
-                                          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0"><i className="ri-user-search-fill"></i></div>
-                                          <div className="min-w-0 flex-1">
-                                            <div className="font-extrabold text-slate-800">ค้นหา / เลือกนักศึกษา</div>
-                                            <div className="text-xs text-slate-500">พิมพ์ชื่อเล่น ชื่อจริง หรือรหัสนักศึกษาได้</div>
-                                          </div>
-                                          <i className="ri-arrow-right-s-line text-slate-400 text-xl"></i>
-                                        </div>
-                                      )}
-                                    </button>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        );
-                      })}
+                <div className="duty-day-tabs">
+                  {dutyDays.map(day => {
+                    const assignedCount = countAssignmentsForDay(day.key);
+                    return (
+                      <button
+                        key={day.key}
+                        type="button"
+                        onClick={() => setPlannerDayKey(day.key)}
+                        className={`duty-day-tab ${plannerDay.key === day.key ? 'is-active' : ''}`}
+                      >
+                        <span className="day-label">{day.label}</span>
+                        <span className="day-date">{formatThaiDate(getDutyDayDate(form.date, day.key))}</span>
+                        <span className="day-count"><i className="ri-user-3-fill"></i>จัดแล้ว {assignedCount} คน</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="duty-day-shell">
+                  <div className="duty-day-head">
+                    <div>
+                      <h4 className="font-extrabold text-slate-950 text-lg"><i className="ri-calendar-event-fill text-blue-600 mr-2"></i>{plannerDay.label}</h4>
+                      <p className="text-sm text-slate-500">{formatThaiDate(getDutyDayDate(form.date, plannerDay.key))}</p>
+                    </div>
+                    <div className="duty-action-bar">
+                      {dutyDays.findIndex(d => d.key === plannerDay.key) > 0 && (
+                        <button type="button" onClick={() => copyDay(dutyDays[dutyDays.findIndex(d => d.key === plannerDay.key) - 1].key, plannerDay.key)} className="px-3 py-2 rounded-xl bg-white text-blue-700 border border-blue-100 font-bold text-xs"><i className="ri-file-copy-2-fill mr-1"></i>คัดลอกจากวันก่อน</button>
+                      )}
+                      <button type="button" onClick={() => clearDay(plannerDay.key)} className="px-3 py-2 rounded-xl bg-white text-slate-600 border border-slate-100 font-bold text-xs"><i className="ri-eraser-fill mr-1"></i>ล้างวันนี้</button>
                     </div>
                   </div>
-                ))}
+
+                  <div className="duty-role-grid">
+                    {formRoles.map(role => {
+                      const slots = getRoleSlotCount(role, form.roleSlots);
+                      return (
+                        <div key={`${plannerDay.key}-${role.key}`} className="duty-role-assign-card">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center"><i className={role.icon}></i></div>
+                            <div><p className="font-extrabold text-slate-950 leading-tight">{role.title}</p><p className="text-xs text-slate-500">{slots ? `เลือกได้ ${slots} คน` : 'ไม่ใช้หน้าที่นี้'}</p></div>
+                          </div>
+                          <div className="space-y-2">
+                            {slots === 0 ? (
+                              <div className="rounded-2xl bg-slate-100 text-slate-500 px-4 py-3 font-bold text-sm text-center">ปิดหน้าที่นี้ในสัปดาห์นี้</div>
+                            ) : Array.from({ length: slots }).map((_, idx) => {
+                              const selectedId = (form.weeklyAssignments?.[plannerDay.key]?.[role.key] || [])[idx] || '';
+                              const selectedStudent = selectedId ? studentMap.get(selectedId) : null;
+                              return (
+                                <div key={idx} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                                  <div className="flex items-center justify-between gap-2 mb-2">
+                                    <div className="text-xs font-bold text-slate-500">{slots > 1 ? `คนที่ ${idx + 1}` : 'ผู้รับผิดชอบ'}</div>
+                                    {selectedId ? (
+                                      <button type="button" onClick={() => setAssignment(plannerDay.key, role.key, idx, '')} className="px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-100 text-[11px] font-extrabold">ล้างชื่อ</button>
+                                    ) : (
+                                      <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 text-[11px] font-extrabold">ยังไม่ได้เลือก</span>
+                                    )}
+                                  </div>
+
+                                  <button type="button" onClick={() => openStudentPicker(plannerDay.key, role.key, idx)} className="w-full text-left rounded-2xl bg-white border-2 border-slate-200 hover:border-blue-400 focus:border-blue-500 outline-none px-4 py-3 transition">
+                                    {selectedStudent ? (
+                                      <div className="flex items-center gap-3">
+                                        {selectedStudent.photo ? (
+                                          <img src={selectedStudent.photo} alt={studentDutyName(selectedStudent)} className="w-12 h-12 rounded-2xl object-cover border border-slate-200 shrink-0" />
+                                        ) : (
+                                          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg font-black shrink-0">{String((selectedStudent.nickname || selectedStudent.fullName || '?')).trim().charAt(0) || '?'}</div>
+                                        )}
+                                        <div className="min-w-0 flex-1">
+                                          <div className="font-extrabold text-slate-950 truncate">{studentDutyName(selectedStudent)}</div>
+                                          <div className="text-xs text-slate-500 truncate">{selectedStudent.studentId || '-'} • {selectedStudent.level || '-'} / {selectedStudent.group || '-'}{selectedStudent.major ? ` • ${selectedStudent.major}` : ''}</div>
+                                        </div>
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0"><i className="ri-search-line text-lg"></i></div>
+                                      </div>
+                                    ) : (
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0"><i className="ri-user-search-fill"></i></div>
+                                        <div className="min-w-0 flex-1">
+                                          <div className="font-extrabold text-slate-800">ค้นหา / เลือกนักศึกษา</div>
+                                          <div className="text-xs text-slate-500">พิมพ์ชื่อเล่น ชื่อจริง หรือรหัสนักศึกษาได้</div>
+                                        </div>
+                                        <i className="ri-arrow-right-s-line text-slate-400 text-xl"></i>
+                                      </div>
+                                    )}
+                                  </button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
+              </>)}
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <button disabled={saving} className="flex-1 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold disabled:opacity-50 active:scale-[.98] transition"><i className="ri-save-3-fill mr-2"></i>{saving ? 'กำลังบันทึก...' : editingId ? 'บันทึกการแก้ไข' : 'บันทึกตารางเวรทั้งสัปดาห์'}</button>
@@ -3113,8 +4950,8 @@
               </div>
             </form>
 
-            <div className="space-y-5">
-              <div className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6">
+            <div className="space-y-5 duty-side-shell">
+              <div className="duty-list-shell bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6">
                 <h3 className="text-xl font-extrabold text-slate-950 mb-4"><i className="ri-dashboard-2-fill text-blue-600 mr-2"></i>สรุปตารางเวร</h3>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div className="rounded-3xl bg-blue-50 border border-blue-100 p-4"><p className="text-xs text-blue-700 font-bold">สัปดาห์ที่แสดง</p><p className="text-3xl font-extrabold text-slate-950">{visibleDuties.length}</p></div>
@@ -3133,7 +4970,7 @@
             </div>
           </div>
 
-          <div className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6">
+          <div className={`${dutyManagePanel === 'list' ? '' : 'hidden'} bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6`}>
             <div className="flex flex-col xl:flex-row gap-4 xl:items-center xl:justify-between mb-5">
               <div>
                 <h3 className="text-xl font-extrabold text-slate-950"><i className="ri-list-check-3 text-blue-600 mr-2"></i>รายการตารางเวรตอนเช้า</h3>
@@ -3151,20 +4988,38 @@
             </div>
 
             {loading ? <div className="p-10 text-center text-slate-500 font-bold">กำลังโหลดตารางเวร...</div> : visibleDuties.length ? (
-              <div className="space-y-3">
+              <div className="duty-list-grid">
                 {visibleDuties.map(duty => {
                   const weekly = getDutyWeeklyAssignments(duty);
+                  const attendance = dutyAttendanceSummary(duty);
                   return (
-                    <div key={duty.id} className="rounded-[1.6rem] bg-slate-50 border border-slate-100 p-4">
+                    <div key={duty.id} className="duty-week-card">
                       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                        <div className="min-w-[190px]"><p className="text-xs text-blue-600 font-bold">{duty.academicYear}</p><h4 className="font-extrabold text-slate-950 text-lg">{formatThaiWeekRange(duty.date)}</h4><span className="inline-flex mt-1 px-3 py-1 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold">{dutyTableLabel(duty.scheduleType)}</span>{duty.note && <p className="text-sm text-slate-500 mt-1">{duty.note}</p>}</div>
-                        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-2 flex-1">
+                        <div className="min-w-[190px]">
+                          <p className="text-xs text-blue-600 font-bold">{duty.academicYear}</p>
+                          <h4 className="font-extrabold text-slate-950 text-lg">{formatThaiWeekRange(duty.date)}</h4>
+                          <span className="inline-flex mt-1 px-3 py-1 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold">{dutyTableLabel(duty.scheduleType)}</span>
+                          {duty.locked && <span className="inline-flex mt-1 ml-1 px-3 py-1 rounded-xl bg-slate-950 text-white text-xs font-bold"><i className="ri-lock-fill mr-1"></i>ล็อกแล้ว</span>}
+                          {duty.note && <p className="text-sm text-slate-500 mt-1">{duty.note}</p>}
+                          <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] font-extrabold">
+                            <span className="rounded-xl bg-slate-950 text-white px-3 py-2 text-center">ปัญหา {attendance.problems}/{attendance.total}</span>
+                            <span className="rounded-xl bg-emerald-900 text-emerald-100 px-3 py-2 text-center">ปกติ {attendance.present}</span>
+                            <span className="rounded-xl bg-amber-900 text-amber-100 px-3 py-2 text-center">สาย {attendance.late}</span>
+                            <span className="rounded-xl bg-rose-900 text-rose-100 px-3 py-2 text-center">ขาด {attendance.absent}</span>
+                            <span className="rounded-xl bg-orange-900 text-orange-100 px-3 py-2 text-center">ไม่พบ {attendance.not_found || 0}</span>
+                            <span className="rounded-xl bg-sky-900 text-sky-100 px-3 py-2 text-center">ลา {attendance.leave}</span>
+                            <span className="rounded-xl bg-violet-900 text-violet-100 px-3 py-2 text-center">ทำแทน {attendance.substitute}</span>
+                          </div>
+                        </div>
+                        <div className="duty-week-days flex-1">
                           {dutyDays.map(day => <div key={day.key} className="rounded-2xl bg-white/70 border border-slate-100 p-3"><p className="text-xs text-slate-500 font-bold"><i className="ri-calendar-event-fill text-blue-600 mr-1"></i>{day.shortLabel} · {formatThaiDate(getDutyDayDate(duty.date, day.key))}</p><p className="text-sm font-bold text-slate-900 leading-relaxed mt-1">{getDutyRoles(duty).map(role => `${role.shortTitle}: ${dailyDutyRoleText(weekly, day.key, role.key)}`).join(' / ')}</p></div>)}
                         </div>
                         <div className="flex lg:flex-col gap-2">
-                          <button onClick={() => editDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-blue-600 hover:bg-blue-50"><i className="ri-edit-2-fill text-xl"></i></button>
-                          <button onClick={() => duplicateDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-emerald-600 hover:bg-emerald-50"><i className="ri-file-copy-2-fill text-xl"></i></button>
-                          <button onClick={() => deleteDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-red-600 hover:bg-red-50"><i className="ri-delete-bin-fill text-xl"></i></button>
+                          <button title="บันทึกปัญหาเวรเช้า" onClick={() => openDutyAttendance(duty)} className="h-10 px-3 rounded-xl bg-slate-950 text-white hover:bg-blue-700 flex items-center justify-center gap-1.5 font-extrabold text-xs"><i className="ri-user-follow-fill text-lg"></i><span>บันทึกปัญหา</span></button>
+                          <button title={duty.locked ? 'ปลดล็อก' : 'ล็อกตาราง'} onClick={() => toggleDutyLock(duty)} className={`w-10 h-10 rounded-xl ${duty.locked ? 'bg-slate-950 text-white' : 'bg-white text-slate-700 hover:bg-slate-100'}`}><i className={`${duty.locked ? 'ri-lock-unlock-fill' : 'ri-lock-fill'} text-xl`}></i></button>
+                          <button title="แก้ไข" onClick={() => editDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-blue-600 hover:bg-blue-50"><i className="ri-edit-2-fill text-xl"></i></button>
+                          <button title="คัดลอก" onClick={() => duplicateDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-emerald-600 hover:bg-emerald-50"><i className="ri-file-copy-2-fill text-xl"></i></button>
+                          <button title="ลบ" onClick={() => deleteDuty(duty)} className="w-10 h-10 rounded-xl bg-white text-red-600 hover:bg-red-50"><i className="ri-delete-bin-fill text-xl"></i></button>
                         </div>
                       </div>
                     </div>
@@ -3173,6 +5028,104 @@
               </div>
             ) : <div className="p-12 text-center rounded-3xl bg-slate-50 border border-slate-100 text-slate-500 font-bold">ยังไม่มีตารางเวรตามเงื่อนไขที่เลือก</div>}
           </div>
+
+          {attendanceDuty && (
+            <div className="duty-attendance-modal fixed inset-0 z-[96] bg-slate-950/78 backdrop-blur-sm flex items-center justify-center p-3 md:p-5">
+              <div className="w-full max-w-6xl max-h-[92vh] rounded-[2rem] bg-slate-950 border border-slate-700 shadow-2xl overflow-hidden text-white">
+                <div className="px-5 md:px-6 py-5 border-b border-slate-700 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.22em] text-blue-200 font-extrabold mb-2">Morning Duty Exception Check</p>
+                    <h3 className="text-2xl md:text-3xl font-black">บันทึกปัญหาเวรเช้า</h3>
+                    <p className="text-slate-300 text-sm mt-1">{formatThaiWeekRange(attendanceDuty.date)} · {dutyTableLabel(attendanceDuty.scheduleType)} · ปีการศึกษา {attendanceDuty.academicYear}</p>
+                    <p className="text-emerald-200 text-sm mt-2 font-bold"><i className="ri-information-fill mr-1"></i>ค่าเริ่มต้นถือว่า “ปกติ/มา” ไม่ต้องกดทุกคน กดเฉพาะคนที่สาย ขาด ลา หรือมีคนทำแทน</p>
+                  </div>
+                  <button type="button" onClick={closeDutyAttendance} className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-white font-bold self-start">ปิด</button>
+                </div>
+
+                <div className="p-4 md:p-6 bg-slate-900/70 border-b border-slate-700">
+                  <div className="attendance-day-tabs grid sm:grid-cols-3 xl:grid-cols-6 gap-2">
+                    {dutyDays.map(day => {
+                      const isActive = attendanceDayKey === day.key;
+                      return (
+                        <button key={`attendance-tab-${day.key}`} type="button" onClick={() => setAttendanceDayKey(day.key)} className={`px-4 py-3 rounded-2xl text-left border font-extrabold ${isActive ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-950/30' : 'bg-slate-950 border-slate-700 text-slate-300 hover:bg-slate-800'}`}>
+                          <div>{day.label}</div>
+                          <div className={`text-[11px] mt-1 ${isActive ? 'text-blue-100' : 'text-slate-500'}`}>{formatThaiDate(getDutyDayDate(attendanceDuty.date, day.key))}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-3 rounded-2xl bg-emerald-950/40 border border-emerald-800/60 text-emerald-100 px-4 py-3 text-sm font-bold">
+                    <i className="ri-shield-check-fill mr-1"></i>ไม่ต้องกดถ้าเด็กมาทำเวรตามปกติ ระบบจะนับเป็น “ปกติ” อัตโนมัติ
+                  </div>
+                </div>
+
+                <div className="p-4 md:p-6 max-h-[62vh] overflow-y-auto">
+                  {(() => {
+                    const weekly = getDutyWeeklyAssignments(attendanceDuty);
+                    const roles = getDutyRoles(attendanceDuty);
+                    const day = dutyDays.find(d => d.key === attendanceDayKey) || dutyDays[0];
+                    const hasPeople = roles.some(role => (weekly?.[day.key]?.[role.key] || []).filter(Boolean).length);
+                    return hasPeople ? (
+                      <div className="space-y-4">
+                        {roles.map(role => {
+                          const people = (weekly?.[day.key]?.[role.key] || []).filter(Boolean);
+                          if (!people.length) return null;
+                          return (
+                            <div key={`attendance-role-${role.key}`} className="rounded-[1.6rem] bg-slate-900 border border-slate-700 p-4 md:p-5">
+                              <div className="flex items-center gap-3 mb-4">
+                                <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-xl shrink-0"><i className={role.icon || 'ri-user-star-fill'}></i></div>
+                                <div>
+                                  <h4 className="font-black text-xl">{role.title}</h4>
+                                  <p className="text-sm text-slate-400">{people.length} คนที่รับผิดชอบ</p>
+                                </div>
+                              </div>
+                              <div className="attendance-card-grid grid lg:grid-cols-2 gap-3">
+                                {people.map((person, index) => {
+                                  const current = dutyAttendanceStatus(attendanceDuty, day.key, role.key, index);
+                                  const currentInfo = dutyAttendanceOptions.find(o => o.key === current) || dutyNormalAttendance;
+                                  return (
+                                    <div key={`${role.key}-${index}-${person.id || person.studentId}`} className="duty-attendance-person-card rounded-2xl border p-4">
+                                      <div className="flex items-center gap-3">
+                                        {person.photo ? <img src={person.photo} className="w-14 h-14 rounded-2xl object-cover border border-slate-700 shrink-0" /> : <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-xl font-black shrink-0">{String(person.nickname || person.fullName || '?').trim().charAt(0) || '?'}</div>}
+                                        <div className="min-w-0 flex-1">
+                                          <div className="font-black text-lg truncate">{person.nickname || person.fullName || '-'}</div>
+                                          <div className="text-sm text-slate-300 truncate">{person.fullName || '-'}</div>
+                                          <div className="text-xs text-slate-400 truncate">{person.studentId || '-'} · {person.level || '-'} / {person.group || '-'}</div>
+                                        </div>
+                                        <span className={`shrink-0 px-3 py-1.5 rounded-full border text-xs font-extrabold ${currentInfo.pill}`}>
+                                          {currentInfo.label}
+                                        </span>
+                                      </div>
+                                      <div className="attendance-status-grid grid grid-cols-2 sm:grid-cols-5 gap-2 mt-4">
+                                        <button type="button" onClick={() => setDutyAttendanceStatus(attendanceDuty, day.key, role.key, index, '')} className={`px-3 py-2.5 rounded-xl text-sm font-extrabold border border-white/10 ${!current || current === 'present' ? dutyNormalAttendance.button + ' ring-2 ring-white/30' : 'bg-slate-800 text-slate-200 hover:bg-slate-700'}`}>
+                                          <i className={`${dutyNormalAttendance.icon} mr-1`}></i>{dutyNormalAttendance.label}
+                                        </button>
+                                        {dutyAttendanceOptions.map(opt => (
+                                          <button key={opt.key} type="button" onClick={() => setDutyAttendanceStatus(attendanceDuty, day.key, role.key, index, opt.key)} className={`px-3 py-2.5 rounded-xl text-sm font-extrabold border border-white/10 ${current === opt.key ? opt.button + ' ring-2 ring-white/30' : 'bg-slate-800 text-slate-200 hover:bg-slate-700'}`}>
+                                            <i className={`${opt.icon} mr-1`}></i>{opt.label}
+                                          </button>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="rounded-[2rem] border border-dashed border-slate-600 bg-slate-900 p-10 text-center">
+                        <div className="w-16 h-16 mx-auto rounded-3xl bg-slate-800 text-slate-400 flex items-center justify-center text-3xl mb-4"><i className="ri-calendar-close-fill"></i></div>
+                        <div className="text-xl font-black">วันนี้ยังไม่มีรายชื่อเวร</div>
+                        <div className="text-slate-400 mt-2">กลับไปจัดตารางเวรก่อน แล้วค่อยเข้ามาเช็คการมาทำเวร</div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+          )}
 
           {studentPicker.open && (
             <div className="fixed inset-0 z-[95] bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -3614,7 +5567,7 @@
       const rangeStart = students.length ? ((Math.min(currentPage, totalPages) - 1) * MEMBER_PAGE_SIZE) + 1 : 0;
       const rangeEnd = Math.min(students.length, Math.min(currentPage, totalPages) * MEMBER_PAGE_SIZE);
       return (
-        <div className="space-y-5">
+        <div className="space-y-5 v61-mobile-safe">
           <div className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6">
             <div className="flex flex-col xl:flex-row gap-4">
               <div className="relative flex-1 min-w-[240px]">
@@ -4300,7 +6253,7 @@
       const [busy, setBusy] = useState(false);
       const [backupConfirmed, setBackupConfirmed] = useState(false);
       const [backupLogs, setBackupLogs] = useState([]);
-      const [dbCollections, setDbCollections] = useState({ duties: [], templates: [], activities: [], settings: {} });
+      const [dbCollections, setDbCollections] = useState({ duties: [], templates: [], activities: [], works: [], logs: [], settings: {} });
       const [usageLimitMb, setUsageLimitMb] = useState(() => Number(localStorage.getItem('mdec_db_usage_limit_mb') || 900));
 
       useEffect(() => {
@@ -4327,10 +6280,16 @@
         const unsubActivities = getActivitiesRef().onSnapshot(snapshot => {
           setDbCollections(prev => ({ ...prev, activities: snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) }));
         }, err => console.error('db monitor activities load failed', err));
+        const unsubWorks = getWorksRef().onSnapshot(snapshot => {
+          setDbCollections(prev => ({ ...prev, works: snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) }));
+        }, err => console.error('db monitor works load failed', err));
+        const unsubLogs = getChangeLogsRef().onSnapshot(snapshot => {
+          setDbCollections(prev => ({ ...prev, logs: snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) }));
+        }, err => console.error('db monitor logs load failed', err));
         const unsubSettings = getSettingsRef().onSnapshot(doc => {
           setDbCollections(prev => ({ ...prev, settings: doc.exists ? ({ id: doc.id, ...doc.data() }) : {} }));
         }, err => console.error('db monitor settings load failed', err));
-        return () => { unsubDuty(); unsubTemplates(); unsubActivities(); unsubSettings(); };
+        return () => { unsubDuty(); unsubTemplates(); unsubActivities(); unsubWorks(); unsubLogs(); unsubSettings(); };
       }, []);
 
       const approxJsonBytes = (value) => {
@@ -4351,8 +6310,10 @@
         const dutyDocs = (dbCollections.duties || []).map(d => ({ collection: 'duty_rosters', ...d }));
         const templateDocs = (dbCollections.templates || []).map(t => ({ collection: 'duty_templates', ...t }));
         const activityDocs = (dbCollections.activities || []).map(a => ({ collection: 'club_activities', ...a }));
+        const workDocs = (dbCollections.works || []).map(w => ({ collection: 'member_works', ...w }));
+        const logDocs = (dbCollections.logs || []).map(l => ({ collection: 'change_logs', ...l }));
         const settingsDocs = dbCollections.settings && Object.keys(dbCollections.settings).length ? [{ collection: 'settings', ...dbCollections.settings }] : [];
-        const allDocs = [...studentDocs, ...dutyDocs, ...templateDocs, ...activityDocs, ...settingsDocs];
+        const allDocs = [...studentDocs, ...dutyDocs, ...templateDocs, ...activityDocs, ...workDocs, ...logDocs, ...settingsDocs];
         const rawBytes = allDocs.reduce((sum, item) => sum + approxJsonBytes(item), 0);
         const overheadBytes = allDocs.length * 650;
         const estimatedBytes = Math.round((rawBytes + overheadBytes) * 1.18);
@@ -4371,6 +6332,8 @@
           dutyDocs: dutyDocs.length,
           templateDocs: templateDocs.length,
           activityDocs: activityDocs.length,
+          workDocs: workDocs.length,
+          logDocs: logDocs.length,
           settingsDocs: settingsDocs.length,
           estimatedBytes,
           selectedBytes,
@@ -4396,6 +6359,8 @@
       const backupJSON = () => {
         if (!selected.length) return alert('ปีนี้ยังไม่มีข้อมูลให้สำรอง');
         const activitySelected = (dbCollections.activities || []).filter(a => String(a.academicYear || '') === String(year || ''));
+        const workSelected = (dbCollections.works || []).filter(w => String(w.academicYear || '') === String(year || ''));
+        const dutySelected = (dbCollections.duties || []).filter(d => String(d.academicYear || '') === String(year || ''));
         const payload = {
           system: 'MDEC Photo Club Registry',
           backupType: 'academic_year_full_backup',
@@ -4403,7 +6368,9 @@
           exportedAt: new Date().toISOString(),
           total: selected.length,
           students: selected,
-          activities: activitySelected
+          activities: activitySelected,
+          works: workSelected,
+          duties: dutySelected
         };
         downloadFile(`MDEC_PhotoClub_Backup_${year}_${todayFileDate()}.json`, JSON.stringify(payload, null, 2), 'application/json;charset=utf-8');
         recordBackupLog('JSON');
@@ -4425,7 +6392,9 @@
         try {
           const snap = await getStudentsRef().where('academicYear','==',year).get();
           const activitySnap = await getActivitiesRef().where('academicYear','==',year).get();
-          const docs = [...snap.docs, ...activitySnap.docs];
+          const workSnap = await getWorksRef().where('academicYear','==',year).get();
+          const dutySnap = await getDutyRef().where('academicYear','==',year).get();
+          const docs = [...snap.docs, ...activitySnap.docs, ...workSnap.docs, ...dutySnap.docs];
           for (let i = 0; i < docs.length; i += 450) {
             const batch = db.batch();
             docs.slice(i, i + 450).forEach(doc => batch.delete(doc.ref));
@@ -4618,16 +6587,16 @@
 
     function ManualPage() {
       const steps = [
+        ['เริ่มวันด้วยหน้าแรก', 'เปิดหน้าแรกเพื่อดูเวรวันนี้ งานค้าง ตรวจสุขภาพระบบ และปุ่มลัดที่ใช้บ่อย'],
+        ['เช้าวันนี้', 'ใช้ดูรายชื่อเวรของวันนี้ ระบบถือว่ามาปกติอัตโนมัติ ไม่ต้องกดทุกคน'],
+        ['บันทึกปัญหาเวร', 'กดเฉพาะกรณี สาย / ขาด / ลา / ไม่พบตัว / ทำแทน เพื่อลดงานตอนเช้า'],
         ['เพิ่มสมาชิกใหม่', 'คีย์ข้อมูลจากใบสมัครกระดาษ เลือกปีการศึกษาและฝ่ายที่สนใจให้ถูกต้อง'],
-        ['ถ่ายรูปสมาชิก', 'เปิดกล้อง ถ่ายรูปหน้าตรง พื้นหลังเรียบ ระบบจะบีบอัดรูปให้อัตโนมัติ'],
-        ['ตรวจข้อมูลไม่ครบ', 'ไปที่สรุปยอดแล้วกดการ์ด ไม่มีรูป / ไม่มีเบอร์ / ไม่มี Line เพื่อแก้ข้อมูลก่อนสรุป'],
-        ['ดูรายละเอียดและหมายเหตุ', 'กดไอคอนรูปตาเพื่อดูข้อมูลเต็ม ใส่หมายเหตุเจ้าหน้าที่เมื่อต้องติดตามงาน'],
-        ['ตารางเวรตอนเช้า', 'ตั้งชุดตาราง A และ B แบบแยกวัน จันทร์–เสาร์ แล้วสลับใช้รายสัปดาห์สำหรับเวรเชิญธงชาติ เครื่องเสียง ถ่ายภาพ ทำความเคารพ และทำความสะอาดได้'],
-        ['จอแสดงเวร', 'ใช้เปิดค้างไว้บนจอ/ทีวีให้นักศึกษาดูตารางเวรแบบอ่านอย่างเดียว มีปุ่มเต็มจอและซ่อนแถบควบคุมได้'],
-        ['พิมพ์รายงาน', 'กรองปี/สาขา/ฝ่ายก่อน แล้วเลือกพิมพ์รายงานตาราง ทำเนียบรูปภาพ หรือใบเซ็นชื่อ'],
-        ['สำรองข้อมูลก่อนจบปี', 'ดาวน์โหลด JSON และ CSV แล้วตรวจสอบไฟล์ก่อนล้างข้อมูลปีการศึกษา'],
-        ['ล้างข้อมูลปีเก่า', 'ติ๊กยืนยันว่า Backup แล้ว และพิมพ์ CLEAR ตามปีการศึกษาที่เลือก'],
-        ['เริ่มปีใหม่', 'ตั้งค่าปีการศึกษาปัจจุบันในเมนูตั้งค่าระบบ แล้วเริ่มคีย์ข้อมูลรุ่นใหม่']
+        ['ถ่ายรูปหรืออัปโหลดรูปสมาชิก', 'เก็บรูปโปรไฟล์ให้ครบ เพื่อให้ตารางเวรและบอร์ดสภาดูง่าย'],
+        ['กิจกรรมชมรม', 'บันทึกกิจกรรม เช็คการเข้าร่วม และเก็บลิงก์อัลบั้ม/ภาพปก'],
+        ['ผลงานสมาชิก', 'เก็บผลงานภาพถ่าย วิดีโอ หรือสื่อที่นักศึกษาช่วยงาน'],
+        ['เลือกตั้ง / สภาชมรม', 'บันทึกตำแหน่งสภา ผู้สมัคร คะแนน และโชว์บอร์ดสภา'],
+        ['ตรวจตรวจสุขภาพระบบ', 'ดูข้อมูลไม่ครบ ตารางเวร กิจกรรมค้าง และฐานข้อมูลใกล้เต็ม'],
+        ['จัดการปี / Backup', 'ก่อนล้างข้อมูลต้องสำรองไฟล์และยืนยันว่าเก็บไฟล์ไว้แล้ว']
       ];
       return (
         <div className="manual-card bg-white rounded-[2rem] soft-shadow border border-white p-6 md:p-8">
@@ -4651,16 +6620,24 @@
       const graduatedCount = students.filter(s => s.status === 'graduated').length;
       const dismissedCount = students.filter(s => s.status === 'dismissed').length;
       const photoCount = students.filter(s => !!s.photo).length;
+      const splitThaiFullName = (fullName = '') => {
+        const parts = String(fullName || '').trim().replace(/\s+/g, ' ').split(' ').filter(Boolean);
+        if (!parts.length) return { firstName:'-', lastName:'-' };
+        if (parts.length === 1) return { firstName:parts[0], lastName:'-' };
+        return { firstName:parts[0], lastName:parts.slice(1).join(' ') };
+      };
+      const printDepartment = (s) => s.department || s.actualInterest || s.interest || '-';
       return (
         <div className="print-overlay fixed inset-0 z-[100] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in">
           <div className="no-print flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 pb-5 border-b">
             <div>
               <h2 className="font-extrabold text-2xl">พิมพ์รายงานสมาชิก</h2>
-              <p className="text-slate-500">เลือกได้ 3 แบบ: รายงานตาราง ทำเนียบรูปภาพ หรือใบเซ็นชื่อแบบประหยัดพื้นที่</p>
+              <p className="text-slate-500">เลือกได้ 4 แบบ: รายงานตาราง ใบรายชื่อ ทำเนียบรูปภาพ หรือใบเซ็นชื่อแบบประหยัดพื้นที่</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <div className="flex p-1 bg-slate-100 rounded-2xl border border-slate-200">
                 <button onClick={() => setReportMode('table')} className={`px-4 py-2 rounded-xl font-bold text-sm ${reportMode==='table' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500'}`}>รายงานตาราง</button>
+                <button onClick={() => setReportMode('list')} className={`px-4 py-2 rounded-xl font-bold text-sm ${reportMode==='list' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500'}`}>ใบรายชื่อ</button>
                 <button onClick={() => setReportMode('directory')} className={`px-4 py-2 rounded-xl font-bold text-sm ${reportMode==='directory' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500'}`}>ทำเนียบรูปภาพ</button>
                 <button onClick={() => setReportMode('sign')} className={`px-4 py-2 rounded-xl font-bold text-sm ${reportMode==='sign' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500'}`}>ใบเซ็นชื่อ</button>
               </div>
@@ -4671,12 +6648,12 @@
 
           {students.length > 300 && reportMode === 'directory' && <div className="no-print mb-5 p-4 rounded-3xl bg-orange-50 border border-orange-100 text-orange-800 text-sm"><i className="ri-alert-fill mr-2"></i><b>แนะนำ:</b> ทำเนียบรูปภาพมีมากกว่า 300 รายการ ควรกรองตามระดับชั้น/สาขา/ฝ่ายก่อนพิมพ์ เพื่อให้ไฟล์ PDF ไม่หนักเกินไป</div>}
 
-          <section className={`report-page ${reportMode === 'sign' ? 'sign-report' : ''}`}>
+          <section className={`report-page ${reportMode === 'sign' ? 'sign-report' : reportMode === 'list' ? 'name-list-report' : ''}`}>
             <div className="report-header">
               <div className="report-brand">
                 <div className="report-logo"><img src={MDEC_LOGO} alt="MDEC" /></div>
                 <div>
-                  <div className="report-title">{reportMode === 'table' ? 'รายงานทะเบียนสมาชิกชมรม MDEC PHOTO CLUB' : reportMode === 'sign' ? 'ใบรายชื่อสมาชิกสำหรับเซ็นชื่อ' : 'ทำเนียบรูปภาพสมาชิกชมรม MDEC PHOTO CLUB'}</div>
+                  <div className="report-title">{reportMode === 'table' ? 'รายงานทะเบียนสมาชิกชมรม MDEC PHOTO CLUB' : reportMode === 'sign' ? 'ใบรายชื่อสมาชิกสำหรับเซ็นชื่อ' : reportMode === 'list' ? 'ใบรายชื่อสมาชิกชมรม MDEC PHOTO CLUB' : 'ทำเนียบรูปภาพสมาชิกชมรม MDEC PHOTO CLUB'}</div>
                   <div className="report-subtitle">ภายใต้การดูแลของศูนย์มัลติมีเดียทางการศึกษา • วิทยาลัยเทคโนโลยีภาคตะวันออก (อี.เทค)</div>
                 </div>
               </div>
@@ -4687,7 +6664,7 @@
               </div>
             </div>
 
-            {reportMode !== 'sign' && (
+            {reportMode !== 'sign' && reportMode !== 'list' && (
               <div className="report-summary">
                 <div className="report-summary-card"><div className="report-summary-label">สมาชิกทั้งหมด</div><div className="report-summary-value">{students.length}</div></div>
                 <div className="report-summary-card"><div className="report-summary-label">กำลังศึกษา/ใช้งาน</div><div className="report-summary-value">{activeCount}</div></div>
@@ -4699,7 +6676,7 @@
 
             <div className="report-note">
               <span>หมายเหตุ: รายงานนี้แสดงตามตัวกรองที่เลือกในหน้า “ฐานข้อมูลสมาชิก” ก่อนกดพิมพ์</span>
-              <span>{reportMode === 'sign' ? 'รูปแบบ: ใบรายชื่อเซ็นชื่อ' : `${reportMode === 'table' ? 'รูปแบบ: รายงานตาราง' : 'รูปแบบ: ทำเนียบรูปภาพ'} | รวม ${students.length} รายการ`}</span>
+              <span>{reportMode === 'sign' ? 'รูปแบบ: ใบรายชื่อเซ็นชื่อ' : reportMode === 'list' ? `รูปแบบ: ใบรายชื่อ | รวม ${students.length} รายการ` : `${reportMode === 'table' ? 'รูปแบบ: รายงานตาราง' : 'รูปแบบ: ทำเนียบรูปภาพ'} | รวม ${students.length} รายการ`}</span>
             </div>
 
             {reportMode === 'table' ? (
@@ -4733,6 +6710,37 @@
                 ))}
               </tbody>
             </table>
+
+            ) : reportMode === 'list' ? (
+              <table className="print-table name-list-table">
+                <thead>
+                  <tr>
+                    <th style={{width:'34px', textAlign:'center'}}>ลำดับ</th>
+                    <th style={{width:'118px'}}>ชื่อ</th>
+                    <th style={{width:'145px'}}>นามสกุล</th>
+                    <th style={{width:'92px'}}>รหัสประจำตัว</th>
+                    <th style={{width:'64px'}}>ห้อง</th>
+                    <th>สาขา</th>
+                    <th style={{width:'120px'}}>แผนก</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.map((s, index) => {
+                    const name = splitThaiFullName(s.fullName);
+                    return (
+                      <tr key={s.id || index}>
+                        <td style={{textAlign:'center'}}>{index + 1}</td>
+                        <td><div className="print-name">{name.firstName}</div></td>
+                        <td><div className="print-name">{name.lastName}</div></td>
+                        <td>{s.studentId || '-'}</td>
+                        <td>{s.group || s.room || '-'}</td>
+                        <td>{s.major || '-'}</td>
+                        <td>{printDepartment(s)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
 
             ) : reportMode === 'sign' ? (
               <table className="print-table sign-table">
