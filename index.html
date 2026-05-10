@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v66 Practical Polish</title>
+  <title>MDEC Photo Club Center v70 Stable Release 1.0</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -2042,6 +2042,170 @@
     }
   </style>
 
+
+  <style id="v70-stable-release-polish">
+    /* v70 Stable Release 1.0 — premium UI, mobile, print, and safety polish for real production use */
+    :root {
+      --mdec-bg: #07111f;
+      --mdec-panel: rgba(15, 23, 42, .94);
+      --mdec-panel-2: rgba(30, 41, 59, .88);
+      --mdec-border: rgba(148, 163, 184, .22);
+      --mdec-text: #e5edf8;
+      --mdec-muted: #9fb0c7;
+      --mdec-blue: #3b82f6;
+      --mdec-cyan: #22d3ee;
+      --mdec-danger: #ef4444;
+      --mdec-success: #10b981;
+    }
+
+    @media screen {
+      body.dark-mode {
+        background:
+          radial-gradient(circle at top right, rgba(37,99,235,.18), transparent 28%),
+          radial-gradient(circle at bottom left, rgba(34,211,238,.10), transparent 26%),
+          linear-gradient(180deg, #06101f 0%, #07111f 50%, #091827 100%) !important;
+      }
+
+      .club-sidebar {
+        box-shadow: 0 30px 80px rgba(2, 6, 23, .34) !important;
+      }
+      .topbar-shell,
+      .soft-shadow {
+        box-shadow: 0 22px 58px rgba(2, 6, 23, .20) !important;
+      }
+      body.dark-mode .topbar-shell {
+        background: rgba(15, 23, 42, .88) !important;
+        border-color: var(--mdec-border) !important;
+      }
+
+      body.dark-mode main .bg-white,
+      body.dark-mode main .bg-slate-50,
+      body.dark-mode main .bg-slate-100,
+      body.dark-mode main [class*="bg-white/"] {
+        background: var(--mdec-panel) !important;
+        color: var(--mdec-text) !important;
+        border-color: var(--mdec-border) !important;
+      }
+      body.dark-mode main .bg-blue-50,
+      body.dark-mode main .bg-cyan-50,
+      body.dark-mode main .bg-emerald-50,
+      body.dark-mode main .bg-green-50,
+      body.dark-mode main .bg-yellow-50,
+      body.dark-mode main .bg-orange-50,
+      body.dark-mode main .bg-red-50,
+      body.dark-mode main .bg-rose-50,
+      body.dark-mode main .bg-purple-50,
+      body.dark-mode main .bg-pink-50 {
+        background: var(--mdec-panel-2) !important;
+        color: var(--mdec-text) !important;
+        border-color: var(--mdec-border) !important;
+      }
+
+      body.dark-mode .text-slate-950,
+      body.dark-mode .text-slate-900,
+      body.dark-mode .text-slate-800,
+      body.dark-mode .text-slate-700 { color: #f8fafc !important; }
+      body.dark-mode .text-slate-600,
+      body.dark-mode .text-slate-500,
+      body.dark-mode .text-slate-400 { color: var(--mdec-muted) !important; }
+      body.dark-mode .text-blue-700,
+      body.dark-mode .text-blue-600,
+      body.dark-mode .text-blue-500 { color: #93c5fd !important; }
+      body.dark-mode .text-emerald-700,
+      body.dark-mode .text-emerald-600 { color: #86efac !important; }
+      body.dark-mode .text-red-700,
+      body.dark-mode .text-rose-700,
+      body.dark-mode .text-orange-700 { color: #fca5a5 !important; }
+      body.dark-mode .text-amber-700,
+      body.dark-mode .text-yellow-700 { color: #fde68a !important; }
+
+      body.dark-mode input,
+      body.dark-mode select,
+      body.dark-mode textarea {
+        background: rgba(2, 6, 23, .70) !important;
+        color: #f8fafc !important;
+        border-color: rgba(100,116,139,.8) !important;
+        min-height: 44px;
+      }
+      body.dark-mode input:focus,
+      body.dark-mode select:focus,
+      body.dark-mode textarea:focus {
+        border-color: #60a5fa !important;
+        box-shadow: 0 0 0 4px rgba(59,130,246,.18) !important;
+      }
+      body.dark-mode input::placeholder,
+      body.dark-mode textarea::placeholder { color: #94a3b8 !important; }
+
+      button, .nav-pill, input, select, textarea { transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease; }
+      button:active { transform: translateY(1px) scale(.995); }
+      button.bg-red-600,
+      button.bg-rose-600,
+      button[class*="bg-red"],
+      button[class*="bg-rose"] {
+        border: 1px solid rgba(248,113,113,.22) !important;
+      }
+
+      .nav-group-title {
+        letter-spacing: .06em !important;
+        opacity: .78;
+      }
+      .nav-pill {
+        min-height: 46px;
+      }
+      .nav-pill.is-active {
+        box-shadow: 0 14px 32px rgba(37, 99, 235, .22) !important;
+      }
+
+      .report-mode-switch,
+      .print-mode-switch,
+      .name-list-report {
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .year-card.border-red-500\/30,
+      .year-card.bg-red-950\/35,
+      [class*="bg-red-950"],
+      [class*="bg-rose-950"] {
+        box-shadow: inset 0 0 0 1px rgba(248,113,113,.16), 0 20px 55px rgba(127,29,29,.16) !important;
+      }
+
+      .v70-release-chip {
+        display:inline-flex; align-items:center; gap:.45rem; padding:.35rem .7rem; border-radius:999px;
+        font-size:.72rem; font-weight:800; letter-spacing:.04em;
+        background: rgba(16,185,129,.10); color:#bbf7d0; border:1px solid rgba(16,185,129,.25);
+      }
+
+      @media (max-width: 767px) {
+        body { -webkit-text-size-adjust: 100%; }
+        .relative.z-10.w-full.max-w-none.mx-auto { padding: .7rem !important; }
+        .topbar-shell { border-radius: 1.35rem !important; padding: 1rem !important; }
+        .topbar-shell h2 { font-size: 1.35rem !important; line-height: 1.18 !important; }
+        .club-sidebar { border-radius: 1.35rem !important; padding: .75rem !important; }
+        .nav-group { min-width: max-content; }
+        .nav-group-title { font-size: .66rem !important; margin-left: .35rem; }
+        .nav-pill { min-height: 44px; padding: .65rem .9rem !important; border-radius: .95rem !important; }
+        .nav-pill i { font-size: 1.1rem !important; }
+        main .rounded-\[2rem\],
+        main .rounded-\[2\.2rem\],
+        main .rounded-\[2\.4rem\] { border-radius: 1.35rem !important; }
+        main .p-6, main .md\:p-6, main .p-7, main .md\:p-7, main .p-8, main .md\:p-8 { padding: 1rem !important; }
+        input, select, textarea, button { font-size: 16px !important; }
+        .grid, .flex { min-width: 0; }
+        .soft-shadow { box-shadow: 0 14px 32px rgba(2,6,23,.20) !important; }
+      }
+    }
+
+    @media print {
+      body { background:#fff !important; color:#0f172a !important; }
+      .report-page { font-family: 'Noto Sans Thai', sans-serif !important; }
+      .report-title { letter-spacing:-.01em; }
+      .report-header { border-bottom-color:#1d4ed8 !important; }
+      .name-list-report .print-table th { background:#eaf2ff !important; color:#0f172a !important; }
+      .name-list-report .print-table td { color:#0f172a !important; }
+      .print-footer::after { content:'MDEC Photo Club Center • Stable Release 1.0'; display:block; margin-top:2px; color:#64748b; }
+    }
+  </style>
+
 </head>
 <body class="text-slate-800 selection:bg-blue-200">
   <div id="root"></div>
@@ -2603,7 +2767,7 @@
               </div>
 
               <div className="section-note rounded-3xl bg-white/10 border border-white/15 p-5 text-sm text-blue-50 leading-relaxed">
-                <strong className="text-white">v9 Internal:</strong> เพิ่มตารางเวรตอนเช้าแบบรายสัปดาห์ จันทร์–เสาร์ แยกเวรรายวัน พร้อมจอแสดงเวรสำหรับนักศึกษา ถ่ายรูป/อัปโหลดรูปสมาชิก ใบเซ็นชื่อ Backup Log และคู่มือใช้งาน
+                <strong className="text-white">Stable Release 1.0:</strong> เวอร์ชันใช้งานจริงของ MDEC Photo Club Center พร้อมสมาชิก ตารางเวร กิจกรรม ผลงาน สภาชมรม รายงาน เอกสารพิมพ์ และระบบสำรองข้อมูล
               </div>
               <div className="mt-4 grid sm:grid-cols-3 gap-3">
                 <div className="rounded-2xl bg-white/10 border border-white/15 p-4"><p className="text-xs text-blue-100">ปีการศึกษาปัจจุบัน</p><p className="text-2xl font-extrabold text-white">{currentAcademicYear}</p></div>
@@ -2731,7 +2895,7 @@
         { id:'smart', label:'เครื่องมือช่วย', icon:'ri-sparkling-2-fill', group:'เครื่องมือ' },
         { id:'dashboard', label:'รายงานสมาชิก', icon:'ri-pie-chart-2-fill', group:'รายงาน' },
         { id:'annual', label:'สรุปปี', icon:'ri-file-chart-fill', group:'รายงาน' },
-        { id:'health', label:'สุขภาพระบบ', icon:'ri-heart-pulse-fill', group:'รายงาน' },
+        { id:'health', label:'ตรวจสุขภาพระบบ', icon:'ri-heart-pulse-fill', group:'รายงาน' },
         { id:'logs', label:'ประวัติ', icon:'ri-history-fill', group:'รายงาน' },
         { id:'year', label:'จัดการปี', icon:'ri-calendar-check-fill', group:'ตั้งค่า' },
         { id:'settings', label:'ตั้งค่าระบบ', icon:'ri-settings-3-fill', group:'ตั้งค่า' },
@@ -2784,12 +2948,13 @@
                       <div className="brand-logo-compact"><img src={MDEC_LOGO} alt="MDEC" /></div>
                       <div>
                         <h1 className="font-extrabold leading-none tracking-tight">MDEC CLUB CENTER</h1>
-                        <p className="text-[10px] tracking-widest text-blue-200 mt-1">STAFF CONTROL • PHOTO CLUB</p>
+                        <p className="text-[10px] tracking-widest text-blue-200 mt-1">STABLE 1.0 • PHOTO CLUB</p>
                       </div>
                     </div>
                     <div className="rounded-3xl bg-white/10 border border-white/10 p-4 mb-4">
                       <p className="text-xs text-slate-400">ปีการศึกษาปัจจุบัน</p>
                       <p className="text-3xl font-extrabold text-blue-300">{currentAcademicYear}</p>
+                      <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-400/10 border border-emerald-300/20 text-emerald-100 text-xs font-extrabold"><i className="ri-shield-check-fill"></i>Stable 1.0</div>
                     </div>
                   </div>
 
@@ -2919,7 +3084,7 @@
         { id:'activities', title:'บันทึกกิจกรรมชมรม', desc:'เพิ่มกิจกรรม เช็คชื่อ และแนบอัลบั้มกิจกรรม', icon:'ri-calendar-event-fill', keywords:'กิจกรรม เช็คชื่อ อัลบั้ม' },
         { id:'works', title:'บันทึกผลงานสมาชิก', desc:'เก็บผลงานภาพถ่าย วิดีโอ และงานสื่อของชมรม', icon:'ri-gallery-fill', keywords:'ผลงาน ภาพ วิดีโอ portfolio' },
         { id:'council', title:'เลือกตั้ง / สภาชมรม', desc:'จัดผู้สมัคร ใส่คะแนน และแสดงบอร์ดสภาชมรม', icon:'ri-vip-crown-fill', keywords:'เลือกตั้ง สภา ประธาน คะแนน' },
-        { id:'health', title:'ตรวจตรวจสุขภาพระบบ', desc:'เช็กข้อมูลไม่ครบ ฐานข้อมูล ตารางเวร และสถานะระบบ', icon:'ri-heart-pulse-fill', keywords:'สุขภาพ ตรวจ ระบบ เตือน ฐานข้อมูล' },
+        { id:'health', title:'ตรวจสุขภาพระบบ', desc:'เช็กข้อมูลไม่ครบ ฐานข้อมูล ตารางเวร และสถานะระบบ', icon:'ri-heart-pulse-fill', keywords:'สุขภาพ ตรวจ ระบบ เตือน ฐานข้อมูล' },
         { id:'annual', title:'สรุปประจำปี', desc:'ดูภาพรวมสมาชิก กิจกรรม ผลงาน และตารางเวรประจำปี', icon:'ri-file-chart-fill', keywords:'สรุป ปี รายงาน ประจำปี' },
         { id:'year', title:'สำรองข้อมูล / จัดการปี', desc:'Backup ข้อมูลรายปี ตรวจความจุ และเตรียมล้างข้อมูล', icon:'ri-database-2-fill', keywords:'สำรอง backup ล้างข้อมูล ปี' }
       ];
@@ -2998,7 +3163,7 @@
             <div className="brand-logo-compact hidden sm:flex"><img src={MDEC_LOGO} alt="MDEC" /></div>
             <div>
               <p className="text-xs font-bold text-blue-600 tracking-widest uppercase">MDEC PHOTO CLUB CENTER</p>
-              <p className="text-[11px] text-slate-500 mt-1">ภายใต้การดูแลของศูนย์มัลติมีเดียทางการศึกษา</p>
+              <p className="text-[11px] text-slate-500 mt-1">Stable Release 1.0 • ภายใต้การดูแลของศูนย์มัลติมีเดียทางการศึกษา</p>
               <h2 className="text-2xl md:text-3xl font-extrabold text-slate-950 tracking-tight">{titleMap[activeTab] || 'Command Center'}</h2>
             </div>
           </div>
@@ -3006,6 +3171,7 @@
             <div className="topbar-chip px-4 py-3 rounded-2xl font-bold">
               <i className="ri-calendar-line mr-2"></i>ปี {currentAcademicYear}
             </div>
+            <div className="hidden sm:inline-flex v70-release-chip"><i className="ri-shield-check-fill"></i>Stable 1.0</div>
             <button onClick={onLogout} className="lg:hidden px-4 py-3 rounded-2xl bg-slate-900 text-white font-bold"><i className="ri-logout-box-r-line"></i></button>
           </div>
         </header>
@@ -3129,7 +3295,7 @@
                 <div className="mt-6 flex flex-wrap gap-3">
                   <button onClick={() => onNavigate('today')} className="v61-action v61-primary"><i className="ri-sun-foggy-fill"></i>เช้าวันนี้</button>
                   <button onClick={() => onNavigate('duty')} className="v61-action bg-white text-slate-950 hover:bg-blue-50"><i className="ri-calendar-schedule-fill"></i>จัด / บันทึกเวร</button>
-                  <button onClick={() => onNavigate('health')} className="v61-action bg-white/10 border border-white/10 text-white hover:bg-white/15"><i className="ri-heart-pulse-fill"></i>ตรวจตรวจสุขภาพระบบ</button>
+                  <button onClick={() => onNavigate('health')} className="v61-action bg-white/10 border border-white/10 text-white hover:bg-white/15"><i className="ri-heart-pulse-fill"></i>ตรวจสุขภาพระบบ</button>
                 </div>
               </div>
               <div className="rounded-[2rem] bg-white/8 border border-white/10 p-5">
@@ -3240,7 +3406,7 @@
                 <div className="v61-check-item"><b>ก่อนเข้าแถว:</b> เปิด “เช้าวันนี้” ดูคนรับผิดชอบเวร</div>
                 <div className="v61-check-item"><b>หลังเข้าแถว:</b> บันทึกเฉพาะปัญหา เช่น สาย / ขาด / ไม่พบตัว</div>
                 <div className="v61-check-item"><b>ระหว่างวัน:</b> เพิ่มกิจกรรมและเช็คชื่อกิจกรรมที่เกิดขึ้นจริง</div>
-                <div className="v61-check-item"><b>ทุกสัปดาห์:</b> ตรวจตรวจสุขภาพระบบและ Backup เมื่อข้อมูลเริ่มเยอะ</div>
+                <div className="v61-check-item"><b>ทุกสัปดาห์:</b> ตรวจสุขภาพระบบและ Backup เมื่อข้อมูลเริ่มเยอะ</div>
               </div>
             </div>
           </section>
@@ -3645,7 +3811,7 @@
         { title:'ผลงานสมาชิกในปีนี้', value:works.filter(w => String(w.academicYear) === String(currentAcademicYear)).length, action:'works', icon:'ri-gallery-fill' }
       ];
       const barColor = capacity.status === 'danger' ? 'bg-rose-500' : capacity.status === 'warning' ? 'bg-amber-400' : capacity.status === 'watch' ? 'bg-blue-400' : 'bg-emerald-400';
-      return <div className="space-y-5 council-audit-page"><section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7"><p className="text-xs font-extrabold tracking-[0.22em] text-blue-200 uppercase mb-2">System Health Check</p><h3 className="text-3xl md:text-4xl font-black">ตรวจตรวจสุขภาพระบบ</h3><p className="text-blue-100 mt-2">กดหน้านี้เพื่อดูทันทีว่าข้อมูลพร้อมใช้แค่ไหน ฐานข้อมูลใกล้เต็มไหม และมีอะไรต้องแก้ก่อนเปิดเทอม/ปิดปี</p></section><section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4"><div><h3 className="text-xl font-black text-slate-950">หลอดสถานะฐานข้อมูล</h3><p className="text-sm text-slate-500">ประมาณการจากข้อมูลที่เว็บอ่านได้ทั้งหมด</p></div><label className="block"><span className="text-xs font-extrabold text-slate-500">เพดานเตือน MB</span><input type="number" value={limitMb} onChange={e => { const v=Math.max(10, Number(e.target.value)||900); setLimitMb(v); localStorage.setItem('mdec_db_usage_limit_mb', String(v)); }} className="block mt-1 px-4 py-3 rounded-2xl bg-white border border-slate-200 font-bold text-slate-900"/></label></div><div className="mt-5 flex items-end justify-between"><div><div className="text-5xl font-black text-slate-950">{capacity.percent}%</div><div className="text-sm font-bold text-slate-500">{capacity.text}</div></div><div className="text-right text-sm text-slate-500 font-bold">ประมาณ {(capacity.estimatedBytes/1024/1024).toFixed(2)} MB / {limitMb} MB</div></div><div className="mt-4 h-5 rounded-full bg-slate-100 overflow-hidden"><div className={`h-full rounded-full ${barColor}`} style={{ width: `${Math.min(capacity.percent, 100)}%` }}></div></div></section><section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{issues.map(item => <button key={item.title} onClick={() => onNavigate(item.action)} className="text-left rounded-[1.6rem] bg-white border border-slate-200 soft-shadow p-5 hover:-translate-y-0.5 transition"><div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl mb-4"><i className={item.icon}></i></div><p className="font-black text-slate-950">{item.title}</p><p className="text-4xl font-black text-blue-600 mt-2">{item.value}</p><p className="text-xs text-slate-500 font-bold mt-2">กดเพื่อไปจัดการ</p></button>)}</section></div>;
+      return <div className="space-y-5 council-audit-page"><section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7"><p className="text-xs font-extrabold tracking-[0.22em] text-blue-200 uppercase mb-2">System Health Check</p><h3 className="text-3xl md:text-4xl font-black">ตรวจสุขภาพระบบ</h3><p className="text-blue-100 mt-2">กดหน้านี้เพื่อดูทันทีว่าข้อมูลพร้อมใช้แค่ไหน ฐานข้อมูลใกล้เต็มไหม และมีอะไรต้องแก้ก่อนเปิดเทอม/ปิดปี</p></section><section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4"><div><h3 className="text-xl font-black text-slate-950">หลอดสถานะฐานข้อมูล</h3><p className="text-sm text-slate-500">ประมาณการจากข้อมูลที่เว็บอ่านได้ทั้งหมด</p></div><label className="block"><span className="text-xs font-extrabold text-slate-500">เพดานเตือน MB</span><input type="number" value={limitMb} onChange={e => { const v=Math.max(10, Number(e.target.value)||900); setLimitMb(v); localStorage.setItem('mdec_db_usage_limit_mb', String(v)); }} className="block mt-1 px-4 py-3 rounded-2xl bg-white border border-slate-200 font-bold text-slate-900"/></label></div><div className="mt-5 flex items-end justify-between"><div><div className="text-5xl font-black text-slate-950">{capacity.percent}%</div><div className="text-sm font-bold text-slate-500">{capacity.text}</div></div><div className="text-right text-sm text-slate-500 font-bold">ประมาณ {(capacity.estimatedBytes/1024/1024).toFixed(2)} MB / {limitMb} MB</div></div><div className="mt-4 h-5 rounded-full bg-slate-100 overflow-hidden"><div className={`h-full rounded-full ${barColor}`} style={{ width: `${Math.min(capacity.percent, 100)}%` }}></div></div></section><section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{issues.map(item => <button key={item.title} onClick={() => onNavigate(item.action)} className="text-left rounded-[1.6rem] bg-white border border-slate-200 soft-shadow p-5 hover:-translate-y-0.5 transition"><div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl mb-4"><i className={item.icon}></i></div><p className="font-black text-slate-950">{item.title}</p><p className="text-4xl font-black text-blue-600 mt-2">{item.value}</p><p className="text-xs text-slate-500 font-bold mt-2">กดเพื่อไปจัดการ</p></button>)}</section></div>;
     }
 
 
@@ -4272,7 +4438,7 @@
         ['score','คะแนนรับผิดชอบ','ri-medal-fill'],
         ['standby','ทีมสำรอง','ri-team-fill'],
         ['timeline','Timeline รายคน','ri-route-fill'],
-        ['monthly','เด็กเด่นรายเดือน','ri-trophy-fill'],
+        ['monthly','สมาชิกดีเด่นรายเดือน','ri-trophy-fill'],
         ['wizard','ปิดปีการศึกษา','ri-checkbox-multiple-fill']
       ];
 
@@ -4281,7 +4447,7 @@
           <section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7 overflow-hidden relative">
             <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-blue-500/20 blur-3xl"></div>
             <div className="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
-              <div><p className="text-xs uppercase tracking-[0.22em] text-blue-200 font-extrabold mb-2">Smart Club Tools</p><h3 className="text-3xl md:text-4xl font-black">เครื่องมือช่วยจัดการของชมรม</h3><p className="text-blue-100 mt-2">รวมจัดเวรอัตโนมัติ ข้อความ LINE คะแนนความรับผิดชอบ ทีมสำรอง เด็กเด่น และขั้นตอนปิดปี</p></div>
+              <div><p className="text-xs uppercase tracking-[0.22em] text-blue-200 font-extrabold mb-2">Smart Club Tools</p><h3 className="text-3xl md:text-4xl font-black">เครื่องมือช่วยจัดการของชมรม</h3><p className="text-blue-100 mt-2">รวมจัดเวรอัตโนมัติ ข้อความ LINE คะแนนความรับผิดชอบ ทีมสำรอง สมาชิกดีเด่น และขั้นตอนปิดปี</p></div>
               <div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">ปีการศึกษา</p><select value={year} onChange={e => setYear(e.target.value)} className="mt-1 bg-transparent text-white text-2xl font-black outline-none">{yearOptions.map(y => <option key={y} value={y}>ปี {y}</option>)}</select></div>
             </div>
           </section>
@@ -4353,7 +4519,7 @@
 
           {tab === 'monthly' && (
             <section className="smart-panel p-5 md:p-6">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"><h3 className="text-2xl font-black text-slate-950"><i className="ri-trophy-fill text-blue-600 mr-2"></i>เด็กเด่นประจำเดือน</h3><select value={month} onChange={e => setMonth(e.target.value)} className="px-4 py-3 rounded-2xl bg-white border border-slate-200 font-bold">{Array.from({length:12}).map((_,i) => <option key={i} value={String(i+1).padStart(2,'0')}>เดือน {i+1}</option>)}</select></div>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"><h3 className="text-2xl font-black text-slate-950"><i className="ri-trophy-fill text-blue-600 mr-2"></i>สมาชิกดีเด่นประจำเดือน</h3><select value={month} onChange={e => setMonth(e.target.value)} className="px-4 py-3 rounded-2xl bg-white border border-slate-200 font-bold">{Array.from({length:12}).map((_,i) => <option key={i} value={String(i+1).padStart(2,'0')}>เดือน {i+1}</option>)}</select></div>
               <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">{monthlyRows.map((row,idx) => <div key={row.student.id} className="student-rank-card p-4"><div className="text-sm text-blue-600 font-black">อันดับ {idx+1}</div><div className="text-xl font-black text-slate-950">{studentDutyName(row.student)}</div><div className="text-sm text-slate-500">มีส่วนร่วม {row.monthlyCount} รายการ • คะแนนเดือน {row.monthlyScore}</div></div>)}</div>
               {!monthlyRows.length && <div className="student-rank-card p-8 text-center text-slate-500 font-bold">เดือนนี้ยังไม่มีข้อมูลกิจกรรม/เวร/ผลงาน</div>}
             </section>
@@ -4363,7 +4529,7 @@
             <section className="smart-panel p-5 md:p-6">
               <h3 className="text-2xl font-black text-slate-950 mb-4"><i className="ri-checkbox-multiple-fill text-blue-600 mr-2"></i>ปิดปีการศึกษาแบบ Wizard</h3>
               <div className="grid lg:grid-cols-2 gap-4">
-                {[['checked','1. ตรวจข้อมูลค้าง','ตรวจสมาชิกไม่มีรูป ข้อมูลไม่ครบ กิจกรรมยังไม่ปิดสถานะ'],['backup','2. สำรองข้อมูล','ดาวน์โหลดไฟล์สำรองของปีนี้'],['report','3. สรุปรายงานประจำปี','ใช้ข้อมูลสรุปประจำปีและเด็กเด่น'],['confirm','4. ยืนยันก่อนล้างข้อมูล','ยืนยันว่าเก็บไฟล์สำรองแล้วก่อนจัดการปีใหม่']].map(([key,title,desc]) => <button key={key} onClick={() => setWizard(prev => ({ ...prev, [key]: !prev[key] }))} className={`wizard-step text-left ${wizard[key] ? 'done' : ''}`}><div className="font-black text-slate-950">{wizard[key] ? '✅ ' : ''}{title}</div><div className="text-sm text-slate-500">{desc}</div></button>)}
+                {[['checked','1. ตรวจข้อมูลค้าง','ตรวจสมาชิกไม่มีรูป ข้อมูลไม่ครบ กิจกรรมยังไม่ปิดสถานะ'],['backup','2. สำรองข้อมูล','ดาวน์โหลดไฟล์สำรองของปีนี้'],['report','3. สรุปรายงานประจำปี','ใช้ข้อมูลสรุปประจำปีและสมาชิกดีเด่น'],['confirm','4. ยืนยันก่อนล้างข้อมูล','ยืนยันว่าเก็บไฟล์สำรองแล้วก่อนจัดการปีใหม่']].map(([key,title,desc]) => <button key={key} onClick={() => setWizard(prev => ({ ...prev, [key]: !prev[key] }))} className={`wizard-step text-left ${wizard[key] ? 'done' : ''}`}><div className="font-black text-slate-950">{wizard[key] ? '✅ ' : ''}{title}</div><div className="text-sm text-slate-500">{desc}</div></button>)}
               </div>
               <div className="mt-5 flex flex-wrap gap-3">
                 <button onClick={() => downloadFile(`MDEC_Backup_${year}_${todayFileDate()}.json`, backupPayload(), 'application/json;charset=utf-8')} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-extrabold"><i className="ri-download-cloud-2-fill mr-1"></i>ดาวน์โหลด Backup ปีนี้</button>
@@ -6729,7 +6895,7 @@
         ['กิจกรรมชมรม', 'บันทึกกิจกรรม เช็คการเข้าร่วม และเก็บลิงก์อัลบั้ม/ภาพปก'],
         ['ผลงานสมาชิก', 'เก็บผลงานภาพถ่าย วิดีโอ หรือสื่อที่นักศึกษาช่วยงาน'],
         ['เลือกตั้ง / สภาชมรม', 'บันทึกตำแหน่งสภา ผู้สมัคร คะแนน และโชว์บอร์ดสภา'],
-        ['ตรวจตรวจสุขภาพระบบ', 'ดูข้อมูลไม่ครบ ตารางเวร กิจกรรมค้าง และฐานข้อมูลใกล้เต็ม'],
+        ['ตรวจสุขภาพระบบ', 'ดูข้อมูลไม่ครบ ตารางเวร กิจกรรมค้าง และฐานข้อมูลใกล้เต็ม'],
         ['จัดการปี / Backup', 'ก่อนล้างข้อมูลต้องสำรองไฟล์และยืนยันว่าเก็บไฟล์ไว้แล้ว']
       ];
       return (
