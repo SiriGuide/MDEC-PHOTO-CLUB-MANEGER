@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v70 Stable Release 1.0</title>
+  <title>MDEC Photo Club Center v70.1 WebP Upload Fix</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -2612,10 +2612,18 @@
       return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     }
 
+    function isSupportedImageFile(file) {
+      if (!file) return false;
+      const type = String(file.type || '').toLowerCase();
+      const name = String(file.name || '').toLowerCase();
+      const extOk = /\.(jpg|jpeg|png|webp|gif|bmp)$/i.test(name);
+      return type.startsWith('image/') || extOk;
+    }
+
     function optimizeImageFile(file) {
       return new Promise((resolve, reject) => {
-        if (!file || !String(file.type || '').startsWith('image/')) {
-          reject(new Error('กรุณาเลือกไฟล์รูปภาพเท่านั้น'));
+        if (!isSupportedImageFile(file)) {
+          reject(new Error('กรุณาเลือกไฟล์รูปภาพเท่านั้น รองรับ JPG, PNG, WEBP, GIF และ BMP'));
           return;
         }
 
@@ -2655,7 +2663,7 @@
               }
             });
           };
-          img.onerror = () => reject(new Error('อ่านรูปภาพไม่สำเร็จ ลองเลือกไฟล์รูปอื่น'));
+          img.onerror = () => reject(new Error('อ่านรูปภาพไม่สำเร็จ ถ้าเป็นไฟล์ .webp จากบางแอป ลองบันทึกใหม่เป็น JPG/PNG หรือเลือกไฟล์ WEBP จากเครื่องอีกครั้ง'));
           img.src = reader.result;
         };
         reader.onerror = () => reject(new Error('อ่านไฟล์ไม่สำเร็จ'));
@@ -3504,7 +3512,7 @@
 
       const handleCoverUpload = (file) => {
         if (!file) return;
-        if (!file.type.startsWith('image/')) return alert('กรุณาเลือกไฟล์รูปภาพ');
+        if (!isSupportedImageFile(file)) return alert('กรุณาเลือกไฟล์รูปภาพ รองรับ JPG, PNG, WEBP, GIF และ BMP');
         const reader = new FileReader();
         reader.onload = () => updateForm('cover', reader.result);
         reader.readAsDataURL(file);
@@ -3606,7 +3614,7 @@
               <Select label="สถานะ" value={form.status} onChange={v => updateForm('status', v)} options={activityStatuses} />
               <Input label="สถานที่" value={form.location} onChange={v => updateForm('location', v)} className="md:col-span-2" placeholder="เช่น Arena 1 / ห้องประชุมสุพรรณิการ์" />
               <Input label="ลิงก์อัลบั้ม / Google Photos" value={form.albumUrl} onChange={v => updateForm('albumUrl', v)} className="md:col-span-2" placeholder="วางลิงก์อัลบั้ม หรือเอกสารที่เกี่ยวข้อง" />
-              <label className="block md:col-span-2"><span className="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wide">ภาพปกกิจกรรม</span><input type="file" accept="image/*" onChange={e => handleCoverUpload(e.target.files?.[0])} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900" /></label>
+              <label className="block md:col-span-2"><span className="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wide">ภาพปกกิจกรรม</span><input type="file" accept="image/*,.jpg,.jpeg,.png,.webp,.gif,.bmp" onChange={e => handleCoverUpload(e.target.files?.[0])} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900" /></label>
               <TextArea label="รายละเอียดกิจกรรม" value={form.description} onChange={v => updateForm('description', v)} className="md:col-span-2" />
               <TextArea label="หมายเหตุเจ้าหน้าที่" value={form.note} onChange={v => updateForm('note', v)} className="md:col-span-2" />
             </div>
@@ -3721,7 +3729,7 @@
       const updateForm = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
       const handleCoverUpload = (file) => {
         if (!file) return;
-        if (!file.type.startsWith('image/')) return alert('กรุณาเลือกไฟล์รูปภาพ');
+        if (!isSupportedImageFile(file)) return alert('กรุณาเลือกไฟล์รูปภาพ รองรับ JPG, PNG, WEBP, GIF และ BMP');
         const reader = new FileReader(); reader.onload = () => updateForm('cover', reader.result); reader.readAsDataURL(file);
       };
       const resetForm = () => { setForm({ ...emptyForm(), academicYear: year }); setEditingId(null); };
@@ -3747,7 +3755,7 @@
       return (
         <div className="space-y-5 council-audit-page">
           <section className="rounded-[2rem] bg-slate-950 text-white soft-shadow p-6 md:p-7 overflow-hidden relative"><div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-blue-500/20 blur-3xl"></div><div className="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5"><div><p className="text-xs font-extrabold tracking-[0.22em] text-blue-200 uppercase mb-2">Member Portfolio</p><h3 className="text-3xl md:text-4xl font-black">ผลงานสมาชิก</h3><p className="text-blue-100 mt-2 max-w-3xl">เก็บผลงานภาพถ่าย วิดีโอ โปสเตอร์ หรืองานสื่อที่นักศึกษามีส่วนร่วม เพื่อทำพอร์ตชมรมและสรุปประจำปี</p></div><div className="grid sm:grid-cols-4 gap-3"><div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">ผลงานทั้งหมด</p><p className="text-3xl font-black">{stats.total}</p></div><div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">เผยแพร่/เข้าพอร์ต</p><p className="text-3xl font-black">{stats.published}</p></div><div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">สมาชิกมีผลงาน</p><p className="text-3xl font-black">{stats.members}</p></div><div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4"><p className="text-xs text-blue-100 font-bold">ภาพถ่าย</p><p className="text-3xl font-black">{stats.photos}</p></div></div></div></section>
-          <section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="flex justify-between gap-3 mb-5"><div><h3 className="text-xl font-black text-slate-950"><i className="ri-gallery-fill text-blue-600 mr-2"></i>{editingId ? 'แก้ไขผลงาน' : 'เพิ่มผลงาน'}</h3><p className="text-sm text-slate-500">บันทึกผลงานพร้อมเจ้าของผลงานและลิงก์ที่เกี่ยวข้อง</p></div><button type="button" onClick={resetForm} className="px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ล้างฟอร์ม</button></div><div className="grid md:grid-cols-4 gap-4"><Input label="ชื่อผลงาน" value={form.title} onChange={v => updateForm('title', v)} className="md:col-span-2" placeholder="เช่น ภาพถ่ายกิจกรรมปฐมนิเทศ" /><Input label="วันที่" type="date" value={form.date} onChange={v => updateForm('date', v)} /><Select label="ปีการศึกษา" value={form.academicYear} onChange={v => { updateForm('academicYear', v); setYear(v); }} options={yearOptions.length ? yearOptions : [currentAcademicYear]} /><Select label="ประเภท" value={form.type} onChange={v => updateForm('type', v)} options={workTypes} /><Select label="สถานะ" value={form.status} onChange={v => updateForm('status', v)} options={workStatuses} /><label className="block md:col-span-2"><span className="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wide">เจ้าของผลงาน</span><select value={form.studentId || ''} onChange={e => updateForm('studentId', e.target.value)} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900"><option value="">เลือกสมาชิก</option>{activeStudents.map(s => <option key={s.id} value={s.id}>{s.studentId || '-'} · {studentDutyName(s)} · {s.level || '-'}/{s.group || '-'}</option>)}</select></label><Input label="ลิงก์ผลงาน / อัลบั้ม" value={form.url} onChange={v => updateForm('url', v)} className="md:col-span-2" placeholder="วางลิงก์ Google Photos, Drive, YouTube ฯลฯ" /><label className="block md:col-span-2"><span className="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wide">ภาพปกผลงาน</span><input type="file" accept="image/*" onChange={e => handleCoverUpload(e.target.files?.[0])} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900" /></label><TextArea label="รายละเอียดผลงาน" value={form.description} onChange={v => updateForm('description', v)} className="md:col-span-2" /><TextArea label="หมายเหตุ" value={form.note} onChange={v => updateForm('note', v)} className="md:col-span-2" /></div><div className="mt-5 flex gap-3"><button type="button" onClick={saveWork} disabled={saving} className="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold disabled:opacity-60"><i className="ri-save-3-fill mr-1"></i>{saving ? 'กำลังบันทึก...' : editingId ? 'อัปเดตผลงาน' : 'บันทึกผลงาน'}</button><button type="button" onClick={exportCSV} className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold"><i className="ri-file-excel-2-fill mr-1"></i>โหลด CSV</button></div></section>
+          <section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="flex justify-between gap-3 mb-5"><div><h3 className="text-xl font-black text-slate-950"><i className="ri-gallery-fill text-blue-600 mr-2"></i>{editingId ? 'แก้ไขผลงาน' : 'เพิ่มผลงาน'}</h3><p className="text-sm text-slate-500">บันทึกผลงานพร้อมเจ้าของผลงานและลิงก์ที่เกี่ยวข้อง</p></div><button type="button" onClick={resetForm} className="px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ล้างฟอร์ม</button></div><div className="grid md:grid-cols-4 gap-4"><Input label="ชื่อผลงาน" value={form.title} onChange={v => updateForm('title', v)} className="md:col-span-2" placeholder="เช่น ภาพถ่ายกิจกรรมปฐมนิเทศ" /><Input label="วันที่" type="date" value={form.date} onChange={v => updateForm('date', v)} /><Select label="ปีการศึกษา" value={form.academicYear} onChange={v => { updateForm('academicYear', v); setYear(v); }} options={yearOptions.length ? yearOptions : [currentAcademicYear]} /><Select label="ประเภท" value={form.type} onChange={v => updateForm('type', v)} options={workTypes} /><Select label="สถานะ" value={form.status} onChange={v => updateForm('status', v)} options={workStatuses} /><label className="block md:col-span-2"><span className="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wide">เจ้าของผลงาน</span><select value={form.studentId || ''} onChange={e => updateForm('studentId', e.target.value)} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900"><option value="">เลือกสมาชิก</option>{activeStudents.map(s => <option key={s.id} value={s.id}>{s.studentId || '-'} · {studentDutyName(s)} · {s.level || '-'}/{s.group || '-'}</option>)}</select></label><Input label="ลิงก์ผลงาน / อัลบั้ม" value={form.url} onChange={v => updateForm('url', v)} className="md:col-span-2" placeholder="วางลิงก์ Google Photos, Drive, YouTube ฯลฯ" /><label className="block md:col-span-2"><span className="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wide">ภาพปกผลงาน</span><input type="file" accept="image/*,.jpg,.jpeg,.png,.webp,.gif,.bmp" onChange={e => handleCoverUpload(e.target.files?.[0])} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900" /></label><TextArea label="รายละเอียดผลงาน" value={form.description} onChange={v => updateForm('description', v)} className="md:col-span-2" /><TextArea label="หมายเหตุ" value={form.note} onChange={v => updateForm('note', v)} className="md:col-span-2" /></div><div className="mt-5 flex gap-3"><button type="button" onClick={saveWork} disabled={saving} className="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold disabled:opacity-60"><i className="ri-save-3-fill mr-1"></i>{saving ? 'กำลังบันทึก...' : editingId ? 'อัปเดตผลงาน' : 'บันทึกผลงาน'}</button><button type="button" onClick={exportCSV} className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold"><i className="ri-file-excel-2-fill mr-1"></i>โหลด CSV</button></div></section>
           <section className="rounded-[2rem] bg-white border border-slate-200 soft-shadow p-5 md:p-6"><div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4 mb-5"><div><h3 className="text-xl font-black text-slate-950"><i className="ri-image-2-fill text-blue-600 mr-2"></i>รายการผลงาน</h3><p className="text-sm text-slate-500">ค้นหาและจัดการผลงานย้อนหลัง</p></div><div className="grid sm:grid-cols-[190px_minmax(260px,1fr)] gap-3 w-full xl:w-auto"><select value={year} onChange={e => setYear(e.target.value)} className="px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900">{yearOptions.map(y => <option key={y} value={y}>ปีการศึกษา {y}</option>)}</select><input value={query} onChange={e => setQuery(e.target.value)} placeholder="ค้นหาผลงาน เจ้าของ ประเภท หรือสถานะ" className="px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-900" /></div></div>{filtered.length ? <div className="grid xl:grid-cols-3 md:grid-cols-2 gap-4">{filtered.map(w => { const s = studentMap.get(w.studentId); return <div key={w.id} className="rounded-[1.8rem] bg-slate-50 border border-slate-200 overflow-hidden"><div className="h-44 bg-slate-900 text-white flex items-center justify-center text-4xl">{w.cover ? <img src={w.cover} className="w-full h-full object-cover" /> : <i className="ri-gallery-fill"></i>}</div><div className="p-5"><div className="text-xs font-extrabold text-blue-600 uppercase tracking-wide">{w.type} • {formatThaiDate(w.date)}</div><h4 className="text-xl font-black text-slate-950 truncate">{w.title}</h4><p className="text-sm text-slate-500 mt-1"><i className="ri-user-fill mr-1"></i>{s ? studentDutyName(s) : 'ไม่ระบุเจ้าของผลงาน'}</p><p className="text-sm text-slate-600 mt-3 line-clamp-2">{w.description || 'ยังไม่มีรายละเอียด'}</p><div className="mt-4 flex flex-wrap gap-2">{w.url && <a href={w.url} target="_blank" rel="noreferrer" className="px-4 py-2 rounded-2xl bg-blue-600 text-white font-extrabold text-sm"><i className="ri-external-link-line mr-1"></i>เปิดลิงก์</a>}<button onClick={() => editWork(w)} className="px-4 py-2 rounded-2xl bg-white text-blue-700 border border-blue-100 font-extrabold text-sm">แก้ไข</button><button onClick={() => deleteWork(w)} className="px-4 py-2 rounded-2xl bg-rose-50 text-rose-700 border border-rose-100 font-extrabold text-sm">ลบ</button></div></div></div>; })}</div> : <div className="rounded-3xl bg-slate-50 border border-dashed border-slate-300 p-12 text-center"><div className="text-xl font-black text-slate-950">ยังไม่มีผลงานในปีนี้</div><p className="text-slate-500 mt-2">เริ่มจากการเพิ่มผลงานแรกด้านบนได้เลย</p></div>}</section>
         </div>
       );
@@ -6229,12 +6237,12 @@
               {!cameraOn ? <button type="button" onClick={startCamera} className="py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 font-bold"><i className="ri-vidicon-fill mr-2"></i>เปิดกล้อง</button> : <button type="button" onClick={capturePhoto} className="py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 font-bold"><i className="ri-camera-fill mr-2"></i>กดถ่ายภาพ</button>}
               <label className="py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-700 font-bold text-center cursor-pointer transition">
                 <i className="ri-upload-cloud-2-fill mr-2"></i>เลือกรูป
-                <input type="file" accept="image/*" onChange={handleUploadPhoto} className="hidden" />
+                <input type="file" accept="image/*,.jpg,.jpeg,.png,.webp,.gif,.bmp" onChange={handleUploadPhoto} className="hidden" />
               </label>
               <button type="button" onClick={() => setFormData(prev => ({ ...prev, photo: null, photoMeta: null }))} className="py-3 rounded-2xl bg-white/10 hover:bg-white/15 font-bold">ลบรูป</button>
               <button type="button" onClick={stopCamera} className="py-3 rounded-2xl bg-white/10 hover:bg-white/15 font-bold">ปิดกล้อง</button>
             </div>
-            <p className="text-xs text-slate-500 text-center mb-5">รองรับรูปจากคอม มือถือ หรือกล้องถ่ายรูป ระบบจะครอปเป็นสี่เหลี่ยมจัตุรัสให้อัตโนมัติ</p>
+            <p className="text-xs text-slate-500 text-center mb-5">รองรับ JPG, PNG, WEBP, GIF, BMP จากคอม มือถือ หรือกล้องถ่ายรูป ระบบจะแปลงและครอปเป็น JPEG อัตโนมัติ</p>
 
             <button type="submit" disabled={saving} className="w-full py-4 rounded-2xl bg-white text-slate-950 font-extrabold text-lg hover:bg-blue-50 transition disabled:opacity-50 active:scale-[.98]">
               {saving ? 'กำลังบันทึก...' : mode === 'edit' ? 'บันทึกการแก้ไข' : 'บันทึกสมาชิกใหม่'}
