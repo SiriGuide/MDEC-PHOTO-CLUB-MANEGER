@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v71 Real WebP Upload Stable Fix</title>
+  <title>MDEC Photo Club Center v71.6 Group Filter Search</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -3493,9 +3493,11 @@
 
       const yearOptions = useMemo(() => [...new Set([currentAcademicYear, ...(yearsList || []), ...activities.map(a => a.academicYear)].filter(Boolean))], [currentAcademicYear, yearsList, activities]);
       const activeStudents = useMemo(() => students
-        .filter(s => String(s.academicYear || currentAcademicYear) === String(year || currentAcademicYear) && !['dismissed','graduated'].includes(s.status || 'active'))
+        // v71.1: ปีในข้อมูลสมาชิกคือปีที่เข้าชมรม ไม่ใช่ปีที่ใช้ตัดสิทธิ์การเลือกชื่อ
+        // จึงแสดงสมาชิกที่ยังใช้งานอยู่ทุกปี และใช้ปีของหน้านี้เป็นปีของกิจกรรม/เอกสารเท่านั้น
+        .filter(s => !['dismissed','graduated'].includes(s.status || 'active'))
         .sort((a,b) => String(a.level || '').localeCompare(String(b.level || ''), 'th') || String(a.group || '').localeCompare(String(b.group || ''), 'th') || String(a.fullName || '').localeCompare(String(b.fullName || ''), 'th'))
-      , [students, year, currentAcademicYear]);
+      , [students]);
       const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
       const filteredActivities = useMemo(() => {
         const q = String(query || '').trim().toLowerCase();
@@ -3732,7 +3734,11 @@
       const [saving, setSaving] = useState(false);
       const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
       const yearOptions = useMemo(() => [...new Set([currentAcademicYear, ...(yearsList || []), ...works.map(w => w.academicYear)].filter(Boolean))], [currentAcademicYear, yearsList, works]);
-      const activeStudents = useMemo(() => students.filter(s => String(s.academicYear || currentAcademicYear) === String(year)).sort((a,b) => String(a.fullName || '').localeCompare(String(b.fullName || ''), 'th')), [students, year, currentAcademicYear]);
+      const activeStudents = useMemo(() => students
+        // v71.1: ผลงาน/พอร์ตเลือกสมาชิก active ได้ทุกปี รุ่นปีเข้าชมรมใช้เพื่ออ้างอิงเท่านั้น
+        .filter(s => !['dismissed','graduated'].includes(s.status || 'active'))
+        .sort((a,b) => String(a.fullName || '').localeCompare(String(b.fullName || ''), 'th'))
+      , [students]);
       useEffect(() => {
         const unsub = getWorksRef().onSnapshot(snapshot => {
           const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -3912,9 +3918,10 @@
       }, [year]);
 
       const activeStudents = useMemo(() => students
-        .filter(s => (s.academicYear || currentAcademicYear) === year && (s.status || 'active') !== 'dismissed' && (s.status || 'active') !== 'graduated')
+        // v71.1: หน้าเลือกตั้ง/สภาเลือกสมาชิก active ได้ทุกปี รุ่นปีเข้าชมรมใช้เพื่ออ้างอิงเท่านั้น
+        .filter(s => !['dismissed','graduated'].includes(s.status || 'active'))
         .sort((a,b) => String(a.level || '').localeCompare(String(b.level || ''), 'th') || String(a.group || '').localeCompare(String(b.group || ''), 'th') || String(a.fullName || '').localeCompare(String(b.fullName || ''), 'th'))
-      , [students, year, currentAcademicYear]);
+      , [students]);
 
       const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
       const selectedCount = roles.filter(r => r.studentId).length;
@@ -4044,7 +4051,7 @@
               {s ? (
                 <div className="flex items-center gap-4 rounded-[1.5rem] bg-slate-50 border border-slate-200 p-4">
                   {s.photo ? <img src={s.photo} className="w-20 h-20 rounded-2xl object-cover border border-slate-200 shrink-0" /> : <div className="w-20 h-20 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-3xl font-black shrink-0">{String(s.nickname || s.fullName || '?').trim().charAt(0) || '?'}</div>}
-                  <div className="min-w-0 flex-1"><div className="text-2xl font-black text-slate-950 truncate">{s.nickname || s.fullName || '-'}</div><div className="text-sm font-bold text-slate-600 truncate">{s.fullName || '-'}</div><div className="text-xs text-slate-500 mt-1 truncate">{s.studentId || '-'} • {s.level || '-'} / {s.group || '-'} • {s.major || '-'}</div></div>
+                  <div className="min-w-0 flex-1"><div className="text-2xl font-black text-slate-950 truncate">{s.nickname || s.fullName || '-'}</div><div className="text-sm font-bold text-slate-600 truncate leading-tight">{s.fullName || '-'}</div><div className="text-xs text-slate-500 mt-1 truncate">{s.studentId || '-'} • {s.level || '-'} / {s.group || '-'} • {s.major || '-'}</div></div>
                 </div>
               ) : <div className="rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-slate-500 font-bold">ยังไม่ได้เลือกนักศึกษาสำหรับตำแหน่งนี้</div>}
               <div className="grid grid-cols-2 gap-3">
@@ -4122,10 +4129,10 @@
 
           {picker.open && (
             <div className="fixed inset-0 z-[90] bg-slate-950/70 backdrop-blur-sm p-4 flex items-center justify-center">
-              <div className="w-full max-w-4xl max-h-[88vh] bg-white rounded-[2rem] overflow-hidden soft-shadow border border-slate-200">
+              <div className="w-full max-w-5xl max-h-[90vh] bg-white rounded-[2rem] overflow-hidden soft-shadow border border-slate-200">
                 <div className="p-5 border-b border-slate-200 flex items-start justify-between gap-4"><div><h3 className="text-2xl font-black text-slate-950"><i className="ri-user-search-fill text-blue-600 mr-2"></i>เลือกนักศึกษา</h3><p className="text-slate-500 text-sm">{picker.type === 'candidate' ? `ผู้สมัคร: ${currentPickerPosition?.title || '-'}` : `ตำแหน่ง: ${currentPickerRole?.title || '-'}`}</p></div><button onClick={() => setPicker({ open:false, type:'role', roleKey:'', positionKey:'', candidateKey:'', query:'' })} className="px-4 py-2 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button></div>
-                <div className="p-5 bg-slate-50 border-b border-slate-200"><input autoFocus value={picker.query} onChange={e => setPicker(prev => ({ ...prev, query:e.target.value }))} placeholder="ค้นหาจากรหัส ชื่อ ชื่อเล่น ระดับ กลุ่ม หรือสาขา" className="w-full px-5 py-4 rounded-2xl bg-white border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900" /><p className="text-xs text-slate-500 font-bold mt-2">พบ {pickerResults.length} คน จากสมาชิกปีการศึกษา {year}</p></div>
-                <div className="p-5 max-h-[56vh] overflow-y-auto bg-slate-50"><div className="grid md:grid-cols-2 gap-3">{pickerResults.map(s => <button key={s.id} type="button" onClick={() => picker.type === 'candidate' ? chooseCandidateStudent(picker.positionKey, picker.candidateKey, s.id) : setRoleStudent(picker.roleKey, s.id)} className="text-left rounded-2xl bg-white border border-slate-200 hover:border-blue-400 hover:shadow-md p-4 transition"><div className="flex items-center gap-3">{s.photo ? <img src={s.photo} className="w-14 h-14 rounded-2xl object-cover border border-slate-200 shrink-0" /> : <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl font-black shrink-0">{String(s.nickname || s.fullName || '?').trim().charAt(0) || '?'}</div>}<div className="min-w-0"><div className="font-black text-slate-950 truncate">{studentDutyName(s)}</div><div className="text-sm text-slate-500 truncate">{s.studentId || '-'} • {s.level || '-'} / {s.group || '-'}</div><div className="text-xs text-slate-400 truncate">{s.major || '-'}{s.actualInterest ? ` • ${s.actualInterest}` : ''}</div></div></div></button>)}</div>{!pickerResults.length && <div className="rounded-3xl bg-white p-10 text-center text-slate-500 font-bold border border-dashed border-slate-300">ไม่พบรายชื่อนักศึกษาที่ค้นหา</div>}</div>
+                <div className="p-5 bg-slate-50 border-b border-slate-200"><input autoFocus value={picker.query} onChange={e => setPicker(prev => ({ ...prev, query:e.target.value }))} placeholder="ค้นหาจากชื่อเล่น ชื่อจริง รหัส ระดับ กลุ่ม หรือสาขา" className="w-full px-5 py-4 rounded-2xl bg-white border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900" /><p className="text-xs text-slate-500 font-bold mt-2">พบ {pickerResults.length} คน จากสมาชิกที่ยังใช้งานอยู่ทุกปี • แสดงชื่อเล่นเด่นขึ้น และปี {year} ใช้เป็นปีของเอกสาร/กิจกรรม</p></div>
+                <div className="p-5 max-h-[56vh] overflow-y-auto bg-slate-50"><div className="grid md:grid-cols-2 gap-3">{pickerResults.map(s => <button key={s.id} type="button" onClick={() => picker.type === 'candidate' ? chooseCandidateStudent(picker.positionKey, picker.candidateKey, s.id) : setRoleStudent(picker.roleKey, s.id)} className="text-left rounded-[1.6rem] bg-white border border-slate-200 hover:border-blue-400 hover:shadow-md p-4 transition"><div className="flex items-start gap-3.5">{s.photo ? <img src={s.photo} className="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0" /> : <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl font-black shrink-0">{String(s.nickname || s.fullName || '?').trim().charAt(0) || '?'}</div>}<div className="min-w-0 flex-1 pt-0.5"><div className="text-base md:text-lg font-black text-slate-950 truncate">{s.nickname || s.fullName || '-'}</div><div className="text-sm font-bold text-slate-600 truncate">{s.fullName || '-'}</div><div className="text-xs text-slate-500 mt-2 truncate">รหัส {s.studentId || '-'} • {s.level || '-'} / {s.group || '-'}</div><div className="text-xs font-semibold text-blue-600 mt-1 truncate">{s.major || '-'}{s.actualInterest ? ` • ${s.actualInterest}` : ''}</div></div></div></button>)}</div>{!pickerResults.length && <div className="rounded-3xl bg-white p-10 text-center text-slate-500 font-bold border border-dashed border-slate-300">ไม่พบรายชื่อนักศึกษาที่ค้นหา</div>}</div>
               </div>
             </div>
           )}
@@ -4364,7 +4371,10 @@
         return () => { unsubDuty(); unsubAct(); unsubWork(); };
       }, []);
 
-      const activeStudents = useMemo(() => students.filter(s => String(s.academicYear || '') === String(year) && !['dismissed','graduated'].includes(s.status || 'active')), [students, year]);
+      const activeStudents = useMemo(() => students
+        // v71.1: สร้างตารางเวรจากสมาชิกที่ยัง active ทุกปี ไม่ผูกกับปีที่เข้าชมรม
+        .filter(s => !['dismissed','graduated'].includes(s.status || 'active'))
+      , [students]);
       const responsibility = useMemo(() => buildDutyResponsibilityStats(students, duties, activities, works, year), [students, duties, activities, works, year]);
       const responsibilityMap = useMemo(() => new Map(responsibility.map(r => [r.student.id, r])), [responsibility]);
       const yearOptions = useMemo(() => [...new Set([currentAcademicYear, ...yearsList, ...duties.map(d => d.academicYear)].filter(Boolean))], [currentAcademicYear, yearsList, duties]);
@@ -4385,7 +4395,7 @@
       };
 
       const generateSmartDuty = () => {
-        if (!activeStudents.length) return alert('ยังไม่มีนักศึกษาที่พร้อมใช้งานในปีนี้');
+        if (!activeStudents.length) return alert('ยังไม่มีสมาชิกที่พร้อมใช้งาน กรุณาตรวจสอบสถานะสมาชิกว่าไม่ได้พ้นสภาพหรือจบการศึกษาแล้ว');
         const roles = defaultDutyRoles();
         const roleSlots = defaultDutyRoleSlots(roles);
         const weeklyAssignments = {};
@@ -4585,7 +4595,17 @@
       const [editingId, setEditingId] = useState(null);
       const [saving, setSaving] = useState(false);
       const [isPrinting, setIsPrinting] = useState(false);
-      const [studentPicker, setStudentPicker] = useState({ open:false, dayKey:'', roleKey:'', slot:0, query:'' });
+      const [studentPicker, setStudentPicker] = useState({ open:false, dayKey:'', roleKey:'', slot:0, query:'', levels:[], groups:[], interests:[], groupSearch:'' });
+      const [recentPickerStudentIds, setRecentPickerStudentIds] = useState(() => {
+        try {
+          const raw = localStorage.getItem('mdec_recent_duty_picker_students');
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed.filter(Boolean).slice(0, 8) : [];
+        } catch (error) {
+          return [];
+        }
+      });
+      const [studentPickerFiltersOpen, setStudentPickerFiltersOpen] = useState(false);
       const [attendanceDutyId, setAttendanceDutyId] = useState(null);
       const [attendanceDayKey, setAttendanceDayKey] = useState(dutyDays[0].key);
       const [plannerDayKey, setPlannerDayKey] = useState(dutyDays[0].key);
@@ -4615,9 +4635,10 @@
       }, []);
 
       const activeStudents = useMemo(() => students
-        .filter(s => (s.academicYear || currentAcademicYear) === form.academicYear && (s.status || 'active') !== 'dismissed' && (s.status || 'active') !== 'graduated')
+        // v71.1: ตัวเลือกตารางเวรแสดงสมาชิก active ทุกปี รุ่นปีเข้าชมรมใช้เพื่ออ้างอิงเท่านั้น
+        .filter(s => !['dismissed','graduated'].includes(s.status || 'active'))
         .sort((a,b) => String(a.level || '').localeCompare(String(b.level || ''), 'th') || String(a.group || '').localeCompare(String(b.group || ''), 'th') || String(a.fullName || '').localeCompare(String(b.fullName || ''), 'th'))
-      , [students, form.academicYear, currentAcademicYear]);
+      , [students]);
 
       const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
       const formRoles = useMemo(() => normalizeDutyRoles(form.roleDefs, form.roleSlots), [form.roleDefs, form.roleSlots]);
@@ -4627,11 +4648,54 @@
       const countAssignmentsForDay = (dayKey) => formRoles.reduce((sum, role) => sum + (((form.weeklyAssignments?.[dayKey]?.[role.key] || []).filter(Boolean)).length), 0);
       const pickerSelectedId = studentPicker.open ? ((form.weeklyAssignments?.[studentPicker.dayKey]?.[studentPicker.roleKey] || [])[studentPicker.slot] || '') : '';
       const pickerSelectedStudent = pickerSelectedId ? studentMap.get(pickerSelectedId) : null;
+      const pickerSelectedLevels = Array.isArray(studentPicker.levels) ? studentPicker.levels : [];
+      const pickerSelectedGroups = Array.isArray(studentPicker.groups) ? studentPicker.groups : [];
+      const pickerSelectedInterests = Array.isArray(studentPicker.interests) ? studentPicker.interests : [];
+      const pickerGroupSearch = String(studentPicker.groupSearch || '').trim().toLowerCase();
+      const pickerHasFilters = !!studentPicker.query || pickerSelectedLevels.length || pickerSelectedGroups.length || pickerSelectedInterests.length;
+      const pickerLevelOptions = useMemo(() => Array.from(new Set(activeStudents.map(s => String(s.level || '').trim()).filter(Boolean))), [activeStudents]);
+      const pickerGroupOptions = useMemo(() => {
+        const base = activeStudents.filter(s => !pickerSelectedLevels.length || pickerSelectedLevels.includes(String(s.level || '').trim()));
+        return Array.from(new Set(base.map(s => String(s.group || '').trim()).filter(Boolean)));
+      }, [activeStudents, pickerSelectedLevels.join('|')]);
+      const pickerGroupFilteredOptions = useMemo(() => {
+        if (!pickerGroupSearch) return pickerGroupOptions;
+        return pickerGroupOptions.filter(group => group.toLowerCase().includes(pickerGroupSearch));
+      }, [pickerGroupOptions, pickerGroupSearch]);
+      const pickerInterestOptions = useMemo(() => {
+        const base = activeStudents.filter(s => {
+          const level = String(s.level || '').trim();
+          const group = String(s.group || '').trim();
+          return (!pickerSelectedLevels.length || pickerSelectedLevels.includes(level)) && (!pickerSelectedGroups.length || pickerSelectedGroups.includes(group));
+        });
+        return Array.from(new Set(base.map(s => String(s.actualInterest || s.interest || '').trim()).filter(Boolean)));
+      }, [activeStudents, pickerSelectedLevels.join('|'), pickerSelectedGroups.join('|')]);
+      const togglePickerArrayFilter = (key, value) => {
+        setStudentPicker(prev => {
+          const current = Array.isArray(prev[key]) ? prev[key] : [];
+          const next = current.includes(value) ? current.filter(item => item !== value) : [...current, value];
+          const patch = { [key]: next };
+          if (key === 'levels') {
+            patch.groups = [];
+            patch.groupSearch = '';
+          }
+          return { ...prev, ...patch };
+        });
+      };
       const pickerResults = useMemo(() => {
         const q = String(studentPicker.query || '').trim().toLowerCase();
-        if (!q) return activeStudents;
-        return activeStudents.filter(s => [s.studentId, s.fullName, s.nickname, s.level, s.group, s.major].filter(Boolean).join(' ').toLowerCase().includes(q));
-      }, [activeStudents, studentPicker.query]);
+        return activeStudents.filter(s => {
+          const level = String(s.level || '').trim();
+          const group = String(s.group || '').trim();
+          const interest = String(s.actualInterest || s.interest || '').trim();
+          const matchQuery = !q || [s.studentId, s.fullName, s.nickname, s.level, s.group, s.major, s.actualInterest, s.interest].filter(Boolean).join(' ').toLowerCase().includes(q);
+          const matchLevel = !pickerSelectedLevels.length || pickerSelectedLevels.includes(level);
+          const matchGroup = !pickerSelectedGroups.length || pickerSelectedGroups.includes(group);
+          const matchInterest = !pickerSelectedInterests.length || pickerSelectedInterests.includes(interest);
+          return matchQuery && matchLevel && matchGroup && matchInterest;
+        });
+      }, [activeStudents, studentPicker.query, pickerSelectedLevels.join('|'), pickerSelectedGroups.join('|'), pickerSelectedInterests.join('|')]);
+      const recentPickerStudents = useMemo(() => recentPickerStudentIds.map(id => studentMap.get(id)).filter(s => s && !['dismissed','graduated'].includes(s.status || 'active')).slice(0, 8), [recentPickerStudentIds, studentMap]);
 
       const attendanceDuty = useMemo(() => duties.find(d => d.id === attendanceDutyId) || null, [duties, attendanceDutyId]);
 
@@ -4688,17 +4752,28 @@
       };
 
       const openStudentPicker = (dayKey, roleKey, slot) => {
-        setStudentPicker({ open:true, dayKey, roleKey, slot, query:'' });
+        setStudentPicker({ open:true, dayKey, roleKey, slot, query:'', levels:[], groups:[], interests:[], groupSearch:'' });
+        setStudentPickerFiltersOpen(false);
       };
 
       const closeStudentPicker = () => {
-        setStudentPicker(prev => ({ ...prev, open:false, query:'' }));
+        setStudentPicker(prev => ({ ...prev, open:false, query:'', levels:[], groups:[], interests:[], groupSearch:'' }));
+        setStudentPickerFiltersOpen(false);
       };
 
       const chooseStudentForPicker = (studentId) => {
         if (!studentPicker.open) return;
         setAssignment(studentPicker.dayKey, studentPicker.roleKey, studentPicker.slot, studentId);
+        setRecentPickerStudentIds(prev => {
+          const next = [studentId, ...prev.filter(id => id !== studentId)].slice(0, 8);
+          try { localStorage.setItem('mdec_recent_duty_picker_students', JSON.stringify(next)); } catch (error) {}
+          return next;
+        });
         closeStudentPicker();
+      };
+
+      const resetStudentPickerFilters = () => {
+        setStudentPicker(prev => ({ ...prev, query:'', levels:[], groups:[], interests:[], groupSearch:'' }));
       };
 
       useEffect(() => {
@@ -5000,7 +5075,7 @@
           <section className="bg-white rounded-[2rem] soft-shadow border border-white p-4 md:p-5">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
               <div>
-                <h3 className="text-2xl font-extrabold text-slate-950"><i className="ri-calendar-schedule-fill text-blue-600 mr-2"></i>จัดการตารางเวรตอนเช้า</h3>
+                <h3 className="text-xl md:text-2xl font-extrabold text-slate-950"><i className="ri-calendar-schedule-fill text-blue-600 mr-2"></i>จัดการตารางเวรตอนเช้า</h3>
                 <p className="text-slate-500">แยกงานเป็นขั้นตอน เพื่อให้หน้าไม่รกและใช้งานบนมือถือได้ง่ายขึ้น</p>
               </div>
               <button type="button" onClick={autoFillCurrentDutyForm} className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-700"><i className="ri-magic-fill mr-1"></i>จัดเวรอัตโนมัติ</button>
@@ -5459,48 +5534,124 @@
           {studentPicker.open && (
             <div className="fixed inset-0 z-[95] bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
               <div className="w-full max-w-4xl max-h-[88vh] rounded-[2rem] bg-white border border-slate-200 shadow-2xl overflow-hidden">
-                <div className="px-5 md:px-6 py-5 border-b border-slate-100 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                <div className="px-5 md:px-6 py-4 border-b border-slate-100 flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                   <div>
                     <h3 className="text-2xl font-extrabold text-slate-950"><i className="ri-user-search-fill text-blue-600 mr-2"></i>ค้นหารายชื่อนักศึกษา</h3>
-                    <p className="text-slate-500 mt-1">ช่วยเลือกชื่อได้เร็วขึ้น ไม่ต้องเลื่อนหาจากรายชื่อยาว ๆ</p>
+                    <p className="text-slate-500 mt-1">เลือกหลายระดับ/หลายห้อง/หลายฝ่ายได้แบบเว็บสต็อก</p>
                   </div>
                   <button type="button" onClick={closeStudentPicker} className="px-4 py-2 rounded-2xl bg-slate-100 text-slate-700 font-bold self-start">ปิด</button>
                 </div>
 
-                <div className="px-5 md:px-6 py-4 border-b border-slate-100 bg-slate-50">
+                <div className="px-5 md:px-6 py-3 border-b border-slate-100 bg-slate-50">
                   <div className="relative">
                     <i className="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
-                    <input autoFocus value={studentPicker.query} onChange={e => setStudentPicker(prev => ({ ...prev, query: e.target.value }))} placeholder="ค้นหาจากรหัสนักศึกษา ชื่อจริง ชื่อเล่น ระดับชั้น กลุ่ม หรือสาขา" className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900 bg-white" />
+                    <input autoFocus value={studentPicker.query} onChange={e => setStudentPicker(prev => ({ ...prev, query: e.target.value }))} placeholder="ค้นหาจากชื่อเล่น ชื่อจริง รหัสนักศึกษา ระดับชั้น กลุ่ม หรือสาขา" className="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900 bg-white" />
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <div className="px-3 py-2 rounded-full bg-blue-50 text-blue-700 border border-blue-100 text-xs font-extrabold">พบ {pickerResults.length} คน</div>
+                  <div className="mt-3 flex flex-wrap gap-2 items-center">
+                    <div className="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100 text-xs font-extrabold">พบ {pickerResults.length} คน</div>
                     {pickerSelectedStudent ? (
-                      <div className="px-3 py-2 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-extrabold">กำลังเลือกอยู่: {studentDutyName(pickerSelectedStudent)}</div>
+                      <div className="px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-extrabold">กำลังเลือก: {studentDutyName(pickerSelectedStudent)}</div>
                     ) : (
-                      <div className="px-3 py-2 rounded-full bg-slate-100 text-slate-500 border border-slate-200 text-xs font-extrabold">ยังไม่ได้เลือกชื่อในช่องนี้</div>
+                      <div className="px-3 py-1.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200 text-xs font-extrabold">ยังไม่ได้เลือกชื่อ</div>
+                    )}
+                    <button type="button" onClick={() => setStudentPickerFiltersOpen(prev => !prev)} className="px-3 py-1.5 rounded-full bg-white text-slate-700 border border-slate-200 text-xs font-extrabold hover:border-blue-300">
+                      {studentPickerFiltersOpen ? 'ซ่อนตัวกรอง' : 'ตัวกรองหลายรายการ'}
+                    </button>
+                    {pickerHasFilters && (
+                      <button type="button" onClick={resetStudentPickerFilters} className="px-3 py-1.5 rounded-full bg-rose-50 text-rose-700 border border-rose-100 text-xs font-extrabold">ล้างตัวกรอง</button>
                     )}
                   </div>
+
+                  {studentPickerFiltersOpen && (
+                    <div className="mt-3 rounded-2xl bg-white border border-slate-200 p-3 space-y-3">
+                      {recentPickerStudents.length ? (
+                        <div>
+                          <div className="text-[11px] font-black uppercase tracking-wide text-slate-500 mb-2">เลือกล่าสุด</div>
+                          <div className="flex flex-wrap gap-2">
+                            {recentPickerStudents.map(s => (
+                              <button key={s.id} type="button" onClick={() => chooseStudentForPicker(s.id)} className="px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 hover:border-blue-300 text-slate-700 text-xs font-extrabold">
+                                {s.nickname || s.fullName || '-'}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+
+                      <div className="grid md:grid-cols-3 gap-3">
+                        <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3">
+                          <div className="flex items-center justify-between mb-2"><div className="text-[11px] font-black uppercase tracking-wide text-slate-500">ระดับชั้น</div>{pickerSelectedLevels.length ? <span className="text-[11px] font-black text-blue-700">เลือก {pickerSelectedLevels.length}</span> : null}</div>
+                          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto pr-1">
+                            {pickerLevelOptions.map(level => (
+                              <button key={level} type="button" onClick={() => togglePickerArrayFilter('levels', level)} className={
+                                'px-3 py-1.5 rounded-full border text-xs font-extrabold transition ' +
+                                (pickerSelectedLevels.includes(level) ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300')
+                              }>
+                                {level}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3">
+                          <div className="flex items-center justify-between mb-2"><div className="text-[11px] font-black uppercase tracking-wide text-slate-500">กลุ่ม / ห้อง</div>{pickerSelectedGroups.length ? <span className="text-[11px] font-black text-slate-700">เลือก {pickerSelectedGroups.length}</span> : null}</div>
+                          <div className="relative mb-2">
+                            <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input value={studentPicker.groupSearch || ''} onChange={e => setStudentPicker(prev => ({ ...prev, groupSearch: e.target.value }))} placeholder="ค้นหากลุ่ม / ห้อง" className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 placeholder:text-slate-400 focus:border-blue-500 outline-none" />
+                          </div>
+                          <div className="flex items-center justify-between mb-2 text-[11px] text-slate-500 font-bold">
+                            <span>{pickerGroupFilteredOptions.length} กลุ่ม</span>
+                            {!!pickerGroupSearch && <button type="button" onClick={() => setStudentPicker(prev => ({ ...prev, groupSearch: '' }))} className="text-blue-600 font-extrabold">ล้างคำค้น</button>}
+                          </div>
+                          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto pr-1">
+                            {pickerGroupFilteredOptions.length ? pickerGroupFilteredOptions.map(group => (
+                              <button key={group} type="button" onClick={() => togglePickerArrayFilter('groups', group)} className={
+                                'px-3 py-1.5 rounded-full border text-xs font-extrabold transition ' +
+                                (pickerSelectedGroups.includes(group) ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300')
+                              }>
+                                {group}
+                              </button>
+                            )) : <div className="w-full py-4 text-center text-xs font-bold text-slate-400">ไม่พบกลุ่ม / ห้องที่ค้นหา</div>}
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3">
+                          <div className="flex items-center justify-between mb-2"><div className="text-[11px] font-black uppercase tracking-wide text-slate-500">ฝ่าย / งาน</div>{pickerSelectedInterests.length ? <span className="text-[11px] font-black text-emerald-700">เลือก {pickerSelectedInterests.length}</span> : null}</div>
+                          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto pr-1">
+                            {pickerInterestOptions.map(interest => (
+                              <button key={interest} type="button" onClick={() => togglePickerArrayFilter('interests', interest)} className={
+                                'px-3 py-1.5 rounded-full border text-xs font-extrabold transition ' +
+                                (pickerSelectedInterests.includes(interest) ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300')
+                              }>
+                                {interest}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div className="p-5 md:p-6 max-h-[56vh] overflow-y-auto bg-slate-50/70">
+                <div className={`p-4 md:p-5 overflow-y-auto bg-slate-50/70 ${studentPickerFiltersOpen ? 'max-h-[48vh]' : 'max-h-[66vh]'}`}>
                   {pickerResults.length ? (
                     <div className="grid md:grid-cols-2 gap-3">
                       {pickerResults.map(s => {
                         const isActive = pickerSelectedId === s.id;
                         return (
-                          <button type="button" key={s.id} onClick={() => chooseStudentForPicker(s.id)} className={`text-left rounded-2xl border p-4 bg-white transition hover:-translate-y-0.5 hover:shadow-md ${isActive ? 'border-blue-500 ring-2 ring-blue-100' : 'border-slate-200 hover:border-blue-300'}`}>
-                            <div className="flex items-center gap-3">
+                          <button type="button" key={s.id} onClick={() => chooseStudentForPicker(s.id)} className={`text-left rounded-[1.5rem] border p-3.5 bg-white transition hover:-translate-y-0.5 hover:shadow-md ${isActive ? 'border-blue-500 ring-2 ring-blue-100' : 'border-slate-200 hover:border-blue-300'}`}>
+                            <div className="flex items-start gap-3.5">
                               {s.photo ? (
-                                <img src={s.photo} alt={studentDutyName(s)} className="w-14 h-14 rounded-2xl object-cover border border-slate-200 shrink-0" />
+                                <img src={s.photo} alt={studentDutyName(s)} className="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0" />
                               ) : (
-                                <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl font-black shrink-0">{String((s.nickname || s.fullName || '?')).trim().charAt(0) || '?'}</div>
+                                <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl font-black shrink-0">{String((s.nickname || s.fullName || '?')).trim().charAt(0) || '?'}</div>
                               )}
-                              <div className="min-w-0 flex-1">
-                                <div className="font-extrabold text-slate-950 truncate">{studentDutyName(s)}</div>
-                                <div className="text-sm text-slate-500 truncate">รหัส {s.studentId || '-'} • {s.level || '-'} / {s.group || '-'}</div>
-                                <div className="text-xs text-slate-400 truncate">{s.major || '-'}{s.actualInterest ? ` • ${s.actualInterest}` : ''}</div>
+                              <div className="min-w-0 flex-1 pt-0.5">
+                                <div className="text-base md:text-lg font-extrabold text-slate-950 truncate">{s.nickname || s.fullName || '-'}</div>
+                                <div className="text-sm font-bold text-slate-600 truncate leading-tight">{s.fullName || '-'}</div>
+                                <div className="text-xs text-slate-500 mt-1.5 truncate">รหัส {s.studentId || '-'} • {s.level || '-'} / {s.group || '-'}</div>
+                                <div className="text-xs font-semibold text-blue-600 mt-1 truncate">{s.major || '-'}{s.actualInterest ? ` • ${s.actualInterest}` : ''}</div>
                               </div>
-                              {isActive && <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0"><i className="ri-check-line text-lg"></i></div>}
+                              {isActive && <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 mt-3.5"><i className="ri-check-line text-lg"></i></div>}
                             </div>
                           </button>
                         );
