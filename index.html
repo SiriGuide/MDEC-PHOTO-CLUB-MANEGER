@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v72.3 Weekly Picker & Readable Matrix</title>
+  <title>MDEC Photo Club Center v72.8 Numbered Duty Tables PDF Export</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -2240,6 +2240,7 @@
 
     const { useEffect, useMemo, useRef, useState } = React;
     const getStudentsRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection(COLLECTION_NAME);
+    const getStudentPhotosRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('member_photos');
     const getDutyRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('duty_rosters');
     const getDutyTemplatesRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('duty_templates');
     const getActivitiesRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('club_activities');
@@ -2410,17 +2411,33 @@
 
     const dutyNormalAttendance = { key: '', label: 'ปกติ', icon: 'ri-checkbox-circle-fill', pill: 'bg-emerald-900 text-emerald-100 border-emerald-700', button: 'bg-emerald-600 hover:bg-emerald-700 text-white' };
 
-    const dutyTableTypes = [
-      { key: 'A', label: 'ตาราง A', tone: 'blue' },
-      { key: 'B', label: 'ตาราง B', tone: 'emerald' }
-    ];
+    const dutyTableTypes = Array.from({ length: 8 }, (_, index) => ({
+      key: String(index + 1),
+      label: `ตาราง ${index + 1}`,
+      tone: ['blue','emerald','purple','orange','cyan','blue','emerald','purple'][index]
+    }));
+
+    function normalizeDutyTableType(type) {
+      const raw = String(type || '').trim().toUpperCase();
+      if (raw === 'A') return '1';
+      if (raw === 'B') return '2';
+      const n = Number.parseInt(raw, 10);
+      if (Number.isFinite(n) && n > 0) return String(n);
+      return '1';
+    }
 
     function dutyTableLabel(type) {
-      return type === 'B' ? 'ตาราง B' : 'ตาราง A';
+      if (type === 'AUTO') return 'ตารางอัตโนมัติ';
+      return `ตาราง ${normalizeDutyTableType(type)}`;
     }
 
     function dutyTemplateDocId(year, type) {
-      return `${year || 'unknown'}_${type === 'B' ? 'B' : 'A'}`;
+      return `${year || 'unknown'}_${normalizeDutyTableType(type)}`;
+    }
+
+    function nextDutyTableType(type) {
+      const n = Number.parseInt(normalizeDutyTableType(type), 10) || 1;
+      return String(n + 1);
     }
 
     function emptyDutyAssignments(roleSlots = defaultDutyRoleSlots(), roleDefs = dutyRoles) {
@@ -2444,7 +2461,7 @@
     function createDutyForm(year) {
       const roleDefs = defaultDutyRoleDefs();
       const roleSlots = defaultDutyRoleSlots(roleDefs);
-      return { date: getWeekStartDate(todayFileDate()), academicYear: year, scheduleType: 'A', note: '', roleDefs, roleSlots, weeklyAssignments: emptyWeeklyDutyAssignments(roleSlots, roleDefs) };
+      return { date: getWeekStartDate(todayFileDate()), academicYear: year, scheduleType: '1', note: '', roleDefs, roleSlots, weeklyAssignments: emptyWeeklyDutyAssignments(roleSlots, roleDefs) };
     }
 
     function studentDutyName(s) {
@@ -2557,7 +2574,7 @@
     function countAssignedInWeekly(weeklyAssignments, roleDefs = dutyRoles) {
       const roles = normalizeDutyRoles(roleDefs);
       return dutyDays.reduce((sum, day) => sum + roles.reduce((daySum, role) => {
-        const ids = (weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean);
+        const ids = (weeklyAssignments?.[day.key]?.[role.key] || []).filter(item => typeof item === 'string' ? item : item?.id);
         return daySum + ids.length;
       }, 0), 0);
     }
@@ -2566,7 +2583,9 @@
       const roles = normalizeDutyRoles(roleDefs);
       const counts = {};
       dutyDays.forEach(day => roles.forEach(role => {
-        (weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean).forEach(id => {
+        (weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean).forEach(item => {
+          const id = typeof item === 'string' ? item : item?.id;
+          if (!id) return;
           counts[id] = (counts[id] || 0) + 1;
         });
       }));
@@ -2851,7 +2870,7 @@
       const [students, setStudents] = useState([]);
       const [loadingData, setLoadingData] = useState(true);
       const [search, setSearch] = useState('');
-      const [filterYear, setFilterYear] = useState(currentAcademicYear);
+      const [filterYear, setFilterYear] = useState('all');
       const [filterMajor, setFilterMajor] = useState('all');
       const [filterInterest, setFilterInterest] = useState('all');
       const [filterStatus, setFilterStatus] = useState('all');
@@ -2865,13 +2884,44 @@
 
       useEffect(() => {
         if (!user) return;
-        const unsub = getStudentsRef().onSnapshot(snapshot => {
-          const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        let latestStudents = [];
+        let latestPhotos = {};
+
+        const mergeAndSet = () => {
+          const data = latestStudents.map(student => {
+            const photoDoc = latestPhotos[student.id];
+            return {
+              ...student,
+              // v72.7: รูปใหม่เก็บแยกใน collection member_photos
+              // ถ้ายังมีรูปเก่าใน student.photo ให้ fallback ได้ เพื่อไม่ทำให้ข้อมูลเก่าหาย
+              photo: photoDoc?.photo || student.photo || null,
+              photoMeta: photoDoc?.photoMeta || student.photoMeta || null,
+              hasPhoto: !!(photoDoc?.photo || student.photo || student.hasPhoto)
+            };
+          });
           data.sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
           setStudents(data);
           setLoadingData(false);
+        };
+
+        const unsubStudents = getStudentsRef().onSnapshot(snapshot => {
+          latestStudents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          mergeAndSet();
         });
-        return () => unsub();
+
+        const unsubPhotos = getStudentPhotosRef().onSnapshot(snapshot => {
+          const map = {};
+          snapshot.docs.forEach(doc => { map[doc.id] = { id: doc.id, ...doc.data() }; });
+          latestPhotos = map;
+          mergeAndSet();
+        }, err => {
+          console.error('load separated member photos failed', err);
+          latestPhotos = {};
+          mergeAndSet();
+        });
+
+        return () => { unsubStudents(); unsubPhotos(); };
       }, [user]);
 
       const yearsList = useMemo(() => {
@@ -2893,11 +2943,12 @@
         });
       }, [students, search, filterYear, filterMajor, filterInterest, filterStatus, filterPhoto]);
 
-      const stats = useMemo(() => buildStats(students, filterYear === 'all' ? currentAcademicYear : filterYear), [students, filterYear, currentAcademicYear]);
+      const stats = useMemo(() => buildStats(students, filterYear), [students, filterYear]);
 
       const handleDeleteStudent = async () => {
         if (!studentToDelete) return;
         await getStudentsRef().doc(studentToDelete.id).delete();
+        try { await getStudentPhotosRef().doc(studentToDelete.id).delete(); } catch (err) { console.warn('delete separated photo failed', err); }
         setStudentToDelete(null);
       };
 
@@ -3107,8 +3158,8 @@
 
     function SmartCommandPalette({ navItems, activeTab, students, currentAcademicYear, onNavigate, onClose }) {
       const [query, setQuery] = useState('');
-      const currentStudents = useMemo(() => students.filter(s => String(s.academicYear || '') === String(currentAcademicYear)), [students, currentAcademicYear]);
-      const activeStudents = currentStudents.filter(s => (s.status || 'active') === 'active');
+      const currentStudents = useMemo(() => students.filter(s => !['dismissed','graduated'].includes(s.status || 'active')), [students]);
+      const activeStudents = currentStudents;
       const noPhoto = currentStudents.filter(s => !s.photo).length;
       const incomplete = currentStudents.filter(s => isIncompleteStudent(s)).length;
       const actions = [
@@ -3215,13 +3266,13 @@
 
     function buildStats(students, targetYear) {
       const target = targetYear === 'all' ? students : students.filter(s => s.academicYear === targetYear);
-      const res = { total: target.length, active:0, paused:0, graduated:0, dismissed:0, male:0, female:0, lgbt:0, withPhoto:0, noPhoto:0, incomplete:0, noPhone:0, noLine:0, noEmergency:0, noActualInterest:0, levels:{}, majors:{}, interests:{}, actualInterests:{} };
+      const res = { total: target.length, inClub:0, active:0, paused:0, graduated:0, dismissed:0, male:0, female:0, lgbt:0, withPhoto:0, noPhoto:0, incomplete:0, noPhone:0, noLine:0, noEmergency:0, noActualInterest:0, levels:{}, majors:{}, interests:{}, actualInterests:{} };
       target.forEach(s => {
         const status = s.status || 'active';
         if (status === 'graduated') res.graduated++;
         else if (status === 'dismissed') res.dismissed++;
-        else if (status === 'paused') res.paused++;
-        else res.active++;
+        else if (status === 'paused') { res.paused++; res.inClub++; }
+        else { res.active++; res.inClub++; }
         if (s.gender === 'ชาย') res.male++;
         else if (s.gender === 'หญิง') res.female++;
         else res.lgbt++;
@@ -3274,7 +3325,7 @@
         return () => { unsubDuty(); unsubAct(); unsubWorks(); unsubCouncil(); };
       }, [currentAcademicYear]);
 
-      const stats = useMemo(() => buildStats(students, currentAcademicYear), [students, currentAcademicYear]);
+      const stats = useMemo(() => buildStats(students, 'all'), [students]);
       const capacity = useMemo(() => estimateCapacitySnapshot(students, limitMb), [students, limitMb]);
       const updateLimit = (value) => {
         const next = Math.max(10, Math.min(10000, Number(value) || 900));
@@ -3391,7 +3442,7 @@
                 <div className="rounded-3xl border border-dashed border-slate-300 p-8 text-center">
                   <div className="w-16 h-16 mx-auto rounded-3xl bg-blue-50 text-blue-200 flex items-center justify-center text-3xl mb-3"><i className="ri-calendar-close-fill"></i></div>
                   <div className="font-black text-slate-950">ยังไม่มีเวรเช้าของวันนี้</div>
-                  <p className="text-sm v61-muted mt-1">ไปที่หน้าตารางเวรเพื่อสร้างหรือเรียกใช้ตาราง A/B</p>
+                  <p className="text-sm v61-muted mt-1">ไปที่หน้าตารางเวรเพื่อสร้างหรือเรียกใช้ตาราง 1/2/3</p>
                   <button onClick={() => onNavigate('duty')} className="v61-action v61-primary mt-4"><i className="ri-add-line"></i>จัดตารางเวร</button>
                 </div>
               )}
@@ -3412,10 +3463,10 @@
           </section>
 
           <section className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
-            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-team-fill"></i></div><p className="text-sm text-slate-500 font-bold">สมาชิกปีปัจจุบัน</p><p className="text-4xl font-black text-slate-950 mt-1">{stats.total}</p></div>
-            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-user-star-fill"></i></div><p className="text-sm text-slate-500 font-bold">สมาชิกปัจจุบัน</p><p className="text-4xl font-black text-slate-950 mt-1">{stats.active}</p></div>
-            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-calendar-event-fill"></i></div><p className="text-sm text-slate-500 font-bold">กิจกรรมปีนี้</p><p className="text-4xl font-black text-slate-950 mt-1">{yearActivities.length}</p></div>
-            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-gallery-fill"></i></div><p className="text-sm text-slate-500 font-bold">ผลงานปีนี้</p><p className="text-4xl font-black text-slate-950 mt-1">{yearWorks.length}</p></div>
+            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-team-fill"></i></div><p className="text-sm text-slate-500 font-bold">ข้อมูลสมาชิกทั้งหมด</p><p className="text-4xl font-black text-slate-950 mt-1">{stats.total}</p></div>
+            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-user-star-fill"></i></div><p className="text-sm text-slate-500 font-bold">ยังอยู่ในชมรม</p><p className="text-4xl font-black text-slate-950 mt-1">{stats.inClub || 0}</p></div>
+            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-calendar-event-fill"></i></div><p className="text-sm text-slate-500 font-bold">กิจกรรมปีระบบ</p><p className="text-4xl font-black text-slate-950 mt-1">{yearActivities.length}</p></div>
+            <div className="home-stat-card rounded-[1.8rem] bg-white border border-slate-200 soft-shadow p-5"><div className="home-stat-icon w-12 h-12 rounded-2xl bg-blue-50 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-gallery-fill"></i></div><p className="text-sm text-slate-500 font-bold">ผลงานปีระบบ</p><p className="text-4xl font-black text-slate-950 mt-1">{yearWorks.length}</p></div>
           </section>
 
           <section className="grid xl:grid-cols-[1fr_.75fr] gap-5">
@@ -4622,7 +4673,7 @@
         if (!confirm('บันทึกตารางเวรอัตโนมัติเป็นตารางจริงใช่ไหม?')) return;
         setSavingPlan(true);
         try {
-          await getDutyRef().add({ ...generated, scheduleType:'A', note:'สร้างโดยระบบจัดเวรอัตโนมัติ', assignments: generated.weeklyAssignments.mon || {}, locked:false, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), createdBy:'smart_auto' });
+          await getDutyRef().add({ ...generated, scheduleType:'1', note:'สร้างโดยระบบจัดเวรอัตโนมัติ', assignments: generated.weeklyAssignments.mon || {}, locked:false, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), createdBy:'smart_auto' });
           alert('บันทึกตารางเวรอัตโนมัติเรียบร้อย');
           onNavigate('duty');
         } catch(err) { alert('บันทึกไม่สำเร็จ: ' + (err.message || err)); }
@@ -4669,8 +4720,8 @@
           <section className="grid md:grid-cols-2 xl:grid-cols-4 gap-3">
             <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">สมาชิกพร้อมใช้งาน</p><p className="text-3xl font-black text-slate-950">{activeStudents.length}</p></div>
             <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">ตารางเวรทั้งหมด</p><p className="text-3xl font-black text-slate-950">{duties.filter(d => String(d.academicYear || '') === String(year)).length}</p></div>
-            <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">กิจกรรมปีนี้</p><p className="text-3xl font-black text-slate-950">{activities.filter(a => String(a.academicYear || '') === String(year)).length}</p></div>
-            <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">ผลงานปีนี้</p><p className="text-3xl font-black text-slate-950">{works.filter(w => String(w.academicYear || '') === String(year)).length}</p></div>
+            <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">กิจกรรมปีระบบ</p><p className="text-3xl font-black text-slate-950">{activities.filter(a => String(a.academicYear || '') === String(year)).length}</p></div>
+            <div className="smart-mini-stat"><p className="text-xs text-slate-500 font-bold">ผลงานปีระบบ</p><p className="text-3xl font-black text-slate-950">{works.filter(w => String(w.academicYear || '') === String(year)).length}</p></div>
           </section>
 
           <div className="smart-panel p-3">
@@ -5102,7 +5153,7 @@
       };
 
       const applyTemplate = (type = form.scheduleType, academicYear = form.academicYear) => {
-        const safeType = type === 'B' ? 'B' : 'A';
+        const safeType = normalizeDutyTableType(type);
         const template = templates[dutyTemplateDocId(academicYear, safeType)];
         if (!template) return alert(`ยังไม่ได้บันทึก${dutyTableLabel(safeType)} ของปีการศึกษา ${academicYear}`);
         const roleDefs = getDutyRoles(template);
@@ -5111,7 +5162,7 @@
       };
 
       const saveTemplate = async (type = form.scheduleType) => {
-        const safeType = type === 'B' ? 'B' : 'A';
+        const safeType = normalizeDutyTableType(type);
         if (!form.academicYear) return alert('กรุณาเลือกปีการศึกษาก่อน');
         if (!confirm(`บันทึกตารางเวร จันทร์–เสาร์ ชุดปัจจุบันเป็น${dutyTableLabel(safeType)} ของปีการศึกษา ${form.academicYear} ใช่ไหม?`)) return;
         const payload = {
@@ -5124,7 +5175,7 @@
           updatedBy: 'staff'
         };
         await getDutyTemplatesRef().doc(dutyTemplateDocId(form.academicYear, safeType)).set(payload, { merge: true });
-        alert(`บันทึก${dutyTableLabel(safeType)} แบบรายวัน จันทร์–เสาร์ เรียบร้อย`);
+        alert(`บันทึก${dutyTableLabel(safeType)} จันทร์–เสาร์ เรียบร้อย`);
       };
 
       const latestDutyForYear = useMemo(() => duties
@@ -5132,10 +5183,10 @@
         .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')))[0] || null
       , [duties, form.academicYear]);
 
-      const suggestedNextType = latestDutyForYear?.scheduleType === 'A' ? 'B' : 'A';
+      const suggestedNextType = nextDutyTableType(latestDutyForYear?.scheduleType || form.scheduleType || '1');
 
       const applySuggestedTemplate = () => {
-        const type = suggestedNextType || 'A';
+        const type = suggestedNextType || '1';
         applyTemplate(type, form.academicYear);
       };
 
@@ -5177,12 +5228,14 @@
       };
 
       const buildWeeklySnapshot = () => {
+        // v72.6: บันทึกเฉพาะข้อมูลย่อที่จำเป็น ห้ามฝังรูป base64 / เบอร์ / Line ลงในเอกสารตารางเวร
+        // Firestore จำกัดขนาด document ประมาณ 1MB ถ้าเก็บรูปนักศึกษาซ้ำในตารางทั้งสัปดาห์จะบันทึกไม่สำเร็จ
         const lookup = new Map(students.map(s => [s.id, s]));
         const weekly = {};
         dutyDays.forEach(day => {
           weekly[day.key] = {};
           formRoles.forEach(role => {
-            const ids = [...new Set((form.weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean))];
+            const ids = [...new Set((form.weeklyAssignments?.[day.key]?.[role.key] || []).filter(Boolean).map(item => typeof item === 'string' ? item : item?.id).filter(Boolean))];
             weekly[day.key][role.key] = ids.map(id => {
               const s = lookup.get(id);
               return s ? {
@@ -5192,13 +5245,9 @@
                 nickname: s.nickname || '',
                 level: s.level || '',
                 group: s.group || '',
-                major: s.major || '',
-                phone: s.phone || '',
-                lineId: s.lineId || '',
-                actualInterest: s.actualInterest || s.interest || '',
-                photo: s.photo || null
-              } : null;
-            }).filter(Boolean);
+                actualInterest: s.actualInterest || s.interest || ''
+              } : { id };
+            });
           });
         });
         return weekly;
@@ -5223,7 +5272,7 @@
           const payload = {
             date: weekStart,
             academicYear: targetYear,
-            scheduleType: form.scheduleType === 'B' ? 'B' : 'A',
+            scheduleType: normalizeDutyTableType(form.scheduleType),
             note: form.note || '',
             roleDefs: normalizeDutyRoles(form.roleDefs, form.roleSlots),
             roleSlots: normalizeRoleSlots(form.roleSlots, form.roleDefs),
@@ -5237,7 +5286,12 @@
           else await getDutyRef().add({ ...payload, createdAt: new Date().toISOString() });
           resetForm();
         } catch (err) {
-          alert('บันทึกตารางเวรไม่สำเร็จ: ' + err.message);
+          const msg = String(err?.message || err || '');
+          if (msg.includes('maximum allowed size') || msg.includes('1,048,576')) {
+            alert('บันทึกตารางเวรไม่สำเร็จ: ข้อมูลตารางเวรใหญ่เกินขนาด Firestore ที่อนุญาต ระบบเวอร์ชันนี้ลดการฝังรูปแล้ว กรุณาลองบันทึกอีกครั้ง หรือเปิดไฟล์ v72.6 แล้วบันทึกใหม่');
+          } else {
+            alert('บันทึกตารางเวรไม่สำเร็จ: ' + msg);
+          }
         } finally {
           setSaving(false);
         }
@@ -5250,7 +5304,7 @@
         setEditingId(duty.id);
         const roleDefs = getDutyRoles(duty);
         const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
-        setForm({ date: getWeekStartDate(duty.date || todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: duty.scheduleType === 'B' ? 'B' : 'A', note: duty.note || '', roleDefs, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(duty, roleSlots, roleDefs) });
+        setForm({ date: getWeekStartDate(duty.date || todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: normalizeDutyTableType(duty.scheduleType), note: duty.note || '', roleDefs, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(duty, roleSlots, roleDefs) });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
@@ -5260,7 +5314,7 @@
         setEditingId(null);
         const roleDefs = getDutyRoles(duty);
         const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
-        setForm({ date: getWeekStartDate(todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: duty.scheduleType === 'B' ? 'B' : 'A', note: duty.note || '', roleDefs, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(duty, roleSlots, roleDefs) });
+        setForm({ date: getWeekStartDate(todayFileDate()), academicYear: duty.academicYear || currentAcademicYear, scheduleType: normalizeDutyTableType(duty.scheduleType), note: duty.note || '', roleDefs, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(duty, roleSlots, roleDefs) });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
@@ -5295,7 +5349,7 @@
               {[
                 ['planner','จัดเวรรายวัน','เลือกวันและจัดคน'],
                 ['roles','ตำแหน่งเวร','ตั้งหน้าที่และจำนวนคน'],
-                ['templates','ตาราง A/B','เรียกใช้และบันทึกแบบ'],
+                ['templates','ตาราง 1/2/3','เรียกใช้และบันทึกแบบ'],
                 ['list','รายการย้อนหลัง','เช็คเวรและจัดการตาราง']
               ].map(([key,title,desc]) => (
                 <button key={key} type="button" onClick={() => setDutyManagePanel(key)} className={`duty-step-btn ${dutyManagePanel === key ? 'is-active' : ''}`}>
@@ -5328,7 +5382,7 @@
                   <div className="mt-2 text-xs text-slate-500 font-bold">เลือกเป็นสัปดาห์ได้เลย ระบบจะตั้งเป็นวันจันทร์ของสัปดาห์นั้นอัตโนมัติ</div>
                 </label>
                 <Select label="ปีการศึกษา" value={form.academicYear} onChange={v => setForm(prev => ({ ...prev, academicYear: v, weeklyAssignments: emptyWeeklyDutyAssignments(prev.roleSlots, prev.roleDefs) }))} options={[...new Set([currentAcademicYear, ...yearsList])]} />
-                <Select label="ตารางที่ใช้" value={form.scheduleType} onChange={v => setForm(prev => ({ ...prev, scheduleType: v === 'B' ? 'B' : 'A' }))} options={['A','B']} optionLabels={{ A:'ตาราง A', B:'ตาราง B' }} />
+                <Select label="ตารางที่ใช้" value={normalizeDutyTableType(form.scheduleType)} onChange={v => setForm(prev => ({ ...prev, scheduleType: normalizeDutyTableType(v) }))} options={dutyTableTypes.map(t => t.key)} optionLabels={Object.fromEntries(dutyTableTypes.map(t => [t.key, t.label]))} />
                 <Input label="หมายเหตุประจำสัปดาห์" value={form.note} onChange={v => setForm(prev => ({ ...prev, note: v }))} placeholder="เช่น สัปดาห์เปิดเทอม / สอบกลางภาค" className="md:col-span-4" />
               </div>
 
@@ -5444,8 +5498,8 @@
               <div className="rounded-3xl bg-slate-50 border border-slate-100 p-4">
                 <div className="flex flex-col xl:flex-row gap-3 xl:items-center xl:justify-between">
                   <div>
-                    <h4 className="font-extrabold text-slate-950"><i className="ri-repeat-2-fill text-blue-600 mr-2"></i>ชุดตารางเวรตอนเช้า A / B</h4>
-                    <p className="text-sm text-slate-500">แต่ละชุดเป็นตารางทั้งสัปดาห์ จันทร์–เสาร์ และสลับใช้ทุก 1 สัปดาห์</p>
+                    <h4 className="font-extrabold text-slate-950"><i className="ri-repeat-2-fill text-blue-600 mr-2"></i>ชุดตารางเวรตอนเช้าแบบตัวเลข</h4>
+                    <p className="text-sm text-slate-500">แต่ละชุดเป็นตารางทั้งสัปดาห์ จันทร์–เสาร์ และเลือกใช้เป็นชุดตารางตามสัปดาห์</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {dutyTableTypes.map(t => <button key={t.key} type="button" onClick={() => applyTemplate(t.key, form.academicYear)} className="px-4 py-2 rounded-2xl bg-white text-blue-200 border border-blue-100 font-bold hover:bg-blue-50"><i className="ri-download-cloud-2-line mr-1"></i>เรียกใช้{t.label}</button>)}
@@ -5460,7 +5514,7 @@
 
               {dutyManagePanel === 'planner' && (<>
 
-              {!activeStudents.length && <div className="rounded-3xl bg-orange-50 border border-orange-100 text-orange-800 p-4 text-sm"><i className="ri-alert-fill mr-2"></i>ยังไม่มีรายชื่อนักศึกษาปีการศึกษา {form.academicYear} หรือยังไม่ได้เพิ่มสมาชิก</div>}
+              {!activeStudents.length && <div className="rounded-3xl bg-orange-50 border border-orange-100 text-orange-800 p-4 text-sm"><i className="ri-alert-fill mr-2"></i>ยังไม่มีสมาชิกที่ยังอยู่ในชมรม หรือยังไม่ได้เพิ่มสมาชิก</div>}
               {duplicateIds.length > 0 && <div className="rounded-3xl bg-yellow-50 border border-yellow-100 text-yellow-800 p-4 text-sm"><i className="ri-alert-fill mr-2"></i><b>พบชื่อซ้ำในสัปดาห์นี้:</b> {duplicateNames.join(' / ') || `${duplicateIds.length} คน`} <span className="text-yellow-700">ถ้าจงใจให้ทำซ้ำยังบันทึกได้</span></div>}
 
               <div className="rounded-[1.7rem] bg-slate-950 border border-slate-800 p-4 md:p-5">
@@ -5596,7 +5650,7 @@
                 <h3 className="text-xl font-extrabold text-slate-950 mb-4"><i className="ri-dashboard-2-fill text-blue-600 mr-2"></i>สรุปตารางเวร</h3>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div className="rounded-3xl bg-blue-50 border border-blue-100 p-4"><p className="text-xs text-blue-200 font-bold">สัปดาห์ที่แสดง</p><p className="text-3xl font-extrabold text-slate-950">{visibleDuties.length}</p></div>
-                  <div className="rounded-3xl bg-emerald-50 border border-emerald-100 p-4"><p className="text-xs text-emerald-700 font-bold">รายชื่อนักศึกษาปีนี้</p><p className="text-3xl font-extrabold text-slate-950">{students.filter(s => s.academicYear === currentAcademicYear).length}</p></div>
+                  <div className="rounded-3xl bg-emerald-50 border border-emerald-100 p-4"><p className="text-xs text-emerald-700 font-bold">สมาชิกที่ยังอยู่ในชมรม</p><p className="text-3xl font-extrabold text-slate-950">{activeStudents.length}</p><p className="text-xs text-emerald-700/80 font-bold mt-1">รวมทุกปีที่เข้าชมรม</p></div>
                 </div>
                 <div className="mt-4 rounded-3xl bg-slate-50 border border-slate-100 p-4">
                   <p className="text-xs text-slate-500 font-bold">เวรสัปดาห์ถัดไป</p>
@@ -5606,7 +5660,7 @@
 
               <div className="bg-slate-950 text-white rounded-[2rem] soft-shadow p-5 md:p-6">
                 <h3 className="font-extrabold text-xl mb-2"><i className="ri-lightbulb-flash-fill text-yellow-300 mr-2"></i>แนะนำการใช้จริง</h3>
-                <p className="text-slate-300 text-sm leading-relaxed">ให้ตั้งตาราง A และ B เป็น “ตารางทั้งสัปดาห์” โดยแยกคนแต่ละวัน จันทร์–เสาร์ จากนั้นสลับใช้ทุก 1 สัปดาห์ ระบบจะเตือนถ้ามีชื่อซ้ำในสัปดาห์เดียวกัน</p>
+                <p className="text-slate-300 text-sm leading-relaxed">ให้ตั้งตาราง 1, 2, 3... เป็น “ตารางทั้งสัปดาห์” โดยแยกคนแต่ละวัน จันทร์–เสาร์ จากนั้นเลือกใช้เป็นชุดตารางตามสัปดาห์ ระบบจะเตือนถ้ามีชื่อซ้ำในสัปดาห์เดียวกัน</p>
               </div>
             </div>
           </div>
@@ -5619,12 +5673,12 @@
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <select value={year} onChange={e => setYear(e.target.value)} className="px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 outline-none focus:border-blue-500 font-bold">
-                  <option value="all">ทุกปีการศึกษา</option>
+                  <option value="all">ทุกปีที่เข้าชมรม</option>
                   {[...new Set([currentAcademicYear, ...yearsList])].map(y => <option key={y} value={y}>ปี {y}</option>)}
                 </select>
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ค้นหาสัปดาห์ / วัน / ชื่อ / หมายเหตุ" className="px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 outline-none focus:border-blue-500 font-bold" />
                 <button onClick={exportCSV} className="px-4 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold"><i className="ri-file-excel-2-fill mr-1"></i> CSV</button>
-                <button onClick={() => setIsPrinting(true)} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold"><i className="ri-printer-fill mr-1"></i> พิมพ์</button>
+                <button onClick={() => setIsPrinting(true)} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold"><i className="ri-file-pdf-2-fill mr-1"></i> PDF</button>
               </div>
             </div>
 
@@ -5926,7 +5980,7 @@
             </div>
           )}
 
-          {isPrinting && ReactDOM.createPortal(<PrintDutySchedule duties={visibleDuties} yearText={year === 'all' ? 'ทุกปีการศึกษา' : year} onClose={() => setIsPrinting(false)} />, document.body)}
+          {isPrinting && ReactDOM.createPortal(<PrintDutySchedule duties={visibleDuties} yearText={year === 'all' ? 'ทุกปีที่เข้าชมรม' : year} onClose={() => setIsPrinting(false)} />, document.body)}
         </div>
       );
     }
@@ -5941,8 +5995,8 @@
       return (
         <div className="print-overlay fixed inset-0 z-[100] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in">
           <div className="no-print flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 pb-5 border-b">
-            <div><h2 className="font-extrabold text-2xl">พิมพ์ตารางเวรตอนเช้า</h2><p className="text-slate-500">รายงานนี้แสดงตามตัวกรองในหน้าตารางเวร</p></div>
-            <div className="flex gap-2"><button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>พิมพ์ / Save PDF</button><button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button></div>
+            <div><h2 className="font-extrabold text-2xl">ดาวน์โหลด / พิมพ์ตารางเวร PDFตอนเช้า</h2><p className="text-slate-500">รายงานนี้แสดงตามตัวกรองในหน้าตารางเวร</p></div>
+            <div className="flex gap-2"><button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>ดาวน์โหลด PDF / พิมพ์</button><button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button></div>
           </div>
           <section className="report-page">
             <div className="report-header">
@@ -5955,7 +6009,7 @@
               </div>
               <div className="report-meta"><div><strong>ปีการศึกษา:</strong> {yearText}</div><div><strong>จำนวนสัปดาห์:</strong> {sorted.length}</div><div><strong>วันที่ออกรายงาน:</strong> {reportDate}</div></div>
             </div>
-            <div className="report-note"><span>ตำแหน่งเวรสามารถกำหนดเองได้ตามตารางแต่ละสัปดาห์</span><span>หมายเหตุ: ใช้ตาราง A/B สลับกันทุก 1 สัปดาห์ได้</span></div>
+            <div className="report-note"><span>ตำแหน่งเวรสามารถกำหนดเองได้ตามตารางแต่ละสัปดาห์</span><span>หมายเหตุ: ใช้ตาราง 1/2/3 สลับกันทุก 1 สัปดาห์ได้</span></div>
             <table className="print-table">
               <thead><tr><th style={{width:'120px'}}>สัปดาห์</th><th style={{width:'78px'}}>วัน</th><th style={{width:'65px'}}>ตาราง</th>{rolesForHeader.map(role => <th key={role.key}>{role.shortTitle || role.title}</th>)}<th style={{width:'95px'}}>หมายเหตุ</th></tr></thead>
               <tbody>{sorted.flatMap(d => {
@@ -6586,10 +6640,16 @@
           return;
         }
         setSaving(true);
+        const { photo, photoMeta, ...studentPayloadBase } = formData;
         const payload = {
-          ...formData,
+          ...studentPayloadBase,
           studentId: normalizedStudentId,
           academicYear: normalizedYear,
+          hasPhoto: !!photo,
+          photoRef: photo ? 'member_photos' : '',
+          // v72.7: ไม่เก็บ photo base64 ใน document สมาชิกแล้ว เพื่อไม่ให้เอกสารหลักใหญ่เกิน
+          photo: firebase.firestore.FieldValue.delete(),
+          photoMeta: firebase.firestore.FieldValue.delete(),
           updatedAt: new Date().toISOString(),
           entryMode: 'staff_manual',
           source: 'paper_form',
@@ -6603,18 +6663,39 @@
             alert(`พบข้อมูลซ้ำในฐานข้อมูล: รหัสนักศึกษา ${normalizedStudentId} มีอยู่แล้วในปีการศึกษา ${normalizedYear}\nชื่อในระบบ: ${d.fullName || '-'}`);
             return;
           }
+
+          const docRef = mode === 'edit' && student?.id ? getStudentsRef().doc(student.id) : getStudentsRef().doc();
+          const studentIdForPhoto = docRef.id;
+
           if (mode === 'edit' && student?.id) {
-            await getStudentsRef().doc(student.id).update(payload);
-            alert('บันทึกการแก้ไขเรียบร้อย');
-            onDone && onDone();
+            await docRef.update(payload);
           } else {
-            await getStudentsRef().add({ ...payload, createdAt: new Date().toISOString() });
-            alert('เพิ่มสมาชิกใหม่เรียบร้อย');
-            resetForm();
-            onDone && onDone();
+            await docRef.set({ ...payload, createdAt: new Date().toISOString() });
           }
+
+          if (photo) {
+            await getStudentPhotosRef().doc(studentIdForPhoto).set({
+              studentDocId: studentIdForPhoto,
+              studentId: normalizedStudentId,
+              academicYear: normalizedYear,
+              photo,
+              photoMeta: photoMeta || null,
+              updatedAt: new Date().toISOString()
+            }, { merge: true });
+          } else {
+            try { await getStudentPhotosRef().doc(studentIdForPhoto).delete(); } catch (err) {}
+          }
+
+          alert(mode === 'edit' && student?.id ? 'บันทึกการแก้ไขเรียบร้อย' : 'เพิ่มสมาชิกใหม่เรียบร้อย');
+          if (!(mode === 'edit' && student?.id)) resetForm();
+          onDone && onDone();
         } catch (err) {
-          alert('บันทึกไม่สำเร็จ: ' + err.message);
+          const msg = String(err?.message || err || '');
+          if (msg.includes('maximum allowed size') || msg.includes('1,048,576')) {
+            alert('บันทึกไม่สำเร็จ: ข้อมูลใหญ่เกินขนาดเอกสาร ระบบ v72.7 แยกรูปออกจากข้อมูลสมาชิกแล้ว กรุณาลองบันทึกใหม่อีกครั้ง');
+          } else {
+            alert('บันทึกไม่สำเร็จ: ' + msg);
+          }
         } finally {
           setSaving(false);
         }
@@ -6661,7 +6742,7 @@
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h3 className="font-extrabold text-xl">รูปถ่ายสมาชิก</h3>
-                <p className="text-slate-400 text-sm">ถ่ายจากกล้องหรืออัปโหลดรูปจากไฟล์ · บีบอัดอัตโนมัติ {PHOTO_SIZE}×{PHOTO_SIZE}px เพื่อประหยัดฐานข้อมูล</p>
+                <p className="text-slate-400 text-sm">ถ่ายจากกล้องหรืออัปโหลดรูปจากไฟล์ · รูปจะถูกเก็บแยกจากข้อมูลสมาชิก เพื่อลดปัญหาเอกสารเกิน 1MB</p>
               </div>
               <i className="ri-camera-lens-fill text-blue-300 text-3xl"></i>
             </div>
@@ -6806,7 +6887,7 @@
       const total = Math.max(stats.total || 0, 1);
       const completenessRate = Math.round(((stats.total - stats.incomplete) / total) * 100);
       const photoRate = Math.round((stats.withPhoto / total) * 100);
-      const activeRate = Math.round((stats.active / total) * 100);
+      const activeRate = Math.round(((stats.inClub || 0) / total) * 100);
 
       const issueCards = [
         { key: 'incomplete', title: 'ข้อมูลไม่ครบ', count: stats.incomplete, icon: 'ri-error-warning-fill', accent: 'blue', desc: 'ข้อมูลสำคัญยังกรอกไม่ครบ' },
@@ -6827,8 +6908,8 @@
       };
 
       const statCards = [
-        { title: 'สมาชิกทั้งหมด', value: stats.total, icon: 'ri-team-fill', iconWrap: 'bg-blue-50 text-blue-200', meta: 'จำนวนสมาชิกตามปีที่เลือก' },
-        { title: 'สมาชิกปัจจุบัน', value: stats.active, icon: 'ri-user-star-fill', iconWrap: 'bg-blue-50 text-blue-200', meta: `${activeRate}% ของสมาชิกทั้งหมด` },
+        { title: 'สมาชิกทั้งหมด', value: stats.total, icon: 'ri-team-fill', iconWrap: 'bg-blue-50 text-blue-200', meta: 'จำนวนข้อมูลตามปีที่เข้าชมรมที่เลือก' },
+        { title: 'สมาชิกปัจจุบัน', value: stats.active, icon: 'ri-user-star-fill', iconWrap: 'bg-blue-50 text-blue-200', meta: `${activeRate}% ที่ยังอยู่ในชมรม` },
         { title: 'มีรูปถ่าย', value: stats.withPhoto, icon: 'ri-image-fill', iconWrap: 'bg-blue-50 text-blue-200', meta: `${photoRate}% ของสมาชิกทั้งหมด` },
         { title: 'ข้อมูลสมบูรณ์', value: Math.max(stats.total - stats.incomplete, 0), icon: 'ri-shield-check-fill', iconWrap: 'bg-blue-50 text-blue-200', meta: `${completenessRate}% กรอกข้อมูลครบ` }
       ];
@@ -6846,7 +6927,7 @@
       const progressCards = [
         { title: 'ข้อมูลสมบูรณ์', subtitle: 'กรอกข้อมูลหลักครบ', value: completenessRate, icon: 'ri-checkbox-circle-fill', iconWrap: 'bg-blue-50 text-blue-200', bar: 'bg-blue-500' },
         { title: 'อัตรามีรูปถ่าย', subtitle: 'ช่วยให้ค้นหาง่ายขึ้น', value: photoRate, icon: 'ri-image-fill', iconWrap: 'bg-blue-50 text-blue-200', bar: 'bg-blue-500' },
-        { title: 'สมาชิกปัจจุบัน', subtitle: 'สถานะกำลังใช้งาน', value: activeRate, icon: 'ri-user-star-fill', iconWrap: 'bg-blue-50 text-blue-200', bar: 'bg-blue-500' }
+        { title: 'สมาชิกปัจจุบัน', subtitle: 'ยังไม่จบ / ไม่พ้นสภาพ', value: activeRate, icon: 'ri-user-star-fill', iconWrap: 'bg-blue-50 text-blue-200', bar: 'bg-blue-500' }
       ];
 
       const statusItems = [
@@ -6872,7 +6953,7 @@
                 <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3">
                   <div className="text-[11px] uppercase tracking-wide text-slate-400 font-extrabold">เลือกปีการศึกษา</div>
                   <select value={year} onChange={e => setYear(e.target.value)} className="mt-1 bg-transparent text-slate-950 font-black outline-none min-w-[190px]">
-                    {yearOptions.map(y => <option key={y} value={y}>{y === 'all' ? 'ทุกปีการศึกษา' : `ปีการศึกษา ${y}`}</option>)}
+                    {yearOptions.map(y => <option key={y} value={y}>{y === 'all' ? 'ทุกปีที่เข้าชมรม' : `ปีการศึกษา ${y}`}</option>)}
                   </select>
                 </div>
                 <div className="rounded-2xl bg-slate-950 text-white px-5 py-4 min-w-[190px]">
@@ -7219,7 +7300,7 @@
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
             <div className="rounded-[1.8rem] bg-slate-900 border border-slate-700 p-5 text-white"><div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-200 flex items-center justify-center text-2xl mb-4"><i className="ri-team-fill"></i></div><p className="text-sm text-slate-300 font-bold">สมาชิกปีนี้</p><p className="text-4xl font-extrabold mt-1">{stats.total}</p></div>
             <div className="rounded-[1.8rem] bg-slate-900 border border-slate-700 p-5 text-white"><div className="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-200 flex items-center justify-center text-2xl mb-4"><i className="ri-image-fill"></i></div><p className="text-sm text-slate-300 font-bold">มีรูปถ่าย</p><p className="text-4xl font-extrabold mt-1">{stats.withPhoto}</p></div>
-            <div className="rounded-[1.8rem] bg-slate-900 border border-slate-700 p-5 text-white"><div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-200 flex items-center justify-center text-2xl mb-4"><i className="ri-user-star-fill"></i></div><p className="text-sm text-slate-300 font-bold">สมาชิกปัจจุบัน</p><p className="text-4xl font-extrabold mt-1">{stats.active}</p></div>
+            <div className="rounded-[1.8rem] bg-slate-900 border border-slate-700 p-5 text-white"><div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-200 flex items-center justify-center text-2xl mb-4"><i className="ri-user-star-fill"></i></div><p className="text-sm text-slate-300 font-bold">ยังอยู่ในชมรม</p><p className="text-4xl font-extrabold mt-1">{stats.active}</p></div>
             <div className="rounded-[1.8rem] bg-slate-900 border border-slate-700 p-5 text-white"><div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-200 flex items-center justify-center text-2xl mb-4"><i className="ri-user-unfollow-fill"></i></div><p className="text-sm text-slate-300 font-bold">พ้นสภาพ</p><p className="text-4xl font-extrabold mt-1">{stats.dismissed}</p></div>
           </div>
 
@@ -7432,7 +7513,7 @@
                 <button onClick={() => setReportMode('directory')} className={`px-4 py-2 rounded-xl font-bold text-sm ${reportMode==='directory' ? 'bg-white text-blue-200 shadow-sm' : 'text-slate-500'}`}>ทำเนียบรูปภาพ</button>
                 <button onClick={() => setReportMode('sign')} className={`px-4 py-2 rounded-xl font-bold text-sm ${reportMode==='sign' ? 'bg-white text-blue-200 shadow-sm' : 'text-slate-500'}`}>ใบเซ็นชื่อ</button>
               </div>
-              <button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>พิมพ์ / Save PDF</button>
+              <button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>ดาวน์โหลด PDF / พิมพ์</button>
               <button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 font-bold">ปิด</button>
             </div>
           </div>
