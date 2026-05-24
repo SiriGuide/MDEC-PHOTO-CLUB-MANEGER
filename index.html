@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v73.4 Large Share Capture Duty PDF</title>
+  <title>MDEC Photo Club Center v73.8.1 Bigger Names Safe Margin</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -585,113 +585,115 @@
       box-shadow: 0 18px 50px rgba(15, 23, 42, .10);
     }
     .duty-week-pdf-sheet-preview {
-      width: min(1920px, calc(100vw - 24px));
-      max-width: 1920px;
+      width: min(1980px, calc(100vw - 22px));
+      max-width: 1980px;
       scroll-margin-top: 18px;
     }
     @media screen {
       .print-overlay-duty-preview {
-        background: #f4f7fb !important;
-        padding: 10px !important;
+        background: #eef4fb !important;
+        padding: 4px !important;
       }
       .duty-week-pdf-sheet-preview {
-        padding: 18px;
-        margin-bottom: 18px;
-        border-radius: 24px;
+        padding: 16px 18px 14px;
+        margin: 0 auto 14px;
+        border-radius: 20px;
       }
+
+      /* โหมดแคป: ลดส่วนรอง เพื่อดันข้อมูลหลักให้ใหญ่ขึ้น */
       .duty-week-pdf-head {
-        gap: 16px;
-        padding-bottom: 12px;
-        margin-bottom: 12px;
+        gap: 12px;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        border-bottom-width: 1px;
       }
       .duty-week-pdf-title {
-        font-size: clamp(30px, 2.25vw, 42px);
-        line-height: 1.08;
+        font-size: clamp(34px, 2.3vw, 46px);
+        line-height: 1.06;
       }
       .duty-week-pdf-subtitle {
-        font-size: clamp(15px, .95vw, 18px);
-        line-height: 1.35;
+        font-size: clamp(14px, .86vw, 17px);
+        line-height: 1.28;
+        margin-top: 3px;
       }
       .duty-week-pdf-logo {
-        width: 128px;
-        height: 54px;
+        width: 102px;
+        height: 42px;
+        padding: 5px 8px;
+        border-radius: 12px;
       }
-      .duty-week-pdf-meta {
-        gap: 8px;
-        margin-bottom: 12px;
+
+      /* ซ่อน meta/footnote ในหน้าแคป เพื่อให้คอลัมน์เด็กใหญ่ขึ้นทางสายตา */
+      .duty-week-pdf-meta,
+      .duty-week-pdf-footer {
+        display: none !important;
       }
-      .duty-week-pdf-meta-card {
-        padding: 10px 12px;
-        border-radius: 15px;
-      }
-      .duty-week-pdf-meta-label {
-        font-size: 10px;
-      }
-      .duty-week-pdf-meta-value {
-        font-size: 16px;
-      }
+
       .duty-week-grid {
-        gap: 8px;
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        gap: 9px;
+        align-items: start;
       }
       .duty-day-box {
-        border-radius: 16px;
+        border-radius: 18px;
       }
       .duty-day-head {
-        padding: 10px 11px;
-        min-height: 58px;
+        padding: 11px 10px 9px;
+        min-height: 56px;
       }
       .duty-day-label {
-        font-size: clamp(17px, 1.05vw, 21px);
+        font-size: clamp(20px, 1.08vw, 24px);
+        line-height: 1.04;
       }
       .duty-day-date {
-        margin-top: 3px;
-        font-size: clamp(10px, .67vw, 12px);
+        margin-top: 2px;
+        font-size: clamp(10px, .56vw, 11px);
+        line-height: 1.2;
       }
+
       .duty-role-block {
-        padding: 7px;
+        padding: 7px 6px;
       }
       .duty-role-name {
-        font-size: clamp(10px, .72vw, 13px);
-        margin-bottom: 5px;
-        line-height: 1.25;
+        font-size: clamp(9.8px, .58vw, 12px);
+        margin-bottom: 4px;
+        line-height: 1.15;
+        color: #0f3ea8;
       }
+
       .duty-pdf-person {
-        gap: 8px;
-        padding: 7px;
-        margin-top: 5px;
-        border-radius: 13px;
+        gap: 7px;
+        padding: 6px 6px;
+        margin-top: 4px;
+        border-radius: 14px;
+        align-items: center;
       }
       .duty-pdf-photo,
       .duty-pdf-initial {
-        width: clamp(38px, 2.6vw, 48px);
-        height: clamp(38px, 2.6vw, 48px);
+        width: clamp(40px, 2.1vw, 48px);
+        height: clamp(40px, 2.1vw, 48px);
         border-radius: 12px;
         font-size: 18px;
       }
       .duty-pdf-nick {
-        font-size: clamp(15px, 1vw, 18px);
-        line-height: 1.42;
-        min-height: 1.42em;
+        font-size: clamp(18px, 1.08vw, 22px);
+        line-height: 1.36;
+        min-height: 1.36em;
+        font-weight: 900;
       }
       .duty-pdf-name {
-        font-size: clamp(10px, .72vw, 12px);
-        line-height: 1.38;
-        min-height: 1.38em;
+        display: none !important;
       }
       .duty-pdf-room {
-        font-size: clamp(10px, .68vw, 11px);
-        line-height: 1.35;
-        min-height: 1.35em;
+        font-size: clamp(10.5px, .64vw, 12px);
+        line-height: 1.28;
+        min-height: 1.28em;
+        font-weight: 800;
       }
       .duty-pdf-empty {
         padding: 10px 6px;
         font-size: 11px;
         border-radius: 12px;
-      }
-      .duty-week-pdf-footer {
-        margin-top: 10px;
-        padding-top: 8px;
-        font-size: 10px;
       }
     }
     .duty-week-pdf-head {
@@ -6136,7 +6138,7 @@
                 </select>
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ค้นหาสัปดาห์ / วัน / ชื่อ / หมายเหตุ" className="px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 outline-none focus:border-blue-500 font-bold" />
                 <button onClick={exportCSV} className="px-4 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold"><i className="ri-file-excel-2-fill mr-1"></i> CSV</button>
-                <button onClick={() => setIsPrinting(true)} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold"><i className="ri-file-pdf-2-fill mr-1"></i> PDF แบบอ่านง่าย</button>
+                <button onClick={() => setIsPrinting(true)} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold"><i className="ri-screenshot-2-fill mr-1"></i> PDF / โหมดแคป</button>
               </div>
             </div>
 
@@ -6508,15 +6510,27 @@
         <div className="print-overlay print-overlay-duty-preview fixed inset-0 z-[100] bg-white overflow-y-auto p-3 md:p-5 animate-fade-in">
           <div className="no-print flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 pb-5 border-b">
             <div>
-              <h2 className="font-extrabold text-2xl">PDF ตารางเวร: 1 สัปดาห์ต่อ 1 แผ่น</h2>
-              <p className="text-slate-500">เหมาะสำหรับส่งให้เด็กดูในไลน์/แชท และใช้แคปหน้าจอส่งต่อได้เลย · โหมดหน้าจอขยายใหญ่ขึ้นเพื่อแคปส่งไลน์อ่านง่ายกว่าเดิม</p>
+              <h2 className="font-extrabold text-2xl">โหมดแคปหน้าจอ / PDF ตารางเวรทั้งสัปดาห์</h2>
+              <p className="text-slate-500">เหมาะสำหรับส่งให้เด็กดูในไลน์/แชท และใช้แคปหน้าจอส่งต่อได้เลย · โหมดแคปทั้งสัปดาห์หน้าเดียว 6 วันครบในภาพเดียว</p>
             </div>
             <div className="flex flex-col items-start md:items-end gap-2">
               <div className="flex gap-2">
                 <button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>ดาวน์โหลด PDF / พิมพ์</button>
                 <button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button>
               </div>
-              <div className="text-xs text-slate-500 font-bold">โหมดหน้าจอถูกขยายสำหรับแคปส่งไลน์ ส่วนตอนกดพิมพ์/Save as PDF จะยังคุมเป็น A4 แนวนอน</div>
+              <div className="text-xs text-slate-500 font-bold">นี่คือหน้าโหมดแคปแล้ว: ซ่อนแถบปุ่มด้านบนตอนแคป หรือกดดาวน์โหลด PDF / พิมพ์ เพื่อ Save as PDF</div>
+            </div>
+          </div>
+
+          <div className="no-print mb-4 rounded-[1.5rem] bg-blue-50 border border-blue-100 px-5 py-4 text-blue-900">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div>
+                <div className="font-black text-lg"><i className="ri-screenshot-2-fill mr-2"></i>โหมดแคปหน้าจออยู่ตรงนี้</div>
+                <div className="text-sm font-bold text-blue-700 mt-1">ตารางด้านล่างคือภาพสำหรับแคปส่งไลน์: 1 สัปดาห์ / 1 หน้า / 6 วันครบในภาพเดียว • ชื่อเล่นใหญ่ขึ้นนิดนึง แต่ตารางไม่กินขอบ</div>
+              </div>
+              <div className="text-xs font-extrabold bg-white border border-blue-100 rounded-2xl px-4 py-2 text-blue-700">
+                แนะนำ: เปิดเต็มหน้าจอก่อนแคป จะคมและอ่านง่ายกว่า
+              </div>
             </div>
           </div>
 
