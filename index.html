@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v72.8 Numbered Duty Tables PDF Export</title>
+  <title>MDEC Photo Club Center v72.9 Duty UX + Photo PDF</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -5341,16 +5341,16 @@
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
               <div>
                 <h3 className="text-xl md:text-2xl font-extrabold text-slate-950"><i className="ri-calendar-schedule-fill text-blue-600 mr-2"></i>จัดการตารางเวรตอนเช้า</h3>
-                <p className="text-slate-500">แยกงานเป็นขั้นตอน เพื่อให้หน้าไม่รกและใช้งานบนมือถือได้ง่ายขึ้น</p>
+                <p className="text-slate-500">ทำงานเป็นขั้นตอนแบบเข้าใจง่าย: 1 เลือกสัปดาห์ 2 ตั้งหน้าที่ 3 เลือกคนลงช่อง 4 ดูย้อนหลัง / ออก PDF</p>
               </div>
               <button type="button" onClick={autoFillCurrentDutyForm} className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-700"><i className="ri-magic-fill mr-1"></i>จัดเวรอัตโนมัติ</button>
             </div>
             <div className="duty-step-nav">
               {[
-                ['planner','จัดเวรรายวัน','เลือกวันและจัดคน'],
-                ['roles','ตำแหน่งเวร','ตั้งหน้าที่และจำนวนคน'],
-                ['templates','ตาราง 1/2/3','เรียกใช้และบันทึกแบบ'],
-                ['list','รายการย้อนหลัง','เช็คเวรและจัดการตาราง']
+                ['planner','1) จัดคนลงตาราง','หน้าหลักสำหรับเลือกคนลงเวร'],
+                ['roles','2) ตั้งตำแหน่ง','กำหนดหน้าที่และจำนวนคน'],
+                ['templates','3) แบบตาราง','บันทึก/เรียกใช้ ตาราง 1, 2, 3...'],
+                ['list','4) ย้อนหลัง / PDF','เช็กรายการย้อนหลังและออกเอกสาร']
               ].map(([key,title,desc]) => (
                 <button key={key} type="button" onClick={() => setDutyManagePanel(key)} className={`duty-step-btn ${dutyManagePanel === key ? 'is-active' : ''}`}>
                   <span className="step-title">{title}</span>
@@ -5521,7 +5521,7 @@
                 <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
                   <div>
                     <h4 className="duty-section-title text-lg text-white"><i className="ri-table-2 text-blue-300"></i>จัดตารางเวรแบบรายสัปดาห์</h4>
-                    <p className="text-sm text-slate-300">มองแบบตารางทั้งอาทิตย์: แถวคือหน้าที่ / คอลัมน์คือวัน จัดชื่อได้ครบจันทร์–เสาร์ในหน้าจอเดียว</p>
+                    <p className="text-sm text-slate-300">มองทั้งสัปดาห์ในหน้าเดียว: เลือกสัปดาห์ก่อน แล้วกดช่อง "เลือกชื่อ" เพื่อใส่นักศึกษาลงเวรได้ทันที</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <span className="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-extrabold text-slate-100">รวม {dutyDays.reduce((sum, day) => sum + countAssignmentsForDay(day.key), 0)} คน</span>
@@ -5531,16 +5531,16 @@
 
                 <div className="mb-4 grid sm:grid-cols-3 gap-3">
                   <div className="rounded-2xl bg-slate-900 border border-slate-700 p-3">
-                    <div className="text-xs font-extrabold text-slate-400">1. ตั้งตำแหน่ง</div>
-                    <div className="text-sm font-bold text-slate-200">เพิ่ม/ลดหน้าที่ด้านบนก่อน เช่น ภาพนิ่ง วิดีโอ เครื่องเสียง</div>
+                    <div className="text-xs font-extrabold text-slate-400">เริ่มต้นง่าย ๆ</div>
+                    <div className="text-sm font-bold text-slate-200">ถ้าจะใช้งานเร็ว ให้เลือกสัปดาห์ แล้วกด “เลือกชื่อ” ในช่องว่างได้เลย</div>
                   </div>
                   <div className="rounded-2xl bg-slate-900 border border-slate-700 p-3">
-                    <div className="text-xs font-extrabold text-slate-400">2. จัดรายชื่อทั้งสัปดาห์</div>
-                    <div className="text-sm font-bold text-slate-200">กดช่องว่างในตารางเพื่อเลือกนักศึกษาได้ทันที</div>
+                    <div className="text-xs font-extrabold text-slate-400">เลือกคนลงช่อง</div>
+                    <div className="text-sm font-bold text-slate-200">แต่ละช่องคือ 1 คน กดเลือกชื่อ / ล้างชื่อได้ทันที</div>
                   </div>
                   <div className="rounded-2xl bg-slate-900 border border-slate-700 p-3">
-                    <div className="text-xs font-extrabold text-slate-400">3. เช็กภาพรวม</div>
-                    <div className="text-sm font-bold text-slate-200">ระบบยังเตือนชื่อซ้ำในสัปดาห์เดียวกันเหมือนเดิม</div>
+                    <div className="text-xs font-extrabold text-slate-400">ตรวจสอบก่อนบันทึก</div>
+                    <div className="text-sm font-bold text-slate-200">เช็กชื่อซ้ำ ช่องที่ยังว่าง และกดบันทึกตารางทั้งสัปดาห์ด้านล่าง</div>
                   </div>
                 </div>
 
@@ -5634,7 +5634,7 @@
                 </div>
 
                 <div className="mt-4 rounded-2xl bg-slate-900 border border-slate-700 px-4 py-3 text-sm text-slate-200">
-                  <b>ทิปใช้งาน:</b> ถ้าจอเล็ก ตารางจะเลื่อนซ้าย–ขวาได้ เหมาะกับจัดบนคอมเป็นหลัก และยังใช้ popup เลือกนักศึกษาแบบกรองหลายรายการเหมือนเดิม
+                  <b>ทิปใช้งาน:</b> ถ้าอยากทำงานง่ายที่สุด ให้เริ่มจากหน้า “จัดคนลงตาราง” ก่อน แล้วค่อยไปหน้า “ตั้งตำแหน่ง” เมื่อต้องการเพิ่ม/ลดหน้าที่ ส่วน PDF แบบอ่านง่ายพร้อมรูปนักศึกษาอยู่ที่หน้า “ย้อนหลัง / PDF”
                 </div>
               </div>
               </>)}
@@ -5678,7 +5678,7 @@
                 </select>
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ค้นหาสัปดาห์ / วัน / ชื่อ / หมายเหตุ" className="px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 outline-none focus:border-blue-500 font-bold" />
                 <button onClick={exportCSV} className="px-4 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold"><i className="ri-file-excel-2-fill mr-1"></i> CSV</button>
-                <button onClick={() => setIsPrinting(true)} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold"><i className="ri-file-pdf-2-fill mr-1"></i> PDF</button>
+                <button onClick={() => setIsPrinting(true)} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold"><i className="ri-file-pdf-2-fill mr-1"></i> PDF แบบอ่านง่าย</button>
               </div>
             </div>
 
@@ -5980,45 +5980,160 @@
             </div>
           )}
 
-          {isPrinting && ReactDOM.createPortal(<PrintDutySchedule duties={visibleDuties} yearText={year === 'all' ? 'ทุกปีที่เข้าชมรม' : year} onClose={() => setIsPrinting(false)} />, document.body)}
+          {isPrinting && ReactDOM.createPortal(<PrintDutySchedule duties={visibleDuties} yearText={year === 'all' ? 'ทุกปีที่เข้าชมรม' : year} students={students} onClose={() => setIsPrinting(false)} />, document.body)}
         </div>
       );
     }
 
-    function PrintDutySchedule({ duties, yearText, onClose }) {
+    function PrintDutySchedule({ duties, yearText, students = [], onClose }) {
       const reportDate = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
       const sorted = [...duties].sort((a,b) => String(a.date || '').localeCompare(String(b.date || '')));
-      const allRoles = [];
-      const seen = new Set();
-      sorted.forEach(d => getDutyRoles(d).forEach(role => { if (!seen.has(role.key)) { seen.add(role.key); allRoles.push(role); } }));
-      const rolesForHeader = allRoles.length ? allRoles : dutyRoles;
+      const studentMap = new Map((students || []).map(s => [s.id, s]));
+
+      const resolvePerson = (person) => {
+        if (!person) return null;
+        if (typeof person === 'string') {
+          const s = studentMap.get(person);
+          return s ? {
+            id: s.id,
+            studentId: s.studentId || '',
+            fullName: s.fullName || '',
+            nickname: s.nickname || '',
+            level: s.level || '',
+            group: s.group || '',
+            major: s.major || '',
+            photo: s.photo || null
+          } : { id: person, fullName: '-', nickname: '-', photo: null, level: '', group: '' };
+        }
+        const s = studentMap.get(person.id);
+        return {
+          ...person,
+          studentId: person.studentId || s?.studentId || '',
+          fullName: person.fullName || s?.fullName || '',
+          nickname: person.nickname || s?.nickname || '',
+          level: person.level || s?.level || '',
+          group: person.group || s?.group || '',
+          major: person.major || s?.major || '',
+          photo: person.photo || s?.photo || null
+        };
+      };
+
+      const initialsOf = (person) => String(person?.nickname || person?.fullName || '?').trim().charAt(0) || '?';
+      const countPeopleForDay = (weekly, dayKey, roles) => roles.reduce((sum, role) => sum + (((weekly?.[dayKey]?.[role.key]) || []).filter(Boolean).length), 0);
+      const totalAssignedForDuty = (weekly, roles) => dutyDays.reduce((sum, day) => sum + countPeopleForDay(weekly, day.key, roles), 0);
+
       return (
         <div className="print-overlay fixed inset-0 z-[100] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in">
           <div className="no-print flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 pb-5 border-b">
-            <div><h2 className="font-extrabold text-2xl">ดาวน์โหลด / พิมพ์ตารางเวร PDFตอนเช้า</h2><p className="text-slate-500">รายงานนี้แสดงตามตัวกรองในหน้าตารางเวร</p></div>
-            <div className="flex gap-2"><button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>ดาวน์โหลด PDF / พิมพ์</button><button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button></div>
-          </div>
-          <section className="report-page">
-            <div className="report-header">
-              <div className="report-brand">
-                <div className="report-logo"><img src={MDEC_LOGO} alt="MDEC" /></div>
-                <div>
-                  <div className="report-title">ตารางเวรตอนเช้าประจำสัปดาห์ จันทร์–เสาร์</div>
-                  <div className="report-subtitle">ชมรม MDEC Photo Club • ภายใต้การดูแลของศูนย์มัลติมีเดียทางการศึกษา</div>
-                </div>
-              </div>
-              <div className="report-meta"><div><strong>ปีการศึกษา:</strong> {yearText}</div><div><strong>จำนวนสัปดาห์:</strong> {sorted.length}</div><div><strong>วันที่ออกรายงาน:</strong> {reportDate}</div></div>
+            <div>
+              <h2 className="font-extrabold text-2xl">ส่งออกตารางเวร PDF แบบอ่านง่าย</h2>
+              <p className="text-slate-500">โหมดนี้จัดหน้าใหม่ให้อ่านง่ายขึ้น และแสดงรูปนักศึกษาในเอกสารด้วย (ถ้ามีรูปในฐานข้อมูล)</p>
             </div>
-            <div className="report-note"><span>ตำแหน่งเวรสามารถกำหนดเองได้ตามตารางแต่ละสัปดาห์</span><span>หมายเหตุ: ใช้ตาราง 1/2/3 สลับกันทุก 1 สัปดาห์ได้</span></div>
-            <table className="print-table">
-              <thead><tr><th style={{width:'120px'}}>สัปดาห์</th><th style={{width:'78px'}}>วัน</th><th style={{width:'65px'}}>ตาราง</th>{rolesForHeader.map(role => <th key={role.key}>{role.shortTitle || role.title}</th>)}<th style={{width:'95px'}}>หมายเหตุ</th></tr></thead>
-              <tbody>{sorted.flatMap(d => {
-                const weekly = getDutyWeeklyAssignments(d);
-                return dutyDays.map(day => <tr key={`${d.id || d.date}-${day.key}`}><td><strong>{formatThaiWeekRange(d.date)}</strong></td><td>{day.shortLabel}<br/><span className="print-muted">{formatThaiDate(getDutyDayDate(d.date, day.key))}</span></td><td>{dutyTableLabel(d.scheduleType)}</td>{rolesForHeader.map(role => <td key={role.key}>{dailyDutyRoleText(weekly, day.key, role.key)}</td>)}<td>{d.note || '-'}</td></tr>);
-              })}</tbody>
-            </table>
-            <div className="print-footer"><div>Generated by MDEC Photo Club Registry</div><div className="signature-zone"><div className="signature-line">ผู้จัดทำ</div><div className="signature-line">ผู้ตรวจสอบ</div></div></div>
-          </section>
+            <div className="flex gap-2">
+              <button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>ดาวน์โหลด PDF / พิมพ์</button>
+              <button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button>
+            </div>
+          </div>
+
+          {sorted.length === 0 ? (
+            <section className="report-page rounded-[2rem] border border-slate-200 p-10 text-center">
+              <div className="text-2xl font-extrabold text-slate-900">ยังไม่มีตารางเวรที่ตรงกับตัวกรอง</div>
+              <div className="text-slate-500 mt-2">กลับไปที่หน้ารายการย้อนหลัง แล้วเลือกปีการศึกษา / ตารางที่ต้องการก่อนออก PDF</div>
+            </section>
+          ) : sorted.map((duty, dutyIndex) => {
+            const roles = getDutyRoles(duty).filter(role => getRoleSlotCount(role, duty.roleSlots) > 0);
+            const weekly = getDutyWeeklyAssignments(duty);
+            const totalPeople = totalAssignedForDuty(weekly, roles);
+            return (
+              <section key={duty.id || duty.date || dutyIndex} className="report-page bg-white border border-slate-200 rounded-[2rem] p-5 md:p-7 mb-6" style={{ pageBreakAfter: dutyIndex === sorted.length - 1 ? 'auto' : 'always', breakAfter: dutyIndex === sorted.length - 1 ? 'auto' : 'page' }}>
+                <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-4 border-b border-slate-200 pb-5 mb-5">
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-[88px] h-[52px] rounded-2xl bg-slate-50 border border-slate-200 p-2 flex items-center justify-center shrink-0"><img src={MDEC_LOGO} alt="MDEC" className="max-h-full max-w-full object-contain" /></div>
+                    <div className="min-w-0">
+                      <div className="text-xs font-extrabold uppercase tracking-[0.22em] text-blue-700">MDEC MORNING DUTY PDF</div>
+                      <h3 className="text-2xl md:text-3xl font-extrabold text-slate-950 leading-tight">ตารางเวรตอนเช้าประจำสัปดาห์</h3>
+                      <p className="text-slate-600 mt-1">{formatThaiWeekRange(duty.date)} · {dutyTableLabel(duty.scheduleType)} · ปีการศึกษา {duty.academicYear || yearText}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 xl:min-w-[460px]">
+                    <div className="rounded-2xl bg-blue-50 border border-blue-100 px-4 py-3"><div className="text-[11px] font-extrabold text-blue-700 uppercase">ปีการศึกษา</div><div className="text-lg font-extrabold text-slate-950">{duty.academicYear || yearText}</div></div>
+                    <div className="rounded-2xl bg-emerald-50 border border-emerald-100 px-4 py-3"><div className="text-[11px] font-extrabold text-emerald-700 uppercase">ตารางที่ใช้</div><div className="text-lg font-extrabold text-slate-950">{dutyTableLabel(duty.scheduleType)}</div></div>
+                    <div className="rounded-2xl bg-violet-50 border border-violet-100 px-4 py-3"><div className="text-[11px] font-extrabold text-violet-700 uppercase">มอบหมายแล้ว</div><div className="text-lg font-extrabold text-slate-950">{totalPeople} คน</div></div>
+                    <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3"><div className="text-[11px] font-extrabold text-slate-500 uppercase">ออกรายงาน</div><div className="text-sm font-extrabold text-slate-950">{reportDate}</div></div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 mb-5 flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-sm">
+                  <div className="font-bold text-slate-700">หมายเหตุประจำสัปดาห์: <span className="text-slate-950">{duty.note || '-'}</span></div>
+                  <div className="text-slate-500 font-semibold">เอกสารนี้แสดงรูปสมาชิกจากฐานข้อมูล ถ้าไม่มีรูปจะแสดงอักษรย่อแทน</div>
+                </div>
+
+                <div className="grid lg:grid-cols-2 2xl:grid-cols-3 gap-4">
+                  {dutyDays.map(day => {
+                    const dayTotal = countPeopleForDay(weekly, day.key, roles);
+                    return (
+                      <div key={day.key} className="rounded-[1.6rem] border border-slate-200 bg-white overflow-hidden break-inside-avoid">
+                        <div className="px-4 py-3 bg-slate-950 text-white border-b border-slate-200">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <div className="text-lg font-extrabold leading-tight">{day.label}</div>
+                              <div className="text-xs text-slate-300 font-bold mt-1">{formatThaiDate(getDutyDayDate(duty.date, day.key))}</div>
+                            </div>
+                            <div className="inline-flex px-3 py-1 rounded-full bg-white/10 text-xs font-extrabold">{dayTotal} คน</div>
+                          </div>
+                        </div>
+                        <div className="p-4 space-y-3">
+                          {roles.length ? roles.map(role => {
+                            const people = ((weekly?.[day.key]?.[role.key]) || []).filter(Boolean).map(resolvePerson);
+                            return (
+                              <div key={role.key} className="rounded-2xl border border-slate-200 bg-slate-50 p-3 break-inside-avoid">
+                                <div className="flex items-center justify-between gap-3 mb-3">
+                                  <div>
+                                    <div className="text-sm font-extrabold text-slate-950">{role.title || role.shortTitle || '-'}</div>
+                                    <div className="text-[11px] font-bold text-slate-500">{role.shortTitle || role.title || '-'} • {Math.max(getRoleSlotCount(role, duty.roleSlots), people.length)} คน/วัน</div>
+                                  </div>
+                                  <div className="text-[11px] font-extrabold px-2 py-1 rounded-full bg-white border border-slate-200 text-slate-600">{people.length} คน</div>
+                                </div>
+
+                                {people.length ? (
+                                  <div className="space-y-2">
+                                    {people.map((person, idx) => (
+                                      <div key={`${role.key}-${day.key}-${person?.id || idx}`} className="rounded-2xl bg-white border border-slate-200 px-3 py-2.5 flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center">
+                                          {person?.photo ? <img src={person.photo} alt={person.nickname || person.fullName || 'student'} className="w-full h-full object-cover" /> : <div className="text-lg font-extrabold text-slate-600">{initialsOf(person)}</div>}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                          <div className="text-base font-extrabold text-slate-950 leading-tight truncate">{person?.nickname || person?.fullName || '-'}</div>
+                                          <div className="text-xs font-bold text-slate-600 truncate">{person?.fullName || '-'}</div>
+                                          <div className="text-[11px] text-slate-500 mt-1 truncate">{[person?.level, person?.group].filter(Boolean).join(' / ') || '-'}{person?.studentId ? ` • รหัส ${person.studentId}` : ''}</div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-3 py-3 text-sm text-slate-400 font-bold text-center">ยังไม่ได้เลือกนักศึกษา</div>
+                                )}
+                              </div>
+                            );
+                          }) : (
+                            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center text-slate-500 font-bold">สัปดาห์นี้ยังไม่ได้ตั้งตำแหน่งเวร</div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-5 pt-4 border-t border-slate-200 flex items-center justify-between gap-4 text-xs text-slate-500">
+                  <div>Generated by MDEC Photo Club Center</div>
+                  <div className="flex gap-8 text-slate-700 font-bold">
+                    <div>ผู้จัดทำ ____________________</div>
+                    <div>ผู้ตรวจสอบ ____________________</div>
+                  </div>
+                </div>
+              </section>
+            );
+          })}
         </div>
       );
     }
