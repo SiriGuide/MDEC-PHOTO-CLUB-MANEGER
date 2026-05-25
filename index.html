@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v73.8.1 Bigger Names Safe Margin</title>
+  <title>MDEC Photo Club Center v73.8.3 Real Timetable UI</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -2839,6 +2839,37 @@
       { key: 'sat', label: 'วันเสาร์', shortLabel: 'เสาร์', offset: 5 }
     ];
 
+    const classPeriodOptions = [
+      { key: 'morning', label: 'เช้า / เข้าแถว', short: 'เช้า', time: '07:30-08:00' },
+      { key: 'p1', label: 'คาบ 1', short: 'คาบ 1', time: '08:00-08:50' },
+      { key: 'p2', label: 'คาบ 2', short: 'คาบ 2', time: '08:50-09:40' },
+      { key: 'p3', label: 'คาบ 3', short: 'คาบ 3', time: '09:50-10:40' },
+      { key: 'p4', label: 'คาบ 4', short: 'คาบ 4', time: '10:40-11:30' },
+      { key: 'p5', label: 'คาบ 5', short: 'คาบ 5', time: '12:30-13:20' },
+      { key: 'p6', label: 'คาบ 6', short: 'คาบ 6', time: '13:20-14:10' },
+      { key: 'p7', label: 'คาบ 7', short: 'คาบ 7', time: '14:20-15:10' },
+      { key: 'p8', label: 'คาบ 8', short: 'คาบ 8', time: '15:10-16:00' }
+    ];
+
+    const emptyFreePeriods = () => dutyDays.reduce((acc, day) => ({ ...acc, [day.key]: [] }), {});
+
+    const normalizeFreePeriods = (value) => {
+      const base = emptyFreePeriods();
+      if (!value || typeof value !== 'object') return base;
+      dutyDays.forEach(day => {
+        const arr = Array.isArray(value[day.key]) ? value[day.key] : [];
+        base[day.key] = arr.filter(Boolean);
+      });
+      return base;
+    };
+
+    const freePeriodText = (student, dayKey) => {
+      const free = normalizeFreePeriods(student?.freePeriods);
+      const keys = free[dayKey] || [];
+      if (!keys.length) return 'ยังไม่ระบุตารางสอน/คาบว่าง';
+      return keys.map(key => classPeriodOptions.find(p => p.key === key)?.short || key).join(', ');
+    };
+
     const dutyAttendanceOptions = [
       { key: 'late', label: 'สาย', icon: 'ri-time-fill', pill: 'bg-amber-900 text-amber-100 border-amber-700', button: 'bg-amber-500 hover:bg-amber-600 text-slate-950' },
       { key: 'absent', label: 'ขาด', icon: 'ri-close-circle-fill', pill: 'bg-rose-900 text-rose-100 border-rose-700', button: 'bg-rose-600 hover:bg-rose-700 text-white' },
@@ -5255,7 +5286,7 @@
       const [editingId, setEditingId] = useState(null);
       const [saving, setSaving] = useState(false);
       const [isPrinting, setIsPrinting] = useState(false);
-      const [studentPicker, setStudentPicker] = useState({ open:false, dayKey:'', roleKey:'', slot:0, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'' });
+      const [studentPicker, setStudentPicker] = useState({ open:false, dayKey:'', roleKey:'', slot:0, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'morning' });
       const [recentPickerStudentIds, setRecentPickerStudentIds] = useState(() => {
         try {
           const raw = localStorage.getItem('mdec_recent_duty_picker_students');
@@ -5313,7 +5344,11 @@
       const pickerSelectedGroups = Array.isArray(studentPicker.groups) ? studentPicker.groups : [];
       const pickerSelectedInterests = Array.isArray(studentPicker.interests) ? studentPicker.interests : [];
       const pickerGroupSearch = String(studentPicker.groupSearch || '').trim().toLowerCase();
-      const pickerHasFilters = !!studentPicker.query || pickerSelectedYears.length || pickerSelectedLevels.length || pickerSelectedGroups.length || pickerSelectedInterests.length;
+      const pickerFreeOnly = !!studentPicker.freeOnly;
+      const pickerFreePeriod = studentPicker.freePeriod || 'morning';
+      const pickerDayLabel = dutyDays.find(d => d.key === studentPicker.dayKey)?.label || '';
+      const pickerFreePeriodLabel = classPeriodOptions.find(p => p.key === pickerFreePeriod)?.label || pickerFreePeriod;
+      const pickerHasFilters = !!studentPicker.query || pickerSelectedYears.length || pickerSelectedLevels.length || pickerSelectedGroups.length || pickerSelectedInterests.length || pickerFreeOnly;
       const pickerYearOptions = useMemo(() => Array.from(new Set(activeStudents.map(s => String(s.academicYear || currentAcademicYear || '').trim()).filter(Boolean))).sort((a,b) => String(b).localeCompare(String(a), 'th')), [activeStudents, currentAcademicYear]);
       const pickerLevelOptions = useMemo(() => {
         const base = activeStudents.filter(s => !pickerSelectedYears.length || pickerSelectedYears.includes(String(s.academicYear || currentAcademicYear || '').trim()));
@@ -5373,9 +5408,11 @@
           const matchLevel = !pickerSelectedLevels.length || pickerSelectedLevels.includes(level);
           const matchGroup = !pickerSelectedGroups.length || pickerSelectedGroups.includes(group);
           const matchInterest = !pickerSelectedInterests.length || pickerSelectedInterests.includes(interest);
-          return matchQuery && matchYear && matchLevel && matchGroup && matchInterest;
+          const free = normalizeFreePeriods(s.freePeriods);
+          const matchFree = !pickerFreeOnly || ((free[studentPicker.dayKey] || []).includes(pickerFreePeriod));
+          return matchQuery && matchYear && matchLevel && matchGroup && matchInterest && matchFree;
         });
-      }, [activeStudents, currentAcademicYear, studentPicker.query, pickerSelectedYears.join('|'), pickerSelectedLevels.join('|'), pickerSelectedGroups.join('|'), pickerSelectedInterests.join('|')]);
+      }, [activeStudents, currentAcademicYear, studentPicker.query, pickerSelectedYears.join('|'), pickerSelectedLevels.join('|'), pickerSelectedGroups.join('|'), pickerSelectedInterests.join('|'), pickerFreeOnly, pickerFreePeriod, studentPicker.dayKey]);
       const recentPickerStudents = useMemo(() => recentPickerStudentIds.map(id => studentMap.get(id)).filter(s => s && !['dismissed','graduated'].includes(s.status || 'active')).slice(0, 8), [recentPickerStudentIds, studentMap]);
 
       const attendanceDuty = useMemo(() => duties.find(d => d.id === attendanceDutyId) || null, [duties, attendanceDutyId]);
@@ -5455,12 +5492,12 @@
       };
 
       const openStudentPicker = (dayKey, roleKey, slot) => {
-        setStudentPicker({ open:true, dayKey, roleKey, slot, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'' });
+        setStudentPicker({ open:true, dayKey, roleKey, slot, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'morning' });
         setStudentPickerFiltersOpen(false);
       };
 
       const closeStudentPicker = () => {
-        setStudentPicker(prev => ({ ...prev, open:false, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'' }));
+        setStudentPicker(prev => ({ ...prev, open:false, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'morning' }));
         setStudentPickerFiltersOpen(false);
       };
 
@@ -5476,7 +5513,7 @@
       };
 
       const resetStudentPickerFilters = () => {
-        setStudentPicker(prev => ({ ...prev, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'' }));
+        setStudentPicker(prev => ({ ...prev, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'morning' }));
       };
 
       useEffect(() => {
@@ -6312,7 +6349,7 @@
                 <div className="px-5 md:px-6 py-4 border-b border-slate-100 flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                   <div>
                     <h3 className="text-2xl font-extrabold text-slate-950"><i className="ri-user-search-fill text-blue-600 mr-2"></i>ค้นหารายชื่อนักศึกษา</h3>
-                    <p className="text-slate-500 mt-1">เลือกได้ทุกปีที่เข้าชมรม และกรองหลายรายการได้แบบเว็บสต็อก</p>
+                    <p className="text-slate-500 mt-1">เลือกได้ทุกปีที่เข้าชมรม กรองหลายรายการได้ และใช้ตารางเรียน/คาบว่างช่วยคัดคนได้</p>
                   </div>
                   <button type="button" onClick={closeStudentPicker} className="px-4 py-2 rounded-2xl bg-slate-100 text-slate-700 font-bold self-start">ปิด</button>
                 </div>
@@ -6351,6 +6388,24 @@
                           </div>
                         </div>
                       ) : null}
+
+                      <div className="rounded-2xl bg-blue-50 border border-blue-100 p-3">
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                          <div>
+                            <div className="text-[11px] font-black uppercase tracking-wide text-blue-700">ตัวช่วยจากตารางสอน / คาบว่าง</div>
+                            <div className="text-sm font-bold text-blue-900 mt-1">ช่องนี้กำลังเลือกของ {pickerDayLabel || 'วันที่เลือก'} กรองคนที่ว่างตามคาบที่ระบุได้</div>
+                          </div>
+                          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                            <select value={pickerFreePeriod} onChange={e => setStudentPicker(prev => ({ ...prev, freePeriod: e.target.value }))} className="px-3 py-2 rounded-xl bg-white border border-blue-200 text-blue-950 font-extrabold text-sm outline-none focus:border-blue-500">
+                              {classPeriodOptions.map(period => <option key={period.key} value={period.key}>{period.label}</option>)}
+                            </select>
+                            <button type="button" onClick={() => setStudentPicker(prev => ({ ...prev, freeOnly: !prev.freeOnly }))} className={`px-4 py-2 rounded-xl border text-sm font-extrabold ${pickerFreeOnly ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-700 border-blue-200 hover:border-blue-400'}`}>
+                              {pickerFreeOnly ? `กำลังกรอง: ว่าง ${pickerFreePeriodLabel}` : 'เปิดกรองคนว่าง'}
+                            </button>
+                          </div>
+                        </div>
+                        {pickerFreeOnly && <div className="mt-2 text-xs text-blue-700 font-bold">แสดงเฉพาะนักศึกษาที่ติ๊กว่าว่างใน {pickerDayLabel} / {pickerFreePeriodLabel}</div>}
+                      </div>
 
                       <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-3">
                         <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3">
@@ -6440,6 +6495,7 @@
                                 <div className="text-sm font-bold text-slate-600 truncate leading-tight">{s.fullName || '-'}</div>
                                 <div className="text-xs text-slate-500 mt-1.5 truncate">รุ่น {s.academicYear || '-'} • รหัส {s.studentId || '-'} • {s.level || '-'} / {s.group || '-'}</div>
                                 <div className="text-xs font-semibold text-blue-600 mt-1 truncate">{s.major || '-'}{s.actualInterest ? ` • ${s.actualInterest}` : ''}</div>
+                                <div className="text-[11px] font-bold text-emerald-700 mt-1 truncate"><i className="ri-calendar-check-fill mr-1"></i>{freePeriodText(s, studentPicker.dayKey)}</div>
                               </div>
                               {isActive && <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 mt-3.5"><i className="ri-check-line text-lg"></i></div>}
                             </div>
@@ -7110,6 +7166,7 @@
         statusReason: student?.statusReason || '',
         actualInterest: student?.actualInterest || '',
         staffNotes: student?.staffNotes || '',
+        freePeriods: normalizeFreePeriods(student?.freePeriods),
         photo: student?.photo || null,
         photoMeta: student?.photoMeta || null
       }));
@@ -7129,6 +7186,15 @@
       }, [cameraOn]);
 
       const setField = (name, value) => setFormData(prev => ({ ...prev, [name]: value }));
+
+      const toggleFreePeriod = (dayKey, periodKey) => {
+        setFormData(prev => {
+          const current = normalizeFreePeriods(prev.freePeriods);
+          const list = current[dayKey] || [];
+          const nextList = list.includes(periodKey) ? list.filter(key => key !== periodKey) : [...list, periodKey];
+          return { ...prev, freePeriods: { ...current, [dayKey]: nextList } };
+        });
+      };
 
       const startCamera = async () => {
         try {
@@ -7323,16 +7389,111 @@
               <TextArea label="หมายเหตุเจ้าหน้าที่" value={formData.staffNotes} onChange={v => setField('staffNotes', v)} className="md:col-span-2" />
               {formData.status !== 'active' && <Input label="เหตุผลสถานะ" value={formData.statusReason} onChange={v => setField('statusReason', v)} className="md:col-span-2" />}
             </div>
-          </div>
 
-          <div className="xl:sticky xl:top-6 h-fit bg-slate-950 rounded-[2rem] soft-shadow p-5 text-white no-print">
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <h3 className="font-extrabold text-xl">รูปถ่ายสมาชิก</h3>
-                <p className="text-slate-400 text-sm">ถ่ายจากกล้องหรืออัปโหลดรูปจากไฟล์ · รูปจะถูกเก็บแยกจากข้อมูลสมาชิก เพื่อลดปัญหาเอกสารเกิน 1MB</p>
-              </div>
-              <i className="ri-camera-lens-fill text-blue-300 text-3xl"></i>
-            </div>
+            <SectionTitle icon="ri-calendar-check-fill" title="ตารางสอน / คาบว่าง" desc="ออกแบบให้เหมือนตารางเรียนจริง ใช้ติ๊กช่วงเวลาที่นักศึกษาว่าง เพื่อช่วยคัดคนลงตารางเวรได้ง่ายขึ้น" />
+            {(() => {
+              const free = normalizeFreePeriods(formData.freePeriods);
+              const totalSelected = dutyDays.reduce((sum, day) => sum + ((free[day.key] || []).length), 0);
+              return (
+                <div className="rounded-[1.7rem] border border-slate-200 bg-slate-50 p-4">
+                  <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
+                    <div>
+                      <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-700">Real Timetable UI</div>
+                      <div className="text-lg font-extrabold text-slate-950 mt-1">ติ๊กในช่องที่ “ว่าง” ให้เหมือนการดูตารางเรียนจริง</div>
+                      <div className="text-sm text-slate-600 mt-1">ถ้าช่วงไหนมีเรียน ไม่ต้องติ๊ก • ถ้าช่วงไหนช่วยงานได้ ให้กดเลือกเป็นช่องสีน้ำเงิน</div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <div className="px-3 py-2 rounded-2xl bg-white border border-slate-200 text-sm font-extrabold text-slate-700">
+                        เลือกไว้แล้ว {totalSelected} ช่วง
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, freePeriods: emptyFreePeriods() }))}
+                        className="px-4 py-2 rounded-2xl bg-white border border-rose-200 text-rose-700 font-extrabold hover:bg-rose-50"
+                      >
+                        ล้างทั้งตาราง
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-[980px] w-full border-collapse">
+                        <thead>
+                          <tr className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
+                            <th className="text-left p-3 border-b border-white/10 w-40">
+                              <div className="text-xs font-black uppercase tracking-wide opacity-90">เวลา / วัน</div>
+                              <div className="text-sm font-extrabold mt-1">ตารางสอนรายสัปดาห์</div>
+                            </th>
+                            {dutyDays.map(day => (
+                              <th key={`head-${day.key}`} className="p-3 border-b border-l border-white/10 text-center min-w-[132px]">
+                                <div className="text-sm font-black">{day.label}</div>
+                                <div className="text-[11px] font-bold opacity-90 mt-1">กดเลือกช่วงที่ว่าง</div>
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {classPeriodOptions.map(period => (
+                            <tr key={`period-row-${period.key}`} className="even:bg-slate-50/70">
+                              <td className="p-3 border-b border-r border-slate-200 bg-slate-50 align-top">
+                                <div className="text-sm font-extrabold text-slate-950">{period.label}</div>
+                                <div className="text-xs font-bold text-slate-500 mt-1">{period.time}</div>
+                              </td>
+                              {dutyDays.map(day => {
+                                const selected = (free[day.key] || []).includes(period.key);
+                                return (
+                                  <td key={`${day.key}-${period.key}`} className="p-2 border-b border-r border-slate-100 align-middle">
+                                    <button
+                                      type="button"
+                                      onClick={() => toggleFreePeriod(day.key, period.key)}
+                                      className={`w-full min-h-[72px] rounded-2xl border px-3 py-2 transition text-center ${selected ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-700 border-slate-200 hover:bg-blue-50 hover:border-blue-300'}`}
+                                    >
+                                      <div className={`text-sm font-black ${selected ? 'text-white' : 'text-slate-800'}`}>
+                                        {selected ? 'ว่าง' : 'มีเรียน / ไม่ว่าง'}
+                                      </div>
+                                      <div className={`text-[11px] mt-1 font-bold ${selected ? 'text-blue-100' : 'text-slate-400'}`}>
+                                        {selected ? 'เลือกไว้สำหรับช่วยงาน' : 'กดเมื่อต้องการระบุว่าว่าง'}
+                                      </div>
+                                    </button>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3 mt-4">
+                    {dutyDays.map(day => {
+                      const selected = free[day.key] || [];
+                      return (
+                        <div key={`summary-${day.key}`} className="rounded-2xl bg-white border border-slate-200 p-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="font-extrabold text-slate-950">{day.label}</div>
+                            <div className="text-[11px] font-black px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
+                              ว่าง {selected.length} ช่วง
+                            </div>
+                          </div>
+                          <div className="text-xs text-slate-500 mt-2">สรุปคาบที่ว่างสำหรับช่วยงาน</div>
+                          <div className="mt-2 text-sm font-bold text-slate-700 leading-relaxed">
+                            {selected.length
+                              ? selected.map(key => classPeriodOptions.find(period => period.key === key)?.short || key).join(' • ')
+                              : 'ยังไม่ได้เลือกคาบว่าง'}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-4 rounded-2xl bg-blue-50 border border-blue-100 px-4 py-3 text-sm text-blue-900 font-bold">
+                    <i className="ri-information-fill mr-1"></i>ระบบจะใช้ข้อมูลนี้ช่วยกรองตอนเลือกคนลงตารางเวร เช่น ถ้าต้องการหาเด็กที่ว่าง “วันพุธ คาบ 3” ก็เปิดตัวกรองคนว่างใน popup ได้เลย
+                  </div>
+                </div>
+              );
+            })()}
 
             <div className="aspect-square rounded-[1.7rem] overflow-hidden bg-slate-800 border-4 border-slate-800 mb-5 relative">
               {cameraOn ? <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover scale-x-[-1]" /> : formData.photo ? <img src={formData.photo} className="w-full h-full object-cover" /> : <div className="w-full h-full flex flex-col items-center justify-center text-slate-500"><i className="ri-image-add-fill text-6xl mb-3"></i><p className="font-bold">ยังไม่มีรูปถ่าย</p></div>}
