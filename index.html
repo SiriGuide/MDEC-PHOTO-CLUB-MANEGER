@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v73.8.4 Firestore Set Merge Fix</title>
+  <title>MDEC Photo Club Center v73.8.7 Vertical Days Internship Status</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -2691,6 +2691,7 @@
     const interestOptions = ["ฝ่ายภาพนิ่ง", "ฝ่ายวิดีโอไฮไลท์", "ฝ่ายเครื่องเสียง", "ฝ่ายไลฟ์สดสตรีมมิ่ง", "ทำได้หลายอย่าง"];
     const statusOptions = [
       { value: 'active', label: 'สมาชิกปัจจุบัน' },
+      { value: 'internship', label: 'ฝึกงานในศูนย์' },
       { value: 'paused', label: 'พักกิจกรรม' },
       { value: 'graduated', label: 'จบแล้ว' },
       { value: 'dismissed', label: 'พ้นสภาพ' }
@@ -2840,25 +2841,26 @@
     ];
 
     const classPeriodOptions = [
-      { key: 'morning', label: 'เช้า / เข้าแถว', short: 'เช้า', time: '07:30-08:00' },
-      { key: 'p1', label: 'คาบ 1', short: 'คาบ 1', time: '08:00-08:50' },
-      { key: 'p2', label: 'คาบ 2', short: 'คาบ 2', time: '08:50-09:40' },
-      { key: 'p3', label: 'คาบ 3', short: 'คาบ 3', time: '09:50-10:40' },
-      { key: 'p4', label: 'คาบ 4', short: 'คาบ 4', time: '10:40-11:30' },
-      { key: 'p5', label: 'คาบ 5', short: 'คาบ 5', time: '12:30-13:20' },
-      { key: 'p6', label: 'คาบ 6', short: 'คาบ 6', time: '13:20-14:10' },
-      { key: 'p7', label: 'คาบ 7', short: 'คาบ 7', time: '14:20-15:10' },
-      { key: 'p8', label: 'คาบ 8', short: 'คาบ 8', time: '15:10-16:00' }
+      { key: 'p1', label: 'คาบ 1', short: 'คาบ 1', time: '08:40-09:30' },
+      { key: 'p2', label: 'คาบ 2', short: 'คาบ 2', time: '09:30-10:20' },
+      { key: 'p3', label: 'คาบ 3', short: 'คาบ 3', time: '10:20-11:10' },
+      { key: 'p4', label: 'คาบ 4', short: 'คาบ 4', time: '11:10-12:00' },
+      { key: 'p5', label: 'คาบ 5', short: 'คาบ 5', time: '12:00-12:50' },
+      { key: 'p6', label: 'คาบ 6', short: 'คาบ 6', time: '12:50-13:40' },
+      { key: 'p7', label: 'คาบ 7', short: 'คาบ 7', time: '13:40-14:30' },
+      { key: 'p8', label: 'คาบ 8', short: 'คาบ 8', time: '14:30-15:20' },
+      { key: 'p9', label: 'คาบ 9', short: 'คาบ 9', time: '15:20-16:10' }
     ];
 
     const emptyFreePeriods = () => dutyDays.reduce((acc, day) => ({ ...acc, [day.key]: [] }), {});
 
     const normalizeFreePeriods = (value) => {
       const base = emptyFreePeriods();
+      const validKeys = new Set(classPeriodOptions.map(period => period.key));
       if (!value || typeof value !== 'object') return base;
       dutyDays.forEach(day => {
         const arr = Array.isArray(value[day.key]) ? value[day.key] : [];
-        base[day.key] = arr.filter(Boolean);
+        base[day.key] = arr.filter(key => key && validKeys.has(key));
       });
       return base;
     };
@@ -3080,6 +3082,7 @@
     }
 
     function statusLabel(status) {
+      if (status === 'internship') return 'ฝึกงานในศูนย์';
       if (status === 'paused') return 'พักกิจกรรม';
       if (status === 'graduated') return 'จบแล้ว';
       if (status === 'dismissed') return 'พ้นสภาพ';
@@ -3087,6 +3090,7 @@
     }
 
     function statusBadge(status) {
+      if (status === 'internship') return 'bg-cyan-900 text-cyan-100 border-cyan-700 shadow-sm';
       if (status === 'paused') return 'bg-amber-900 text-amber-100 border-amber-700 shadow-sm';
       if (status === 'graduated') return 'bg-slate-800 text-slate-100 border-slate-600 shadow-sm';
       if (status === 'dismissed') return 'bg-rose-900 text-rose-100 border-rose-700 shadow-sm';
@@ -3741,6 +3745,7 @@
         if (status === 'graduated') res.graduated++;
         else if (status === 'dismissed') res.dismissed++;
         else if (status === 'paused') { res.paused++; res.inClub++; }
+        else if (status === 'internship') { res.active++; res.inClub++; }
         else { res.active++; res.inClub++; }
         if (s.gender === 'ชาย') res.male++;
         else if (s.gender === 'หญิง') res.female++;
@@ -5286,7 +5291,7 @@
       const [editingId, setEditingId] = useState(null);
       const [saving, setSaving] = useState(false);
       const [isPrinting, setIsPrinting] = useState(false);
-      const [studentPicker, setStudentPicker] = useState({ open:false, dayKey:'', roleKey:'', slot:0, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'morning' });
+      const [studentPicker, setStudentPicker] = useState({ open:false, dayKey:'', roleKey:'', slot:0, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'p1' });
       const [recentPickerStudentIds, setRecentPickerStudentIds] = useState(() => {
         try {
           const raw = localStorage.getItem('mdec_recent_duty_picker_students');
@@ -5345,7 +5350,7 @@
       const pickerSelectedInterests = Array.isArray(studentPicker.interests) ? studentPicker.interests : [];
       const pickerGroupSearch = String(studentPicker.groupSearch || '').trim().toLowerCase();
       const pickerFreeOnly = !!studentPicker.freeOnly;
-      const pickerFreePeriod = studentPicker.freePeriod || 'morning';
+      const pickerFreePeriod = studentPicker.freePeriod || 'p1';
       const pickerDayLabel = dutyDays.find(d => d.key === studentPicker.dayKey)?.label || '';
       const pickerFreePeriodLabel = classPeriodOptions.find(p => p.key === pickerFreePeriod)?.label || pickerFreePeriod;
       const pickerHasFilters = !!studentPicker.query || pickerSelectedYears.length || pickerSelectedLevels.length || pickerSelectedGroups.length || pickerSelectedInterests.length || pickerFreeOnly;
@@ -5492,12 +5497,12 @@
       };
 
       const openStudentPicker = (dayKey, roleKey, slot) => {
-        setStudentPicker({ open:true, dayKey, roleKey, slot, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'morning' });
+        setStudentPicker({ open:true, dayKey, roleKey, slot, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'p1' });
         setStudentPickerFiltersOpen(false);
       };
 
       const closeStudentPicker = () => {
-        setStudentPicker(prev => ({ ...prev, open:false, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'morning' }));
+        setStudentPicker(prev => ({ ...prev, open:false, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'p1' }));
         setStudentPickerFiltersOpen(false);
       };
 
@@ -5513,7 +5518,7 @@
       };
 
       const resetStudentPickerFilters = () => {
-        setStudentPicker(prev => ({ ...prev, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'morning' }));
+        setStudentPicker(prev => ({ ...prev, query:'', years:[], levels:[], groups:[], interests:[], groupSearch:'', freeOnly:false, freePeriod:'p1' }));
       };
 
       useEffect(() => {
@@ -6392,7 +6397,7 @@
                       <div className="rounded-2xl bg-blue-50 border border-blue-100 p-3">
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
                           <div>
-                            <div className="text-[11px] font-black uppercase tracking-wide text-blue-700">ตัวช่วยจากตารางสอน / คาบว่าง</div>
+                            <div className="text-[11px] font-black uppercase tracking-wide text-blue-700">ตัวช่วยจากตารางเวลาว่าง</div>
                             <div className="text-sm font-bold text-blue-900 mt-1">ช่องนี้กำลังเลือกของ {pickerDayLabel || 'วันที่เลือก'} กรองคนที่ว่างตามคาบที่ระบุได้</div>
                           </div>
                           <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
@@ -6400,7 +6405,7 @@
                               {classPeriodOptions.map(period => <option key={period.key} value={period.key}>{period.label}</option>)}
                             </select>
                             <button type="button" onClick={() => setStudentPicker(prev => ({ ...prev, freeOnly: !prev.freeOnly }))} className={`px-4 py-2 rounded-xl border text-sm font-extrabold ${pickerFreeOnly ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-700 border-blue-200 hover:border-blue-400'}`}>
-                              {pickerFreeOnly ? `กำลังกรอง: ว่าง ${pickerFreePeriodLabel}` : 'เปิดกรองคนว่าง'}
+                              {pickerFreeOnly ? `กำลังกรองคนว่าง ${pickerFreePeriodLabel}` : 'กรองคนที่ว่างช่วงนี้'}
                             </button>
                           </div>
                         </div>
@@ -7274,7 +7279,7 @@
       const resetForm = () => {
         setFormData({
           studentId:'', fullName:'', nickname:'', dob:'', gender:'ชาย', phone:'', lineId:'', emergencyPhone:'', medicalCondition:'-',
-          academicYear: currentAcademicYear, level:'ปวช.1', group:'', major: majors[0] || '', interest:'ฝ่ายภาพนิ่ง', equipment:'ใช้มือถือเป็นหลัก', experience:'ระดับเริ่มต้น', reason:'', status:'active', statusReason:'', actualInterest:'', staffNotes:'', photo:null, photoMeta:null
+          academicYear: currentAcademicYear, level:'ปวช.1', group:'', major: majors[0] || '', interest:'ฝ่ายภาพนิ่ง', equipment:'ใช้มือถือเป็นหลัก', experience:'ระดับเริ่มต้น', reason:'', status:'active', statusReason:'', actualInterest:'', staffNotes:'', freePeriods: emptyFreePeriods(), photo:null, photoMeta:null
         });
       };
 
@@ -7390,7 +7395,7 @@
               {formData.status !== 'active' && <Input label="เหตุผลสถานะ" value={formData.statusReason} onChange={v => setField('statusReason', v)} className="md:col-span-2" />}
             </div>
 
-            <SectionTitle icon="ri-calendar-check-fill" title="ตารางสอน / คาบว่าง" desc="ออกแบบให้เหมือนตารางเรียนจริง ใช้ติ๊กช่วงเวลาที่นักศึกษาว่าง เพื่อช่วยคัดคนลงตารางเวรได้ง่ายขึ้น" />
+            <SectionTitle icon="ri-calendar-check-fill" title="ตารางสอน / เวลาว่าง" desc="วันอยู่แนวตั้ง คาบเรียนอยู่แนวนอน เหมือนอ่านตารางเรียนจริง กดเฉพาะช่องที่นักศึกษาว่างเพื่อช่วยจัดตารางเวร" />
             {(() => {
               const free = normalizeFreePeriods(formData.freePeriods);
               const totalSelected = dutyDays.reduce((sum, day) => sum + ((free[day.key] || []).length), 0);
@@ -7398,13 +7403,13 @@
                 <div className="rounded-[1.7rem] border border-slate-200 bg-slate-50 p-4">
                   <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
                     <div>
-                      <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-700">Real Timetable UI</div>
-                      <div className="text-lg font-extrabold text-slate-950 mt-1">ติ๊กในช่องที่ “ว่าง” ให้เหมือนการดูตารางเรียนจริง</div>
-                      <div className="text-sm text-slate-600 mt-1">ถ้าช่วงไหนมีเรียน ไม่ต้องติ๊ก • ถ้าช่วงไหนช่วยงานได้ ให้กดเลือกเป็นช่องสีน้ำเงิน</div>
+                      <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-700">Free Time Table</div>
+                      <div className="text-lg font-extrabold text-slate-950 mt-1">เลือกเวลาว่างจากตารางแบบ วัน × คาบเรียน</div>
+                      <div className="text-sm text-slate-600 mt-1">ไม่ต้องกรอกชื่อวิชา • กดเฉพาะช่วงที่เด็กว่าง/ช่วยงานได้เท่านั้น</div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <div className="px-3 py-2 rounded-2xl bg-white border border-slate-200 text-sm font-extrabold text-slate-700">
-                        เลือกไว้แล้ว {totalSelected} ช่วง
+                        ว่างทั้งหมด {totalSelected} ช่วง
                       </div>
                       <button
                         type="button"
@@ -7418,49 +7423,52 @@
 
                   <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
                     <div className="overflow-x-auto">
-                      <table className="min-w-[980px] w-full border-collapse">
+                      <table className="min-w-[1120px] w-full border-collapse">
                         <thead>
-                          <tr className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
-                            <th className="text-left p-3 border-b border-white/10 w-40">
-                              <div className="text-xs font-black uppercase tracking-wide opacity-90">เวลา / วัน</div>
-                              <div className="text-sm font-extrabold mt-1">ตารางสอนรายสัปดาห์</div>
+                          <tr className="bg-gradient-to-r from-slate-900 via-blue-700 to-cyan-500 text-white">
+                            <th className="text-left p-3 border-b border-white/10 w-36 sticky left-0 bg-slate-900 z-10">
+                              <div className="text-xs font-black uppercase tracking-wide opacity-90">วัน</div>
+                              <div className="text-sm font-extrabold mt-1">เลือกเวลาว่าง</div>
                             </th>
-                            {dutyDays.map(day => (
-                              <th key={`head-${day.key}`} className="p-3 border-b border-l border-white/10 text-center min-w-[132px]">
-                                <div className="text-sm font-black">{day.label}</div>
-                                <div className="text-[11px] font-bold opacity-90 mt-1">กดเลือกช่วงที่ว่าง</div>
+                            {classPeriodOptions.map(period => (
+                              <th key={`head-${period.key}`} className="p-3 border-b border-l border-white/10 text-center min-w-[108px]">
+                                <div className="text-sm font-black">{period.short}</div>
+                                <div className="text-[11px] font-bold opacity-90 mt-1 leading-tight">{period.time}</div>
                               </th>
                             ))}
                           </tr>
                         </thead>
                         <tbody>
-                          {classPeriodOptions.map(period => (
-                            <tr key={`period-row-${period.key}`} className="even:bg-slate-50/70">
-                              <td className="p-3 border-b border-r border-slate-200 bg-slate-50 align-top">
-                                <div className="text-sm font-extrabold text-slate-950">{period.label}</div>
-                                <div className="text-xs font-bold text-slate-500 mt-1">{period.time}</div>
-                              </td>
-                              {dutyDays.map(day => {
-                                const selected = (free[day.key] || []).includes(period.key);
-                                return (
-                                  <td key={`${day.key}-${period.key}`} className="p-2 border-b border-r border-slate-100 align-middle">
-                                    <button
-                                      type="button"
-                                      onClick={() => toggleFreePeriod(day.key, period.key)}
-                                      className={`w-full min-h-[72px] rounded-2xl border px-3 py-2 transition text-center ${selected ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-700 border-slate-200 hover:bg-blue-50 hover:border-blue-300'}`}
-                                    >
-                                      <div className={`text-sm font-black ${selected ? 'text-white' : 'text-slate-800'}`}>
-                                        {selected ? 'ว่าง' : 'มีเรียน / ไม่ว่าง'}
-                                      </div>
-                                      <div className={`text-[11px] mt-1 font-bold ${selected ? 'text-blue-100' : 'text-slate-400'}`}>
-                                        {selected ? 'เลือกไว้สำหรับช่วยงาน' : 'กดเมื่อต้องการระบุว่าว่าง'}
-                                      </div>
-                                    </button>
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))}
+                          {dutyDays.map(day => {
+                            const selected = free[day.key] || [];
+                            return (
+                              <tr key={`day-row-${day.key}`} className="even:bg-slate-50/70">
+                                <td className="p-3 border-b border-r border-slate-200 bg-slate-50 align-middle sticky left-0 z-10">
+                                  <div className="text-base font-black text-slate-950">{day.label}</div>
+                                  <div className="text-[11px] font-bold text-blue-700 mt-1">ว่าง {selected.length} คาบ</div>
+                                </td>
+                                {classPeriodOptions.map(period => {
+                                  const isFree = selected.includes(period.key);
+                                  return (
+                                    <td key={`${day.key}-${period.key}`} className="p-2 border-b border-r border-slate-100 align-middle">
+                                      <button
+                                        type="button"
+                                        onClick={() => toggleFreePeriod(day.key, period.key)}
+                                        className={`w-full min-h-[72px] rounded-2xl border px-2.5 py-2 transition text-center ${isFree ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-blue-50 hover:border-blue-300'}`}
+                                      >
+                                        <div className={`text-sm font-black ${isFree ? 'text-white' : 'text-slate-700'}`}>
+                                          {isFree ? 'ว่าง' : 'ไม่ว่าง'}
+                                        </div>
+                                        <div className={`text-[10px] mt-1 font-bold leading-tight ${isFree ? 'text-blue-100' : 'text-slate-400'}`}>
+                                          {isFree ? 'จัดเวรได้' : 'กดถ้าว่าง'}
+                                        </div>
+                                      </button>
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
@@ -7477,11 +7485,14 @@
                               ว่าง {selected.length} ช่วง
                             </div>
                           </div>
-                          <div className="text-xs text-slate-500 mt-2">สรุปคาบที่ว่างสำหรับช่วยงาน</div>
+                          <div className="text-xs text-slate-500 mt-2">สรุปเวลาว่างสำหรับช่วยงาน</div>
                           <div className="mt-2 text-sm font-bold text-slate-700 leading-relaxed">
                             {selected.length
-                              ? selected.map(key => classPeriodOptions.find(period => period.key === key)?.short || key).join(' • ')
-                              : 'ยังไม่ได้เลือกคาบว่าง'}
+                              ? selected.map(key => {
+                                  const period = classPeriodOptions.find(period => period.key === key);
+                                  return period ? `${period.short} (${period.time})` : key;
+                                }).join(' • ')
+                              : 'ยังไม่ได้เลือกเวลาว่าง'}
                           </div>
                         </div>
                       );
@@ -7489,7 +7500,7 @@
                   </div>
 
                   <div className="mt-4 rounded-2xl bg-blue-50 border border-blue-100 px-4 py-3 text-sm text-blue-900 font-bold">
-                    <i className="ri-information-fill mr-1"></i>ระบบจะใช้ข้อมูลนี้ช่วยกรองตอนเลือกคนลงตารางเวร เช่น ถ้าต้องการหาเด็กที่ว่าง “วันพุธ คาบ 3” ก็เปิดตัวกรองคนว่างใน popup ได้เลย
+                    <i className="ri-information-fill mr-1"></i>ระบบจะใช้ข้อมูลนี้ช่วยกรองตอนเลือกคนลงตารางเวร เช่น ต้องการหาเด็กที่ว่าง “วันพุธ 10:20-11:10” ก็เลือกคาบ 3 แล้วเปิดกรองคนว่างได้เลย
                   </div>
                 </div>
               );
