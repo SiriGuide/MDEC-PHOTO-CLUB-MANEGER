@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v73.8.7 Vertical Days Internship Status</title>
+  <title>MDEC Photo Club Center v73.8.8 Class Day Duty Picker Filter</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -2865,10 +2865,44 @@
       return base;
     };
 
+    // v73.8.8: แยกสถานะรายวันออกจากคาบว่าง
+    // class_day = มีเรียนวันนี้ / ใช้คาบว่างช่วยคัดคนลงเวร
+    // no_class_day = ไม่มีเรียนวันนี้ / ไม่ให้เลือกเข้าตารางเวรของวันนั้น
+    // '' = ยังไม่ระบุวันนั้น เพื่อให้ข้อมูลเก่าใช้งานต่อได้โดยไม่ต้องคีย์ใหม่ทันที
+    const emptyScheduleDayStatus = () => dutyDays.reduce((acc, day) => ({ ...acc, [day.key]: '' }), {});
+
+    const normalizeScheduleDayStatus = (value, freePeriods) => {
+      const base = emptyScheduleDayStatus();
+      const free = normalizeFreePeriods(freePeriods);
+      dutyDays.forEach(day => {
+        const raw = String(value?.[day.key] || '').trim();
+        if (['class_day', 'study_day', 'has_class'].includes(raw)) base[day.key] = 'class_day';
+        else if (['no_class_day', 'no_class', 'none'].includes(raw)) base[day.key] = 'no_class_day';
+        else if ((free[day.key] || []).length) base[day.key] = 'class_day';
+        else base[day.key] = '';
+      });
+      return base;
+    };
+
+    const hasAnyScheduleData = (student) => {
+      const free = normalizeFreePeriods(student?.freePeriods);
+      const status = normalizeScheduleDayStatus(student?.scheduleDayStatus, student?.freePeriods);
+      return dutyDays.some(day => status[day.key] || (free[day.key] || []).length);
+    };
+
+    const isNoClassDay = (student, dayKey) => {
+      const status = normalizeScheduleDayStatus(student?.scheduleDayStatus, student?.freePeriods);
+      return status[dayKey] === 'no_class_day';
+    };
+
     const freePeriodText = (student, dayKey) => {
       const free = normalizeFreePeriods(student?.freePeriods);
+      const status = normalizeScheduleDayStatus(student?.scheduleDayStatus, student?.freePeriods);
       const keys = free[dayKey] || [];
-      if (!keys.length) return 'ยังไม่ระบุตารางสอน/คาบว่าง';
+      if (!hasAnyScheduleData(student)) return 'ยังไม่ได้กรอกตารางสอน';
+      if (status[dayKey] === 'no_class_day') return 'ไม่มีเรียนวันนี้ / ไม่จัดเวรวันนี้';
+      if (status[dayKey] !== 'class_day') return 'ยังไม่ระบุวันนี้';
+      if (!keys.length) return 'มีเรียนวันนี้ แต่ยังไม่ได้เลือกคาบว่าง';
       return keys.map(key => classPeriodOptions.find(p => p.key === key)?.short || key).join(', ');
     };
 
@@ -5414,8 +5448,9 @@
           const matchGroup = !pickerSelectedGroups.length || pickerSelectedGroups.includes(group);
           const matchInterest = !pickerSelectedInterests.length || pickerSelectedInterests.includes(interest);
           const free = normalizeFreePeriods(s.freePeriods);
+          const noClassThisDay = isNoClassDay(s, studentPicker.dayKey);
           const matchFree = !pickerFreeOnly || ((free[studentPicker.dayKey] || []).includes(pickerFreePeriod));
-          return matchQuery && matchYear && matchLevel && matchGroup && matchInterest && matchFree;
+          return matchQuery && matchYear && matchLevel && matchGroup && matchInterest && !noClassThisDay && matchFree;
         });
       }, [activeStudents, currentAcademicYear, studentPicker.query, pickerSelectedYears.join('|'), pickerSelectedLevels.join('|'), pickerSelectedGroups.join('|'), pickerSelectedInterests.join('|'), pickerFreeOnly, pickerFreePeriod, studentPicker.dayKey]);
       const recentPickerStudents = useMemo(() => recentPickerStudentIds.map(id => studentMap.get(id)).filter(s => s && !['dismissed','graduated'].includes(s.status || 'active')).slice(0, 8), [recentPickerStudentIds, studentMap]);
@@ -7172,6 +7207,7 @@
         actualInterest: student?.actualInterest || '',
         staffNotes: student?.staffNotes || '',
         freePeriods: normalizeFreePeriods(student?.freePeriods),
+        scheduleDayStatus: normalizeScheduleDayStatus(student?.scheduleDayStatus, student?.freePeriods),
         photo: student?.photo || null,
         photoMeta: student?.photoMeta || null
       }));
@@ -7195,9 +7231,32 @@
       const toggleFreePeriod = (dayKey, periodKey) => {
         setFormData(prev => {
           const current = normalizeFreePeriods(prev.freePeriods);
+          const status = normalizeScheduleDayStatus(prev.scheduleDayStatus, prev.freePeriods);
           const list = current[dayKey] || [];
           const nextList = list.includes(periodKey) ? list.filter(key => key !== periodKey) : [...list, periodKey];
-          return { ...prev, freePeriods: { ...current, [dayKey]: nextList } };
+          return {
+            ...prev,
+            freePeriods: { ...current, [dayKey]: nextList },
+            scheduleDayStatus: { ...status, [dayKey]: 'class_day' }
+          };
+        });
+      };
+
+      const setScheduleDayStatus = (dayKey, statusValue) => {
+        setFormData(prev => {
+          const current = normalizeFreePeriods(prev.freePeriods);
+          const status = normalizeScheduleDayStatus(prev.scheduleDayStatus, prev.freePeriods);
+          const nextStatus = { ...status, [dayKey]: statusValue };
+          const nextFree = statusValue === 'no_class_day' ? { ...current, [dayKey]: [] } : current;
+          return { ...prev, freePeriods: nextFree, scheduleDayStatus: nextStatus };
+        });
+      };
+
+      const clearScheduleDay = (dayKey) => {
+        setFormData(prev => {
+          const current = normalizeFreePeriods(prev.freePeriods);
+          const status = normalizeScheduleDayStatus(prev.scheduleDayStatus, prev.freePeriods);
+          return { ...prev, freePeriods: { ...current, [dayKey]: [] }, scheduleDayStatus: { ...status, [dayKey]: '' } };
         });
       };
 
@@ -7279,7 +7338,7 @@
       const resetForm = () => {
         setFormData({
           studentId:'', fullName:'', nickname:'', dob:'', gender:'ชาย', phone:'', lineId:'', emergencyPhone:'', medicalCondition:'-',
-          academicYear: currentAcademicYear, level:'ปวช.1', group:'', major: majors[0] || '', interest:'ฝ่ายภาพนิ่ง', equipment:'ใช้มือถือเป็นหลัก', experience:'ระดับเริ่มต้น', reason:'', status:'active', statusReason:'', actualInterest:'', staffNotes:'', freePeriods: emptyFreePeriods(), photo:null, photoMeta:null
+          academicYear: currentAcademicYear, level:'ปวช.1', group:'', major: majors[0] || '', interest:'ฝ่ายภาพนิ่ง', equipment:'ใช้มือถือเป็นหลัก', experience:'ระดับเริ่มต้น', reason:'', status:'active', statusReason:'', actualInterest:'', staffNotes:'', freePeriods: emptyFreePeriods(), scheduleDayStatus: emptyScheduleDayStatus(), photo:null, photoMeta:null
         });
       };
 
@@ -7395,25 +7454,30 @@
               {formData.status !== 'active' && <Input label="เหตุผลสถานะ" value={formData.statusReason} onChange={v => setField('statusReason', v)} className="md:col-span-2" />}
             </div>
 
-            <SectionTitle icon="ri-calendar-check-fill" title="ตารางสอน / เวลาว่าง" desc="วันอยู่แนวตั้ง คาบเรียนอยู่แนวนอน เหมือนอ่านตารางเรียนจริง กดเฉพาะช่องที่นักศึกษาว่างเพื่อช่วยจัดตารางเวร" />
+            <SectionTitle icon="ri-calendar-check-fill" title="ตารางเรียน / เวลาว่าง" desc="ระบุให้ชัดว่าเด็กมีเรียนวันไหน ถ้าไม่มีเรียนวันนี้ ระบบจะไม่แสดงชื่อในตัวเลือกตารางเวรของวันนั้น" />
             {(() => {
               const free = normalizeFreePeriods(formData.freePeriods);
+              const dayStatus = normalizeScheduleDayStatus(formData.scheduleDayStatus, formData.freePeriods);
               const totalSelected = dutyDays.reduce((sum, day) => sum + ((free[day.key] || []).length), 0);
+              const noClassCount = dutyDays.filter(day => dayStatus[day.key] === 'no_class_day').length;
               return (
                 <div className="rounded-[1.7rem] border border-slate-200 bg-slate-50 p-4">
                   <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
                     <div>
-                      <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-700">Free Time Table</div>
-                      <div className="text-lg font-extrabold text-slate-950 mt-1">เลือกเวลาว่างจากตารางแบบ วัน × คาบเรียน</div>
-                      <div className="text-sm text-slate-600 mt-1">ไม่ต้องกรอกชื่อวิชา • กดเฉพาะช่วงที่เด็กว่าง/ช่วยงานได้เท่านั้น</div>
+                      <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-700">Class Day / Duty Filter</div>
+                      <div className="text-lg font-extrabold text-slate-950 mt-1">เลือกสถานะรายวัน แล้วค่อยเลือกคาบว่าง</div>
+                      <div className="text-sm text-slate-600 mt-1">ถ้าเลือก “ไม่มีเรียนวันนี้” เด็กจะไม่ขึ้นให้เลือกในตารางเวรของวันนั้น</div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <div className="px-3 py-2 rounded-2xl bg-white border border-slate-200 text-sm font-extrabold text-slate-700">
-                        ว่างทั้งหมด {totalSelected} ช่วง
+                        ว่าง {totalSelected} ช่วง
+                      </div>
+                      <div className="px-3 py-2 rounded-2xl bg-white border border-slate-200 text-sm font-extrabold text-slate-700">
+                        ไม่มีเรียน {noClassCount} วัน
                       </div>
                       <button
                         type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, freePeriods: emptyFreePeriods() }))}
+                        onClick={() => setFormData(prev => ({ ...prev, freePeriods: emptyFreePeriods(), scheduleDayStatus: emptyScheduleDayStatus() }))}
                         className="px-4 py-2 rounded-2xl bg-white border border-rose-200 text-rose-700 font-extrabold hover:bg-rose-50"
                       >
                         ล้างทั้งตาราง
@@ -7421,78 +7485,96 @@
                     </div>
                   </div>
 
-                  <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="min-w-[1120px] w-full border-collapse">
-                        <thead>
-                          <tr className="bg-gradient-to-r from-slate-900 via-blue-700 to-cyan-500 text-white">
-                            <th className="text-left p-3 border-b border-white/10 w-36 sticky left-0 bg-slate-900 z-10">
-                              <div className="text-xs font-black uppercase tracking-wide opacity-90">วัน</div>
-                              <div className="text-sm font-extrabold mt-1">เลือกเวลาว่าง</div>
-                            </th>
-                            {classPeriodOptions.map(period => (
-                              <th key={`head-${period.key}`} className="p-3 border-b border-l border-white/10 text-center min-w-[108px]">
-                                <div className="text-sm font-black">{period.short}</div>
-                                <div className="text-[11px] font-bold opacity-90 mt-1 leading-tight">{period.time}</div>
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {dutyDays.map(day => {
-                            const selected = free[day.key] || [];
-                            return (
-                              <tr key={`day-row-${day.key}`} className="even:bg-slate-50/70">
-                                <td className="p-3 border-b border-r border-slate-200 bg-slate-50 align-middle sticky left-0 z-10">
-                                  <div className="text-base font-black text-slate-950">{day.label}</div>
-                                  <div className="text-[11px] font-bold text-blue-700 mt-1">ว่าง {selected.length} คาบ</div>
-                                </td>
-                                {classPeriodOptions.map(period => {
-                                  const isFree = selected.includes(period.key);
-                                  return (
-                                    <td key={`${day.key}-${period.key}`} className="p-2 border-b border-r border-slate-100 align-middle">
-                                      <button
-                                        type="button"
-                                        onClick={() => toggleFreePeriod(day.key, period.key)}
-                                        className={`w-full min-h-[72px] rounded-2xl border px-2.5 py-2 transition text-center ${isFree ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-blue-50 hover:border-blue-300'}`}
-                                      >
-                                        <div className={`text-sm font-black ${isFree ? 'text-white' : 'text-slate-700'}`}>
-                                          {isFree ? 'ว่าง' : 'ไม่ว่าง'}
-                                        </div>
-                                        <div className={`text-[10px] mt-1 font-bold leading-tight ${isFree ? 'text-blue-100' : 'text-slate-400'}`}>
-                                          {isFree ? 'จัดเวรได้' : 'กดถ้าว่าง'}
-                                        </div>
-                                      </button>
-                                    </td>
-                                  );
-                                })}
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
+                  <div className="space-y-3">
+                    {dutyDays.map(day => {
+                      const selected = free[day.key] || [];
+                      const status = dayStatus[day.key] || '';
+                      const isClassDay = status === 'class_day';
+                      const isNoClassDaySelected = status === 'no_class_day';
+                      return (
+                        <div key={`schedule-day-${day.key}`} className={`rounded-3xl border p-3 md:p-4 ${isNoClassDaySelected ? 'bg-orange-50 border-orange-200' : isClassDay ? 'bg-white border-blue-100' : 'bg-white border-slate-200'}`}>
+                          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                            <div className="min-w-[180px]">
+                              <div className="text-base font-black text-slate-950">{day.label}</div>
+                              <div className={`text-xs font-extrabold mt-1 ${isNoClassDaySelected ? 'text-orange-700' : isClassDay ? 'text-blue-700' : 'text-slate-500'}`}>
+                                {isNoClassDaySelected ? 'ไม่มีเรียนวันนี้ • ไม่จัดเวรวันนี้' : isClassDay ? `มีเรียนวันนี้ • ว่าง ${selected.length} คาบ` : 'ยังไม่ระบุวันนี้'}
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => setScheduleDayStatus(day.key, 'class_day')}
+                                className={`px-4 py-2 rounded-2xl border text-sm font-extrabold ${isClassDay ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-700 border-blue-200 hover:border-blue-400'}`}
+                              >
+                                มีเรียนวันนี้
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setScheduleDayStatus(day.key, 'no_class_day')}
+                                className={`px-4 py-2 rounded-2xl border text-sm font-extrabold ${isNoClassDaySelected ? 'bg-orange-600 text-white border-orange-600' : 'bg-white text-orange-700 border-orange-200 hover:border-orange-400'}`}
+                              >
+                                ไม่มีเรียนวันนี้
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => clearScheduleDay(day.key)}
+                                className="px-4 py-2 rounded-2xl bg-white border border-slate-200 text-slate-600 text-sm font-extrabold hover:bg-slate-50"
+                              >
+                                ล้างวันนี้
+                              </button>
+                            </div>
+                          </div>
+
+                          {isClassDay ? (
+                            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-9 gap-2 mt-3">
+                              {classPeriodOptions.map(period => {
+                                const isFree = selected.includes(period.key);
+                                return (
+                                  <button
+                                    key={`${day.key}-${period.key}`}
+                                    type="button"
+                                    onClick={() => toggleFreePeriod(day.key, period.key)}
+                                    className={`min-h-[76px] rounded-2xl border px-2.5 py-2 transition text-center ${isFree ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-blue-50 hover:border-blue-300'}`}
+                                  >
+                                    <div className="text-xs font-black">{period.short}</div>
+                                    <div className={`text-[10px] font-bold mt-0.5 ${isFree ? 'text-emerald-100' : 'text-slate-400'}`}>{period.time}</div>
+                                    <div className={`text-sm font-black mt-1 ${isFree ? 'text-white' : 'text-slate-700'}`}>{isFree ? 'ว่าง' : 'เรียน'}</div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div className={`mt-3 rounded-2xl border px-4 py-3 text-sm font-bold ${isNoClassDaySelected ? 'bg-white/80 border-orange-200 text-orange-800' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
+                              {isNoClassDaySelected ? 'ระบบจะซ่อนชื่อนักศึกษาคนนี้ออกจากตัวเลือกจัดตารางเวรของวันนี้ทั้งหมด' : 'เลือก “มีเรียนวันนี้” เพื่อระบุคาบว่าง หรือเลือก “ไม่มีเรียนวันนี้” ถ้าเด็กไม่มีเรียนวันนั้น'}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3 mt-4">
                     {dutyDays.map(day => {
                       const selected = free[day.key] || [];
+                      const status = dayStatus[day.key] || '';
                       return (
                         <div key={`summary-${day.key}`} className="rounded-2xl bg-white border border-slate-200 p-3">
                           <div className="flex items-center justify-between gap-2">
                             <div className="font-extrabold text-slate-950">{day.label}</div>
-                            <div className="text-[11px] font-black px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
-                              ว่าง {selected.length} ช่วง
+                            <div className={`text-[11px] font-black px-2 py-1 rounded-full border ${status === 'no_class_day' ? 'bg-orange-50 text-orange-700 border-orange-100' : status === 'class_day' ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-slate-50 text-slate-500 border-slate-100'}`}>
+                              {status === 'no_class_day' ? 'ไม่มีเรียน' : status === 'class_day' ? `ว่าง ${selected.length} ช่วง` : 'ยังไม่ระบุ'}
                             </div>
                           </div>
-                          <div className="text-xs text-slate-500 mt-2">สรุปเวลาว่างสำหรับช่วยงาน</div>
+                          <div className="text-xs text-slate-500 mt-2">สรุปสำหรับช่วยจัดตารางเวร</div>
                           <div className="mt-2 text-sm font-bold text-slate-700 leading-relaxed">
-                            {selected.length
-                              ? selected.map(key => {
-                                  const period = classPeriodOptions.find(period => period.key === key);
-                                  return period ? `${period.short} (${period.time})` : key;
-                                }).join(' • ')
-                              : 'ยังไม่ได้เลือกเวลาว่าง'}
+                            {status === 'no_class_day'
+                              ? 'ไม่แสดงชื่อในตารางเวรวันนี้'
+                              : selected.length
+                                ? selected.map(key => {
+                                    const period = classPeriodOptions.find(period => period.key === key);
+                                    return period ? `${period.short} (${period.time})` : key;
+                                  }).join(' • ')
+                                : status === 'class_day' ? 'มีเรียนวันนี้ แต่ยังไม่ได้เลือกคาบว่าง' : 'ยังไม่ได้ระบุข้อมูลวันนี้'}
                           </div>
                         </div>
                       );
@@ -7500,7 +7582,7 @@
                   </div>
 
                   <div className="mt-4 rounded-2xl bg-blue-50 border border-blue-100 px-4 py-3 text-sm text-blue-900 font-bold">
-                    <i className="ri-information-fill mr-1"></i>ระบบจะใช้ข้อมูลนี้ช่วยกรองตอนเลือกคนลงตารางเวร เช่น ต้องการหาเด็กที่ว่าง “วันพุธ 10:20-11:10” ก็เลือกคาบ 3 แล้วเปิดกรองคนว่างได้เลย
+                    <i className="ri-information-fill mr-1"></i>ข้อมูลเก่า freePeriods ยังใช้งานต่อได้ ส่วนข้อมูลใหม่จะเพิ่มสถานะ “ไม่มีเรียนวันนี้” เพื่อกันไม่ให้เด็กคนนั้นถูกเลือกในตารางเวรวันนั้น
                   </div>
                 </div>
               );
