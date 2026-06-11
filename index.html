@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v73.8.8 Class Day Duty Picker Filter</title>
+  <title>MDEC Photo Club Center v73.9.0 Duty Center Rebuild Simple Real Use</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -2644,6 +2644,1490 @@
     }
   </style>
 
+
+  <style id="v73-8-9-duty-workspace-v2">
+    .duty-workspace-tabs { display:grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap:.75rem; }
+    .duty-workspace-tab { display:flex; align-items:flex-start; gap:.75rem; text-align:left; border:1px solid rgba(203,213,225,.95); background:rgba(248,250,252,.96); border-radius:1.35rem; padding:1rem; color:#334155; transition:.2s ease; min-height:86px; }
+    .duty-workspace-tab:hover { transform: translateY(-1px); border-color:rgba(59,130,246,.45); box-shadow:0 12px 28px rgba(15,23,42,.06); }
+    .duty-workspace-tab.is-active { background:linear-gradient(135deg,#0f172a,#1d4ed8); color:#fff; border-color:#2563eb; box-shadow:0 18px 40px rgba(37,99,235,.22); }
+    .duty-workspace-tab b { display:block; font-size:.98rem; line-height:1.2; font-weight:900; }
+    .duty-workspace-tab small { display:block; margin-top:.25rem; font-size:.75rem; line-height:1.35; opacity:.78; font-weight:700; }
+    .duty-workspace-tab.is-active small { color:#dbeafe; opacity:1; }
+    .duty-sub-step-nav { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    body.dark-mode .duty-workspace-tab { background:rgba(15,23,42,.92); color:#cbd5e1; border-color:rgba(71,85,105,.82); }
+    body.dark-mode .duty-workspace-tab.is-active { background:linear-gradient(135deg,rgba(37,99,235,.35),rgba(14,165,233,.22)); border-color:rgba(96,165,250,.75); color:#f8fafc; }
+    body.dark-mode .duty-v2-check .bg-slate-50,
+    body.dark-mode .duty-v2-check .bg-white { background:rgba(15,23,42,.92)!important; color:#e5edf8!important; border-color:rgba(71,85,105,.78)!important; }
+    @media (max-width: 1024px) { .duty-workspace-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media (max-width: 640px) { .duty-workspace-tabs, .duty-sub-step-nav { grid-template-columns:1fr; } .duty-workspace-tab { min-height:auto; } }
+  </style>
+
+
+
+  <style id="v73-9-1-duty-pdf-readable-layout">
+    /* v73.9.1: PDF ตารางเวรอ่านง่ายขึ้น - เปลี่ยนจาก 6 คอลัมน์แคบ ๆ เป็น 3x2 การ์ดรายวัน */
+    .duty-week-pdf-sheet {
+      border-radius: 28px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      padding: 22px;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, .10);
+    }
+    .duty-week-pdf-sheet-preview {
+      width: min(1680px, calc(100vw - 24px));
+      max-width: 1680px;
+    }
+    .duty-week-pdf-head {
+      border-bottom: 0 !important;
+      background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 62%, #0ea5e9 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 18px 20px !important;
+      margin-bottom: 14px !important;
+      align-items: center;
+    }
+    .duty-week-pdf-head .text-blue-700 { color: #bfdbfe !important; }
+    .duty-week-pdf-title {
+      color: #ffffff !important;
+      font-size: clamp(26px, 2vw, 36px) !important;
+      letter-spacing: -0.035em;
+    }
+    .duty-week-pdf-subtitle {
+      color: #dbeafe !important;
+      font-size: clamp(12px, .9vw, 15px) !important;
+      font-weight: 800;
+    }
+    .duty-week-pdf-logo {
+      background: #ffffff !important;
+      width: 118px !important;
+      height: 48px !important;
+      border-radius: 16px !important;
+      border-color: rgba(255,255,255,.5) !important;
+    }
+    .duty-week-pdf-meta {
+      grid-template-columns: 1.15fr .9fr .8fr 2fr !important;
+      gap: 10px !important;
+      margin-bottom: 14px !important;
+    }
+    .duty-week-pdf-meta-card {
+      border-radius: 18px !important;
+      background: #f8fafc !important;
+      border: 1px solid #dbeafe !important;
+      padding: 11px 14px !important;
+    }
+    .duty-week-pdf-meta-label {
+      font-size: 10px !important;
+      color: #64748b !important;
+    }
+    .duty-week-pdf-meta-value {
+      font-size: 15px !important;
+      color: #0f172a !important;
+    }
+    .duty-week-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 12px !important;
+      align-items: stretch !important;
+    }
+    .duty-day-box {
+      border-radius: 22px !important;
+      border: 1.5px solid #cbd5e1 !important;
+      background: #ffffff !important;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 250px;
+    }
+    .duty-day-head {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+      min-height: auto !important;
+      padding: 12px 14px !important;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .duty-day-label {
+      font-size: clamp(18px, 1.15vw, 24px) !important;
+      color: #ffffff !important;
+      white-space: nowrap;
+    }
+    .duty-day-date {
+      font-size: clamp(9px, .62vw, 11px) !important;
+      color: #dbeafe !important;
+      text-align: right;
+      margin: 0 !important;
+      font-weight: 800;
+    }
+    .duty-role-block {
+      background: #ffffff !important;
+      border-top: 1px solid #e2e8f0 !important;
+      padding: 8px 10px !important;
+    }
+    .duty-role-block:nth-child(even) { background: #f8fafc !important; }
+    .duty-role-name {
+      color: #1d4ed8 !important;
+      font-size: clamp(10.5px, .72vw, 13px) !important;
+      font-weight: 950 !important;
+      margin: 0 0 5px 0 !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      line-height: 1.25 !important;
+    }
+    .duty-pdf-person {
+      background: #ffffff !important;
+      border: 1px solid #dbeafe !important;
+      border-radius: 14px !important;
+      padding: 7px 8px !important;
+      margin-top: 5px !important;
+      gap: 8px !important;
+      box-shadow: 0 6px 16px rgba(15,23,42,.04);
+    }
+    .duty-pdf-photo, .duty-pdf-initial {
+      width: clamp(36px, 2.4vw, 46px) !important;
+      height: clamp(36px, 2.4vw, 46px) !important;
+      border-radius: 12px !important;
+      flex: 0 0 auto;
+    }
+    .duty-pdf-initial {
+      background: #dbeafe !important;
+      color: #1d4ed8 !important;
+      font-size: 17px !important;
+    }
+    .duty-pdf-nick {
+      color: #0f172a !important;
+      font-size: clamp(15px, .95vw, 19px) !important;
+      line-height: 1.22 !important;
+      font-weight: 950 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    .duty-pdf-name {
+      display: block !important;
+      color: #475569 !important;
+      font-size: clamp(8.5px, .55vw, 10px) !important;
+      line-height: 1.25 !important;
+      margin-top: 1px !important;
+    }
+    .duty-pdf-room {
+      color: #64748b !important;
+      font-size: clamp(9px, .58vw, 10.5px) !important;
+      font-weight: 800 !important;
+      margin-top: 1px !important;
+    }
+    .duty-pdf-empty {
+      background: #f8fafc !important;
+      border: 1.5px dashed #cbd5e1 !important;
+      color: #94a3b8 !important;
+      border-radius: 14px !important;
+      padding: 10px !important;
+      font-size: 11px !important;
+    }
+    .duty-week-pdf-footer {
+      margin-top: 14px !important;
+      padding-top: 10px !important;
+      border-top: 1px solid #e2e8f0 !important;
+      font-size: 10.5px !important;
+      color: #64748b !important;
+    }
+
+    @media screen and (max-width: 1100px) {
+      .duty-week-grid { grid-template-columns: 1fr !important; }
+      .duty-day-box { min-height: auto; }
+      .duty-week-pdf-meta { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+    }
+
+    @media print {
+      @page { size: A4 landscape; margin: 7mm; }
+      .duty-week-pdf-sheet {
+        min-height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 0 !important;
+      }
+      .duty-week-pdf-head {
+        border-radius: 0 0 12px 12px !important;
+        padding: 8px 10px !important;
+        margin-bottom: 6px !important;
+      }
+      .duty-week-pdf-title { font-size: 18px !important; }
+      .duty-week-pdf-subtitle { font-size: 9px !important; }
+      .duty-week-pdf-logo { width: 78px !important; height: 31px !important; border-radius: 9px !important; padding: 4px 7px !important; }
+      .duty-week-pdf-meta {
+        grid-template-columns: 1fr .8fr .7fr 1.5fr !important;
+        gap: 4px !important;
+        margin-bottom: 5px !important;
+      }
+      .duty-week-pdf-meta-card {
+        border-radius: 7px !important;
+        padding: 4px 6px !important;
+      }
+      .duty-week-pdf-meta-label { font-size: 6.4px !important; }
+      .duty-week-pdf-meta-value { font-size: 8.2px !important; line-height: 1.15 !important; }
+      .duty-week-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 4px !important;
+        align-items: start !important;
+      }
+      .duty-day-box {
+        border-radius: 8px !important;
+        min-height: 82mm !important;
+        max-height: 82mm !important;
+        overflow: hidden !important;
+      }
+      .duty-day-head {
+        padding: 5px 6px !important;
+        min-height: 25px !important;
+      }
+      .duty-day-label { font-size: 10.2px !important; }
+      .duty-day-date { font-size: 6.2px !important; }
+      .duty-role-block { padding: 3.5px 4px !important; }
+      .duty-role-name { font-size: 6.8px !important; margin-bottom: 2px !important; line-height: 1.1 !important; }
+      .duty-pdf-person {
+        gap: 3px !important;
+        padding: 2.5px 3px !important;
+        margin-top: 2px !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+      }
+      .duty-pdf-photo, .duty-pdf-initial {
+        width: 18px !important;
+        height: 18px !important;
+        border-radius: 5px !important;
+        font-size: 8px !important;
+      }
+      .duty-pdf-nick { font-size: 7.6px !important; line-height: 1.18 !important; min-height: auto !important; }
+      .duty-pdf-name { font-size: 5.2px !important; line-height: 1.12 !important; min-height: auto !important; }
+      .duty-pdf-room { font-size: 5.3px !important; line-height: 1.12 !important; min-height: auto !important; }
+      .duty-pdf-empty { font-size: 5.8px !important; padding: 3px !important; border-radius: 6px !important; }
+      .duty-week-pdf-footer {
+        margin-top: 5px !important;
+        padding-top: 4px !important;
+        font-size: 6.4px !important;
+      }
+    }
+  </style>
+
+
+
+  <style id="v73-9-4-duty-pdf-bigger-full-role-name">
+    /* v73.9.3: PDF ตารางเวรแบบตาราง อ่านง่ายขึ้นจริง พร้อมรายละเอียดตำแหน่ง และช่องยืดตามข้อมูล */
+    .duty-pdf-table-wrap {
+      width: 100%;
+      overflow: hidden;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 18px;
+      background: #ffffff;
+    }
+    .duty-pdf-role-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #ffffff;
+      color: #0f172a;
+    }
+    .duty-pdf-role-table col.duty-pdf-col-role { width: 24%; }
+    .duty-pdf-role-table col.duty-pdf-col-day { width: 12.666%; }
+    .duty-pdf-role-table th,
+    .duty-pdf-role-table td {
+      border: 1px solid #cbd5e1;
+      vertical-align: top;
+    }
+    .duty-pdf-role-head {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 9px;
+      font-size: 16px;
+      font-weight: 950;
+      text-align: left;
+    }
+    .duty-pdf-day-head {
+      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      color: #ffffff;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .duty-pdf-day-title {
+      font-size: 18px;
+      line-height: 1.08;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+    .duty-pdf-day-date-small {
+      margin-top: 3px;
+      font-size: 10.5px;
+      line-height: 1.15;
+      color: #dbeafe;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .duty-pdf-role-title-cell {
+      background: #eff6ff;
+      padding: 8px 9px;
+      color: #1e3a8a;
+      font-weight: 950;
+    }
+    .duty-pdf-role-title-main {
+      font-size: 15px;
+      line-height: 1.18;
+      word-break: break-word;
+      white-space: normal;
+      overflow: visible;
+    }
+    .duty-pdf-role-title-detail {
+      margin-top: 3px;
+      font-size: 11px;
+      line-height: 1.2;
+      color: #475569;
+      font-weight: 850;
+      word-break: break-word;
+    }
+    .duty-pdf-role-title-count {
+      display: inline-block;
+      margin-top: 4px;
+      border: 1px solid #bfdbfe;
+      background: #ffffff;
+      color: #1d4ed8;
+      border-radius: 999px;
+      padding: 1px 6px;
+      font-size: 9.5px;
+      line-height: 1.2;
+      font-weight: 950;
+    }
+    .duty-pdf-duty-cell {
+      height: auto;
+      min-height: 0;
+      padding: 4px;
+      background: #ffffff;
+    }
+    .duty-pdf-role-table tbody tr:nth-child(even) .duty-pdf-duty-cell {
+      background: #f8fafc;
+    }
+    .duty-pdf-cell-people {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3px;
+      align-content: start;
+    }
+    .duty-pdf-cell-person {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 36px;
+      padding: 4px 5px;
+      border: 1px solid #dbeafe;
+      border-radius: 9px;
+      background: #ffffff;
+      overflow: hidden;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .duty-pdf-cell-photo,
+    .duty-pdf-cell-initial {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      flex: 0 0 30px;
+      border: 1px solid #cbd5e1;
+      background: #dbeafe;
+      object-fit: cover;
+    }
+    .duty-pdf-cell-initial {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1d4ed8;
+      font-weight: 950;
+      font-size: 12px;
+    }
+    .duty-pdf-cell-name {
+      min-width: 0;
+      flex: 1;
+      color: #0f172a;
+      font-size: 13.5px;
+      line-height: 1.15;
+      font-weight: 950;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .duty-pdf-cell-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      color: #94a3b8;
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    @media print {
+      @page { size: A4 landscape; margin: 6mm; }
+      .duty-week-pdf-sheet { padding: 0 !important; }
+      .duty-week-pdf-head { border-radius: 0 !important; padding: 7px 9px !important; margin-bottom: 4px !important; }
+      .duty-week-pdf-title { font-size: 16px !important; }
+      .duty-week-pdf-subtitle { font-size: 8px !important; }
+      .duty-week-pdf-meta { display: none !important; }
+      .duty-pdf-table-wrap { border-radius: 0 !important; border-width: 1px !important; }
+      .duty-pdf-role-table col.duty-pdf-col-role { width: 24% !important; }
+      .duty-pdf-role-table col.duty-pdf-col-day { width: 12.666% !important; }
+      .duty-pdf-role-head { padding: 5px 5px !important; font-size: 10px !important; }
+      .duty-pdf-day-head { padding: 5px 4px !important; }
+      .duty-pdf-day-title { font-size: 10.2px !important; }
+      .duty-pdf-day-date-small { font-size: 6.6px !important; margin-top: 1px !important; }
+      .duty-pdf-role-title-cell { padding: 4px 5px !important; }
+      .duty-pdf-role-title-main { font-size: 10px !important; line-height: 1.12 !important; white-space: normal !important; overflow: visible !important; word-break: break-word !important; }
+      .duty-pdf-role-title-detail { font-size: 7.4px !important; line-height: 1.12 !important; margin-top: 2px !important; white-space: normal !important; overflow: visible !important; word-break: break-word !important; }
+      .duty-pdf-role-title-count { font-size: 6.6px !important; padding: 1px 4px !important; margin-top: 3px !important; }
+      .duty-pdf-duty-cell { padding: 2.5px !important; min-height: 0 !important; height: auto !important; }
+      .duty-pdf-cell-people { gap: 2px !important; }
+      .duty-pdf-cell-person { min-height: 21px !important; padding: 2px 2.5px !important; gap: 3px !important; border-radius: 5px !important; }
+      .duty-pdf-cell-photo,
+      .duty-pdf-cell-initial { width: 18px !important; height: 18px !important; flex-basis: 18px !important; border-radius: 5px !important; font-size: 7.4px !important; }
+      .duty-pdf-cell-name { font-size: 8.4px !important; line-height: 1.08 !important; white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
+      .duty-pdf-cell-empty { min-height: 18px !important; font-size: 7px !important; }
+      .duty-week-pdf-footer { display: none !important; }
+    }
+  </style>
+
+
+
+  <style id="v73-9-5-pdf-full-role-column-clear-text">
+    /* v73.9.5: PDF ตารางเวร - คอลัมน์ตำแหน่งเวรกว้างขึ้น + ตัวหนังสือใหญ่และไม่ตัดชื่อ */
+    .duty-pdf-role-table {
+      table-layout: fixed !important;
+    }
+    .duty-pdf-role-table col.duty-pdf-col-role { width: 34% !important; }
+    .duty-pdf-role-table col.duty-pdf-col-day { width: 11% !important; }
+
+    .duty-pdf-role-head {
+      font-size: 20px !important;
+      line-height: 1.12 !important;
+      padding: 12px 12px !important;
+      letter-spacing: -0.02em !important;
+    }
+    .duty-pdf-day-head { padding: 11px 8px !important; }
+    .duty-pdf-day-title {
+      font-size: 20px !important;
+      line-height: 1.08 !important;
+      font-weight: 950 !important;
+    }
+    .duty-pdf-day-date-small {
+      font-size: 11.5px !important;
+      line-height: 1.2 !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      white-space: normal !important;
+    }
+    .duty-pdf-role-title-cell {
+      padding: 10px 12px !important;
+      vertical-align: middle !important;
+      overflow: visible !important;
+    }
+    .duty-pdf-role-title-main {
+      font-size: 19px !important;
+      line-height: 1.2 !important;
+      font-weight: 950 !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      word-break: normal !important;
+      overflow-wrap: anywhere !important;
+      letter-spacing: -0.015em !important;
+    }
+    .duty-pdf-role-title-detail {
+      font-size: 13px !important;
+      line-height: 1.25 !important;
+      margin-top: 5px !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      word-break: normal !important;
+      overflow-wrap: anywhere !important;
+    }
+    .duty-pdf-role-title-count {
+      font-size: 11.5px !important;
+      padding: 2px 8px !important;
+      margin-top: 6px !important;
+    }
+    .duty-pdf-cell-person {
+      min-height: 42px !important;
+      padding: 5px 6px !important;
+      gap: 6px !important;
+    }
+    .duty-pdf-cell-photo,
+    .duty-pdf-cell-initial {
+      width: 34px !important;
+      height: 34px !important;
+      flex-basis: 34px !important;
+    }
+    .duty-pdf-cell-name {
+      font-size: 15px !important;
+      line-height: 1.15 !important;
+      font-weight: 950 !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      overflow-wrap: anywhere !important;
+    }
+
+    @media print {
+      @page { size: A4 landscape; margin: 4mm; }
+      .duty-week-pdf-sheet {
+        max-height: none !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+      .duty-week-pdf-head {
+        padding: 6px 8px !important;
+        margin-bottom: 4px !important;
+      }
+      .duty-week-pdf-title { font-size: 18px !important; line-height: 1.06 !important; }
+      .duty-week-pdf-subtitle { font-size: 9.5px !important; line-height: 1.15 !important; }
+      .duty-week-pdf-logo { width: 72px !important; height: 30px !important; }
+
+      .duty-pdf-role-table col.duty-pdf-col-role { width: 34% !important; }
+      .duty-pdf-role-table col.duty-pdf-col-day { width: 11% !important; }
+
+      .duty-pdf-role-head {
+        font-size: 13px !important;
+        line-height: 1.1 !important;
+        padding: 7px 8px !important;
+      }
+      .duty-pdf-day-head { padding: 6px 4px !important; }
+      .duty-pdf-day-title { font-size: 12.5px !important; line-height: 1.08 !important; }
+      .duty-pdf-day-date-small {
+        font-size: 7.8px !important;
+        line-height: 1.1 !important;
+        margin-top: 2px !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+      }
+      .duty-pdf-role-title-cell {
+        padding: 6px 8px !important;
+        overflow: visible !important;
+      }
+      .duty-pdf-role-title-main {
+        font-size: 13.2px !important;
+        line-height: 1.16 !important;
+        font-weight: 950 !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        word-break: normal !important;
+        overflow-wrap: anywhere !important;
+      }
+      .duty-pdf-role-title-detail {
+        font-size: 9.4px !important;
+        line-height: 1.16 !important;
+        margin-top: 3px !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        word-break: normal !important;
+        overflow-wrap: anywhere !important;
+      }
+      .duty-pdf-role-title-count {
+        font-size: 8.4px !important;
+        padding: 1.5px 6px !important;
+        margin-top: 4px !important;
+      }
+      .duty-pdf-duty-cell { padding: 3px !important; }
+      .duty-pdf-cell-people { gap: 2.5px !important; }
+      .duty-pdf-cell-person {
+        min-height: 26px !important;
+        padding: 2.5px 3px !important;
+        gap: 3.5px !important;
+        border-radius: 6px !important;
+      }
+      .duty-pdf-cell-photo,
+      .duty-pdf-cell-initial {
+        width: 21px !important;
+        height: 21px !important;
+        flex-basis: 21px !important;
+        border-radius: 5px !important;
+        font-size: 8px !important;
+      }
+      .duty-pdf-cell-name {
+        font-size: 9.6px !important;
+        line-height: 1.08 !important;
+        font-weight: 950 !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        overflow-wrap: anywhere !important;
+      }
+      .duty-pdf-cell-empty { min-height: 21px !important; font-size: 9px !important; }
+    }
+  </style>
+
+
+  <style id="v73-9-6-pdf-role-column-visible-readable">
+    /* v73.9.6: ทำคอลัมน์ชื่อตำแหน่งเวรให้เห็นชัดขึ้น และมีข้อความ fallback ชัดเจน */
+    .duty-pdf-role-table col.duty-pdf-col-role { width: 38% !important; }
+    .duty-pdf-role-table col.duty-pdf-col-day { width: 10.333% !important; }
+
+    .duty-pdf-role-head {
+      font-size: 22px !important;
+      padding: 13px 14px !important;
+      letter-spacing: -0.02em !important;
+    }
+    .duty-pdf-role-title-cell {
+      background: linear-gradient(180deg, #eef5ff 0%, #dbeafe 100%) !important;
+      padding: 12px 14px !important;
+      vertical-align: top !important;
+      border-right: 2px solid #93c5fd !important;
+    }
+    .duty-pdf-role-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+      color: #1d4ed8;
+      background: #ffffff;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 2px 8px;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+    }
+    .duty-pdf-role-title-main {
+      font-size: 21px !important;
+      line-height: 1.22 !important;
+      color: #0f172a !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
+    }
+    .duty-pdf-role-title-main.is-missing {
+      color: #b91c1c !important;
+    }
+    .duty-pdf-role-title-detail {
+      font-size: 13.5px !important;
+      line-height: 1.28 !important;
+      color: #334155 !important;
+      margin-top: 6px !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
+    }
+    .duty-pdf-role-title-count {
+      font-size: 12px !important;
+      padding: 3px 9px !important;
+      margin-top: 7px !important;
+      background: #ffffff !important;
+      border-color: #93c5fd !important;
+      color: #1d4ed8 !important;
+    }
+
+    @media print {
+      .duty-pdf-role-table col.duty-pdf-col-role { width: 38% !important; }
+      .duty-pdf-role-table col.duty-pdf-col-day { width: 10.333% !important; }
+      .duty-pdf-role-head {
+        font-size: 14px !important;
+        padding: 8px 9px !important;
+      }
+      .duty-pdf-role-title-cell {
+        padding: 7px 8px !important;
+        border-right-width: 1.5px !important;
+      }
+      .duty-pdf-role-label {
+        font-size: 7px !important;
+        padding: 1px 5px !important;
+        margin-bottom: 4px !important;
+      }
+      .duty-pdf-role-title-main {
+        font-size: 14px !important;
+        line-height: 1.18 !important;
+      }
+      .duty-pdf-role-title-detail {
+        font-size: 9.5px !important;
+        line-height: 1.18 !important;
+        margin-top: 3px !important;
+      }
+      .duty-pdf-role-title-count {
+        font-size: 8.5px !important;
+        padding: 1px 6px !important;
+        margin-top: 4px !important;
+      }
+    }
+  </style>
+
+
+  <style id="v73-9-7-pdf-role-column-compact-balanced">
+    /* v73.9.7: คอลัมน์ตำแหน่งเวรให้กะทัดรัดขึ้น ไม่กินพื้นที่ และอ่านง่าย */
+    .duty-pdf-role-table { table-layout: fixed !important; }
+    .duty-pdf-role-table col.duty-pdf-col-role { width: 26% !important; }
+    .duty-pdf-role-table col.duty-pdf-col-day { width: 12.333% !important; }
+
+    .duty-pdf-role-head {
+      font-size: 18px !important;
+      line-height: 1.1 !important;
+      padding: 10px 12px !important;
+    }
+    .duty-pdf-day-head { padding: 10px 7px !important; }
+    .duty-pdf-day-title {
+      font-size: 18px !important;
+      line-height: 1.08 !important;
+    }
+    .duty-pdf-day-date-small {
+      font-size: 10px !important;
+      line-height: 1.14 !important;
+    }
+
+    .duty-pdf-role-title-cell {
+      background: #edf4ff !important;
+      padding: 8px 10px !important;
+      vertical-align: middle !important;
+    }
+    .duty-pdf-role-cell-inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      min-height: 100%;
+    }
+    .duty-pdf-role-title-main {
+      font-size: 16.5px !important;
+      line-height: 1.18 !important;
+      font-weight: 950 !important;
+      color: #0f172a !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      word-break: break-word !important;
+      overflow-wrap: anywhere !important;
+      margin: 0 !important;
+    }
+    .duty-pdf-role-title-main.is-missing {
+      color: #b91c1c !important;
+    }
+    .duty-pdf-role-title-detail {
+      font-size: 11px !important;
+      line-height: 1.18 !important;
+      color: #475569 !important;
+      margin: 0 !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      word-break: break-word !important;
+      overflow-wrap: anywhere !important;
+    }
+    .duty-pdf-role-title-count {
+      display: inline-flex !important;
+      align-items: center !important;
+      width: fit-content !important;
+      font-size: 10px !important;
+      padding: 2px 7px !important;
+      margin-top: 2px !important;
+      border-radius: 999px !important;
+      background: #ffffff !important;
+      border: 1px solid #93c5fd !important;
+      color: #1d4ed8 !important;
+      font-weight: 900 !important;
+    }
+
+    .duty-pdf-duty-cell { padding: 4px !important; }
+    .duty-pdf-cell-person {
+      min-height: 34px !important;
+      padding: 4px 5px !important;
+      gap: 5px !important;
+    }
+    .duty-pdf-cell-photo,
+    .duty-pdf-cell-initial {
+      width: 28px !important;
+      height: 28px !important;
+      flex-basis: 28px !important;
+    }
+    .duty-pdf-cell-name {
+      font-size: 13px !important;
+      line-height: 1.12 !important;
+      font-weight: 950 !important;
+    }
+
+    @media print {
+      @page { size: A4 landscape; margin: 4mm; }
+      .duty-pdf-role-table col.duty-pdf-col-role { width: 26% !important; }
+      .duty-pdf-role-table col.duty-pdf-col-day { width: 12.333% !important; }
+
+      .duty-week-pdf-title { font-size: 17px !important; }
+      .duty-week-pdf-subtitle { font-size: 9px !important; }
+
+      .duty-pdf-role-head {
+        font-size: 11.5px !important;
+        line-height: 1.1 !important;
+        padding: 6px 7px !important;
+      }
+      .duty-pdf-day-head { padding: 6px 4px !important; }
+      .duty-pdf-day-title {
+        font-size: 11.2px !important;
+        line-height: 1.08 !important;
+      }
+      .duty-pdf-day-date-small {
+        font-size: 7px !important;
+        line-height: 1.08 !important;
+        margin-top: 2px !important;
+      }
+      .duty-pdf-role-title-cell {
+        padding: 5px 6px !important;
+        vertical-align: middle !important;
+      }
+      .duty-pdf-role-cell-inner { gap: 2px !important; }
+      .duty-pdf-role-title-main {
+        font-size: 10.8px !important;
+        line-height: 1.12 !important;
+      }
+      .duty-pdf-role-title-detail {
+        font-size: 7.2px !important;
+        line-height: 1.1 !important;
+      }
+      .duty-pdf-role-title-count {
+        font-size: 6.6px !important;
+        padding: 1px 5px !important;
+        margin-top: 2px !important;
+      }
+      .duty-pdf-duty-cell { padding: 2.5px !important; }
+      .duty-pdf-cell-person {
+        min-height: 24px !important;
+        padding: 2px 3px !important;
+        gap: 3px !important;
+      }
+      .duty-pdf-cell-photo,
+      .duty-pdf-cell-initial {
+        width: 20px !important;
+        height: 20px !important;
+        flex-basis: 20px !important;
+        border-radius: 5px !important;
+        font-size: 8px !important;
+      }
+      .duty-pdf-cell-name {
+        font-size: 9.2px !important;
+        line-height: 1.06 !important;
+      }
+    }
+  </style>
+
+
+  <style id="v74-master-duty-schedule-ui">
+    .master-duty-shell { display: grid; gap: 18px; }
+    .master-duty-hero { border-radius: 28px; background: linear-gradient(135deg,#0f172a 0%,#12386f 58%,#0ea5e9 100%); color:#fff; padding: 22px; border:1px solid rgba(255,255,255,.16); box-shadow:0 22px 60px rgba(15,23,42,.22); }
+    .master-duty-tabs { display:flex; gap:10px; flex-wrap:wrap; }
+    .master-duty-tab { border-radius:18px; padding:12px 16px; font-weight:900; border:1px solid rgba(148,163,184,.35); background:rgba(255,255,255,.82); color:#334155; }
+    .master-duty-tab.active { background:#2563eb; color:#fff; border-color:#60a5fa; box-shadow:0 12px 30px rgba(37,99,235,.22); }
+    .master-duty-card { border-radius:26px; border:1px solid rgba(203,213,225,.92); background:rgba(255,255,255,.94); box-shadow:0 18px 45px rgba(15,23,42,.07); overflow:hidden; }
+    .master-duty-toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; padding:16px; border-bottom:1px solid #e2e8f0; background:#f8fbff; }
+    .master-duty-daybar { display:grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap:8px; padding:14px; border-bottom:1px solid #e2e8f0; background:#fff; }
+    .master-duty-daybtn { border-radius:18px; border:1px solid #cbd5e1; background:#f8fafc; padding:12px 10px; text-align:left; font-weight:900; color:#334155; }
+    .master-duty-daybtn.active { background:linear-gradient(135deg,#2563eb,#0ea5e9); color:#fff; border-color:#60a5fa; }
+    .master-duty-table-wrap { overflow-x:auto; background:#fff; }
+    .master-duty-table { width:100%; min-width:980px; border-collapse:separate; border-spacing:0; table-layout:fixed; }
+    .master-duty-table th { background:#0f172a; color:#fff; padding:13px 10px; font-size:14px; text-align:left; border-right:1px solid rgba(255,255,255,.12); }
+    .master-duty-table td { border-right:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0; padding:8px; vertical-align:top; background:#fff; }
+    .master-duty-table tbody tr:nth-child(even) td { background:#f8fbff; }
+    .master-role-cell { width:230px; background:#edf4ff !important; }
+    .master-role-title { font-size:15px; line-height:1.18; font-weight:950; color:#0f172a; }
+    .master-role-meta { margin-top:4px; display:flex; flex-wrap:wrap; gap:5px; }
+    .master-chip { display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:999px; background:#fff; border:1px solid #bfdbfe; color:#1d4ed8; font-size:11px; font-weight:900; }
+    .master-person-pill { display:flex; align-items:center; gap:7px; min-height:38px; padding:5px 7px; border-radius:13px; border:1px solid #dbeafe; background:#fff; font-weight:950; color:#0f172a; cursor:pointer; transition:.18s; }
+    .master-person-pill:hover { border-color:#60a5fa; box-shadow:0 8px 18px rgba(37,99,235,.12); transform:translateY(-1px); }
+    .master-person-pill.empty { justify-content:center; border-style:dashed; color:#64748b; background:#f8fafc; }
+    .master-avatar { width:28px; height:28px; border-radius:9px; object-fit:cover; border:1px solid #cbd5e1; background:#dbeafe; flex:0 0 28px; }
+    .master-avatar-fallback { display:flex; align-items:center; justify-content:center; color:#1d4ed8; font-size:11px; font-weight:950; }
+    .master-picker-row { display:flex; align-items:center; gap:10px; width:100%; padding:10px; border-radius:18px; border:1px solid #e2e8f0; background:#fff; text-align:left; }
+    .master-picker-row:hover { border-color:#60a5fa; background:#eff6ff; }
+    .master-setting-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+    @media print {
+      body.print-master-duty #root > *:not(.master-duty-print-overlay) { display:none !important; }
+      .no-print { display:none !important; }
+      .master-duty-print-overlay { display:block !important; position:static !important; background:#fff !important; color:#0f172a !important; padding:0 !important; }
+      @page { size:A4 landscape; margin:5mm; }
+      .master-print-page { page-break-after:always; }
+      .master-print-table { width:100%; border-collapse:collapse; table-layout:fixed; font-family:'Noto Sans Thai',sans-serif; }
+      .master-print-table th { background:#0f172a !important; color:#fff !important; border:1px solid #cbd5e1; padding:5px; font-size:10px; }
+      .master-print-table td { border:1px solid #cbd5e1; padding:4px; vertical-align:top; font-size:9px; }
+      .master-print-role { background:#eaf2ff !important; width:24%; font-weight:950; font-size:10.5px !important; }
+      .master-print-person { display:flex; align-items:center; gap:3px; border:1px solid #dbeafe; border-radius:6px; padding:2px 3px; margin:2px 0; font-size:8.6px; font-weight:950; }
+      .master-print-avatar { width:18px; height:18px; border-radius:5px; object-fit:cover; border:1px solid #cbd5e1; }
+    }
+  </style>
+
+
+  <style id="v74-0-1-master-duty-dark-color-fix">
+    /* v74.0.1: คืนสี Master Duty ให้เข้ากับโหมดมืดเดิม และทำให้ข้อมูลเก่าไม่ดูเหมือนหาย */
+    @media screen {
+      body.dark-mode .master-duty-hero {
+        background: linear-gradient(135deg, #07111f 0%, #0f2447 55%, #123d68 100%) !important;
+        border-color: rgba(96, 165, 250, .25) !important;
+        box-shadow: 0 24px 70px rgba(0,0,0,.34) !important;
+      }
+      body.dark-mode .master-duty-card,
+      body.dark-mode .master-duty-panel,
+      body.dark-mode .master-duty-empty-guide {
+        background: rgba(15, 23, 42, .94) !important;
+        color: #e5edf8 !important;
+        border-color: rgba(71, 85, 105, .78) !important;
+        box-shadow: 0 18px 48px rgba(0,0,0,.26) !important;
+      }
+      body.dark-mode .master-duty-toolbar,
+      body.dark-mode .master-duty-daybar,
+      body.dark-mode .master-duty-table-wrap,
+      body.dark-mode .master-duty-card .bg-white,
+      body.dark-mode .master-duty-card .bg-slate-50,
+      body.dark-mode .master-duty-card .bg-slate-100,
+      body.dark-mode .master-duty-card [class*="bg-white"],
+      body.dark-mode .master-duty-card [class*="bg-slate-50"] {
+        background: rgba(15, 23, 42, .92) !important;
+        color: #e5edf8 !important;
+        border-color: rgba(71, 85, 105, .78) !important;
+      }
+      body.dark-mode .master-duty-tab {
+        background: rgba(15, 23, 42, .86) !important;
+        color: #cbd5e1 !important;
+        border-color: rgba(71, 85, 105, .9) !important;
+      }
+      body.dark-mode .master-duty-tab.active {
+        background: linear-gradient(135deg,#1d4ed8,#0ea5e9) !important;
+        color: #fff !important;
+        border-color: rgba(147,197,253,.8) !important;
+      }
+      body.dark-mode .master-duty-daybtn {
+        background: rgba(15,23,42,.92) !important;
+        color: #dbeafe !important;
+        border-color: rgba(71,85,105,.9) !important;
+      }
+      body.dark-mode .master-duty-daybtn.active {
+        background: linear-gradient(135deg,#1d4ed8,#0ea5e9) !important;
+        color: #fff !important;
+        border-color: rgba(147,197,253,.8) !important;
+      }
+      body.dark-mode .master-duty-table th {
+        background: #020617 !important;
+        color: #f8fafc !important;
+        border-color: rgba(71,85,105,.78) !important;
+      }
+      body.dark-mode .master-duty-table td,
+      body.dark-mode .master-duty-table tbody tr:nth-child(even) td {
+        background: rgba(15,23,42,.92) !important;
+        color: #e5edf8 !important;
+        border-color: rgba(71,85,105,.78) !important;
+      }
+      body.dark-mode .master-role-cell {
+        background: rgba(30, 58, 138, .32) !important;
+        color: #e5edf8 !important;
+      }
+      body.dark-mode .master-role-title,
+      body.dark-mode .master-duty-card .text-slate-950,
+      body.dark-mode .master-duty-card .text-slate-900,
+      body.dark-mode .master-duty-card .text-slate-800,
+      body.dark-mode .master-duty-card .text-slate-700 {
+        color: #f8fafc !important;
+      }
+      body.dark-mode .master-duty-card .text-slate-600,
+      body.dark-mode .master-duty-card .text-slate-500,
+      body.dark-mode .master-duty-card .text-slate-400,
+      body.dark-mode .master-role-meta {
+        color: #a8b3c7 !important;
+      }
+      body.dark-mode .master-chip {
+        background: rgba(30, 41, 59, .95) !important;
+        color: #bfdbfe !important;
+        border-color: rgba(96,165,250,.45) !important;
+      }
+      body.dark-mode .master-person-pill {
+        background: rgba(15,23,42,.96) !important;
+        color: #f8fafc !important;
+        border-color: rgba(71,85,105,.86) !important;
+      }
+      body.dark-mode .master-person-pill.empty {
+        background: rgba(15,23,42,.72) !important;
+        color: #a8b3c7 !important;
+        border-color: rgba(96,165,250,.38) !important;
+      }
+      body.dark-mode .master-picker-row {
+        background: rgba(15,23,42,.96) !important;
+        color: #f8fafc !important;
+        border-color: rgba(71,85,105,.86) !important;
+      }
+      body.dark-mode .master-picker-row:hover { background: rgba(30,64,175,.20) !important; }
+      body.dark-mode .master-duty-empty-guide {
+        border-radius: 26px;
+        padding: 18px;
+        border: 1px solid rgba(96,165,250,.35);
+      }
+      body.dark-mode .master-duty-warning {
+        background: rgba(251, 191, 36, .12) !important;
+        color: #fde68a !important;
+        border-color: rgba(251,191,36,.35) !important;
+      }
+    }
+    .master-duty-empty-guide {
+      border-radius: 26px;
+      padding: 18px;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+    }
+    .master-duty-warning {
+      border-radius: 22px;
+      padding: 14px 16px;
+      border: 1px solid #fcd34d;
+      background: #fffbeb;
+      color: #92400e;
+      font-weight: 900;
+    }
+  </style>
+
+
+  <style id="v74-1-0-master-duty-full-hotfix">
+    .master-duty-error-box {
+      border-radius: 28px;
+      border: 1px solid rgba(248,113,113,.45);
+      background: linear-gradient(135deg, rgba(127,29,29,.92), rgba(15,23,42,.96));
+      color: #fff;
+      padding: 24px;
+      box-shadow: 0 24px 70px rgba(15,23,42,.35);
+    }
+    .master-duty-error-box pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(15,23,42,.75);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding: 12px;
+      color: #fecaca;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+    body.dark-mode .master-duty-card,
+    body.dark-mode .master-duty-panel,
+    body.dark-mode .master-duty-table-wrap { color: #f8fafc !important; }
+    body.dark-mode .master-duty-table td,
+    body.dark-mode .master-duty-table th { border-color: rgba(148,163,184,.28) !important; }
+    body.dark-mode .master-duty-table tbody tr:nth-child(even) td { background: rgba(15,23,42,.58) !important; }
+    body.dark-mode .master-person-pill.empty { background: rgba(15,23,42,.55) !important; color: #cbd5e1 !important; border-color: rgba(148,163,184,.38) !important; }
+    body.dark-mode .master-picker-row { background: rgba(15,23,42,.78) !important; border-color: rgba(148,163,184,.25) !important; color: #f8fafc !important; }
+    body.dark-mode .master-picker-row:hover { background: rgba(30,41,59,.95) !important; }
+  </style>
+
+
+  <style id="v74-1-2-master-duty-check-print-fix">
+    /* v74.1.2: แก้ PDF หน้าว่าง + เพิ่มหน้าเช็คเวรจากตารางหลัก */
+    .master-check-daybar { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px; margin-bottom:14px; }
+    .master-check-daybtn { border-radius:18px; border:1px solid rgba(148,163,184,.35); background:#f8fafc; padding:12px; text-align:left; font-weight:950; color:#334155; }
+    .master-check-daybtn.active { background:linear-gradient(135deg,#2563eb,#0ea5e9); color:#fff; border-color:#60a5fa; }
+    .master-check-list { display:grid; gap:10px; }
+    .master-check-row { display:grid; grid-template-columns:minmax(180px,1fr) minmax(160px,.8fr) auto; gap:10px; align-items:center; border:1px solid #e2e8f0; border-radius:20px; padding:12px; background:#fff; }
+    .master-check-person { display:flex; align-items:center; gap:10px; min-width:0; }
+    .master-check-avatar { width:42px; height:42px; border-radius:14px; object-fit:cover; border:1px solid #cbd5e1; background:#dbeafe; display:flex; align-items:center; justify-content:center; color:#1d4ed8; font-weight:950; flex:0 0 42px; }
+    .master-check-role { font-weight:950; color:#0f172a; }
+    .master-check-actions { display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end; }
+    .master-check-status { border-radius:999px; border:1px solid #cbd5e1; padding:7px 10px; font-size:12px; font-weight:950; color:#334155; background:#f8fafc; }
+    .master-check-status.active { color:#fff; border-color:transparent; }
+    .master-check-status.present.active { background:#16a34a; }
+    .master-check-status.late.active { background:#f59e0b; }
+    .master-check-status.absent.active { background:#dc2626; }
+    .master-check-status.leave.active { background:#64748b; }
+    .master-check-status.substitute.active { background:#7c3aed; }
+    body.dark-mode .master-check-daybtn { background:#0f172a; border-color:#334155; color:#cbd5e1; }
+    body.dark-mode .master-check-row { background:#0f172a; border-color:#334155; }
+    body.dark-mode .master-check-role { color:#f8fafc; }
+
+    @media print {
+      body.print-master-duty #root > * { display:block !important; }
+      body.print-master-duty .master-duty-shell > :not(.master-duty-print-overlay) { display:none !important; }
+      body.print-master-duty .master-duty-print-overlay,
+      body.print-master-duty .master-duty-print-overlay.hidden {
+        display:block !important;
+        visibility:visible !important;
+        position:static !important;
+        width:100% !important;
+        min-height:auto !important;
+        background:#fff !important;
+        color:#0f172a !important;
+        padding:0 !important;
+        margin:0 !important;
+      }
+      body.print-master-duty .master-duty-print-overlay * { visibility:visible !important; }
+      body.print-master-duty .club-sidebar,
+      body.print-master-duty .topbar-shell,
+      body.print-master-duty .smart-command-fab,
+      body.print-master-duty .smart-command-backdrop,
+      body.print-master-duty .no-print { display:none !important; }
+      .master-print-page { display:block !important; background:#fff !important; color:#0f172a !important; }
+      .master-print-table { display:table !important; width:100% !important; border-collapse:collapse !important; table-layout:fixed !important; }
+      .master-print-table thead { display:table-header-group !important; }
+      .master-print-table tbody { display:table-row-group !important; }
+      .master-print-table tr { display:table-row !important; page-break-inside:avoid !important; break-inside:avoid !important; }
+      .master-print-table th,
+      .master-print-table td { display:table-cell !important; color:#0f172a !important; }
+    }
+  </style>
+
+
+  <style id="v74-1-4-master-duty-print-blank-fix">
+    /* v74.1.4: แก้ Print Preview / Save as PDF เป็นหน้ากระดาษเปล่า */
+    @media print {
+      body.print-master-duty,
+      body.print-master-duty html {
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body.print-master-duty #root {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+        min-height: auto !important;
+        background: #ffffff !important;
+      }
+      body.print-master-duty #root > * {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+        min-height: auto !important;
+      }
+      body.print-master-duty .master-duty-shell {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+        min-height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+      }
+      body.print-master-duty .master-duty-shell > :not(.master-duty-print-overlay),
+      body.print-master-duty .club-sidebar,
+      body.print-master-duty .topbar-shell,
+      body.print-master-duty .smart-command-fab,
+      body.print-master-duty .smart-command-backdrop,
+      body.print-master-duty .no-print {
+        display: none !important;
+        visibility: hidden !important;
+      }
+      body.print-master-duty .master-duty-print-overlay,
+      body.print-master-duty .master-duty-print-overlay.hidden {
+        display: block !important;
+        visibility: visible !important;
+        position: static !important;
+        inset: auto !important;
+        width: 100% !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      body.print-master-duty .master-duty-print-overlay * {
+        visibility: visible !important;
+        color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body.print-master-duty .master-print-page {
+        display: block !important;
+        width: 100% !important;
+        min-height: auto !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+      body.print-master-duty .master-print-table {
+        display: table !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
+        table-layout: fixed !important;
+        background: #ffffff !important;
+      }
+      body.print-master-duty .master-print-table thead { display: table-header-group !important; }
+      body.print-master-duty .master-print-table tbody { display: table-row-group !important; }
+      body.print-master-duty .master-print-table tr { display: table-row !important; }
+      body.print-master-duty .master-print-table th,
+      body.print-master-duty .master-print-table td {
+        display: table-cell !important;
+        border: 1px solid #cbd5e1 !important;
+        vertical-align: top !important;
+      }
+    }
+  </style>
+
+
+  <style id="v74-1-6-master-duty-week-view-default">
+    /* v74.1.6: เปิดหน้าตารางเวรแล้วเห็นทั้งสัปดาห์ทันที */
+    .master-week-head {
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      padding:16px; border-bottom:1px solid #e2e8f0; background:#fff;
+    }
+    .master-week-summary { display:grid; grid-template-columns: repeat(6,minmax(120px,1fr)); gap:8px; padding:12px 14px; border-bottom:1px solid #e2e8f0; background:#f8fafc; }
+    .master-week-summary-card { border:1px solid #e2e8f0; background:#fff; border-radius:16px; padding:10px 11px; font-weight:950; color:#0f172a; }
+    .master-week-summary-card span { display:block; font-size:11px; color:#64748b; margin-top:2px; }
+    .master-week-table { min-width:1220px !important; table-layout:fixed !important; }
+    .master-week-table .master-role-cell { width:190px !important; }
+    .master-week-day-head { text-align:center !important; }
+    .master-week-day-head .day-title { font-size:15px; font-weight:950; }
+    .master-week-day-head .day-count { margin-top:2px; font-size:11px; color:#bfdbfe; font-weight:900; }
+    .master-week-cell { min-height:52px; }
+    .master-week-slot-list { display:flex; flex-direction:column; gap:6px; }
+    .master-week-slot-list .master-person-pill { width:100%; min-height:34px; padding:4px 6px; font-size:13px; }
+    .master-week-slot-list .master-person-pill img { width:28px !important; height:28px !important; }
+    .master-week-slot-list .master-person-pill.empty { font-size:12px; }
+    @media (max-width: 900px) { .master-week-summary { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    body.dark-mode .master-week-head { background: rgba(15,23,42,.92) !important; border-color: rgba(148,163,184,.25) !important; }
+    body.dark-mode .master-week-summary { background: rgba(2,6,23,.72) !important; border-color: rgba(148,163,184,.25) !important; }
+    body.dark-mode .master-week-summary-card { background: rgba(15,23,42,.82) !important; border-color: rgba(148,163,184,.28) !important; color:#f8fafc !important; }
+    body.dark-mode .master-week-summary-card span { color:#cbd5e1 !important; }
+  </style>
+
+
+  <style id="v74-1-7-master-duty-capture-week-view">
+    /* v74.1.7: หน้าตารางเวรหลักแบบแคปส่งเด็ก เหมือน PDF ตารางทั้งสัปดาห์ */
+    .master-capture-sheet {
+      background:#ffffff !important;
+      color:#0f172a !important;
+      border-radius:24px;
+      border:1px solid #dbe3ef;
+      padding:18px 18px 14px;
+      box-shadow:0 18px 48px rgba(15,23,42,.16);
+      overflow:hidden;
+    }
+    .master-capture-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      padding-bottom:12px;
+      margin-bottom:12px;
+      border-bottom:4px solid #1d4ed8;
+    }
+    .master-capture-brand {
+      font-size:15px;
+      letter-spacing:.16em;
+      font-weight:950;
+      color:#1d4ed8;
+      text-transform:uppercase;
+      line-height:1;
+    }
+    .master-capture-title {
+      margin-top:7px;
+      font-size:34px;
+      line-height:1.05;
+      font-weight:950;
+      letter-spacing:-.035em;
+      color:#0f172a;
+    }
+    .master-capture-subtitle {
+      margin-top:6px;
+      font-size:13px;
+      line-height:1.3;
+      font-weight:850;
+      color:#475569;
+    }
+    .master-capture-logo {
+      width:96px;
+      height:42px;
+      object-fit:contain;
+      margin-top:4px;
+    }
+    .master-capture-toolbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+      padding:10px 12px;
+      border-radius:18px;
+      border:1px solid #dbeafe;
+      background:#eff6ff;
+      color:#1e3a8a;
+    }
+    .master-capture-toolbar .hint { font-size:13px; font-weight:900; }
+    .master-capture-actions { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
+    .master-capture-actions button {
+      border:0;
+      border-radius:14px;
+      padding:9px 12px;
+      font-size:13px;
+      font-weight:950;
+      cursor:pointer;
+    }
+    .master-capture-table-wrap {
+      width:100%;
+      overflow:auto;
+      border:1px solid #cbd5e1;
+      border-radius:0;
+      background:#ffffff;
+    }
+    .master-capture-table {
+      width:100%;
+      min-width:1180px;
+      border-collapse:collapse;
+      table-layout:fixed;
+      background:#ffffff;
+      color:#0f172a;
+    }
+    .master-capture-table th,
+    .master-capture-table td {
+      border:1px solid #cbd5e1;
+      vertical-align:middle;
+    }
+    .master-capture-table thead th {
+      background:#0f172a;
+      color:#ffffff;
+      padding:13px 10px;
+      font-size:17px;
+      line-height:1.08;
+      font-weight:950;
+      text-align:center;
+    }
+    .master-capture-table thead th:first-child {
+      text-align:left;
+      width:220px;
+    }
+    .master-capture-role-cell {
+      background:#eaf2ff;
+      color:#0f172a;
+      padding:10px 8px;
+      width:220px;
+    }
+    .master-capture-role-title {
+      font-size:21px;
+      line-height:1.12;
+      font-weight:950;
+      letter-spacing:-.02em;
+      overflow-wrap:anywhere;
+    }
+    .master-capture-role-meta {
+      display:flex;
+      flex-wrap:wrap;
+      gap:5px;
+      margin-top:6px;
+    }
+    .master-capture-chip {
+      display:inline-flex;
+      align-items:center;
+      border:1px solid #bfdbfe;
+      background:#ffffff;
+      color:#1d4ed8;
+      border-radius:999px;
+      padding:2px 8px;
+      font-size:11px;
+      line-height:1.15;
+      font-weight:950;
+    }
+    .master-capture-duty-cell {
+      background:#ffffff;
+      padding:7px;
+      min-height:54px;
+    }
+    .master-capture-table tbody tr:nth-child(even) .master-capture-duty-cell {
+      background:#f8fafc;
+    }
+    .master-capture-people {
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .master-capture-person,
+    .master-capture-empty {
+      width:100%;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-height:39px;
+      border:1px solid #dbeafe;
+      border-radius:10px;
+      background:#ffffff;
+      padding:5px 8px;
+      font-size:15px;
+      line-height:1.1;
+      font-weight:950;
+      color:#0f172a;
+      text-align:left;
+      cursor:pointer;
+    }
+    .master-capture-empty {
+      justify-content:center;
+      color:#94a3b8;
+      font-size:16px;
+      font-weight:950;
+    }
+    .master-capture-avatar,
+    .master-capture-initial {
+      width:31px;
+      height:31px;
+      flex:0 0 31px;
+      border-radius:8px;
+      border:1px solid #cbd5e1;
+      object-fit:cover;
+      overflow:hidden;
+      background:#dbeafe;
+      color:#1d4ed8;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      font-weight:950;
+    }
+    .master-capture-name {
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .master-capture-foot {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:12px;
+      padding-top:9px;
+      border-top:1px solid #cbd5e1;
+      color:#64748b;
+      font-size:12px;
+      font-weight:850;
+    }
+    body.dark-mode .master-capture-sheet,
+    body.dark-mode .master-capture-table-wrap,
+    body.dark-mode .master-capture-table,
+    body.dark-mode .master-capture-duty-cell,
+    body.dark-mode .master-capture-person,
+    body.dark-mode .master-capture-empty {
+      background:#ffffff !important;
+      color:#0f172a !important;
+    }
+    body.dark-mode .master-capture-title,
+    body.dark-mode .master-capture-role-title,
+    body.dark-mode .master-capture-name { color:#0f172a !important; }
+    @media (max-width:900px) {
+      .master-capture-title { font-size:26px; }
+      .master-capture-table { min-width:1080px; }
+    }
+    @media print {
+      .master-capture-toolbar, .no-print { display:none !important; }
+      .master-capture-sheet { box-shadow:none !important; border:0 !important; border-radius:0 !important; padding:0 !important; }
+    }
+  </style>
+
+  <style id="v74-1-8-remove-smart-command-fab">
+    /* v74.1.8: ซ่อนปุ่ม Smart Command ลอยมุมขวาล่าง เพราะไม่ได้ใช้งานและบังหน้าจอ */
+    .smart-command-fab,
+    .smart-command-backdrop {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+  </style>
+
 </head>
 <body class="text-slate-800 selection:bg-blue-200">
   <div id="root"></div>
@@ -2681,6 +4165,7 @@
     const getStudentPhotosRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('member_photos');
     const getDutyRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('duty_rosters');
     const getDutyTemplatesRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('duty_templates');
+    const getMasterDutyRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('master_duty_schedules');
     const getActivitiesRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('club_activities');
     const getWorksRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('member_works');
     const getChangeLogsRef = () => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('change_logs');
@@ -3484,7 +4969,6 @@
         { id:'members', label:'สมาชิก', icon:'ri-folder-user-fill', group:'ข้อมูลชมรม' },
         { id:'works', label:'ผลงาน', icon:'ri-gallery-fill', group:'ข้อมูลชมรม' },
         { id:'council', label:'สภาชมรม', icon:'ri-vip-crown-fill', group:'ข้อมูลชมรม' },
-        { id:'dutyDisplay', label:'จอเวรเช้า', icon:'ri-tv-2-fill', group:'เครื่องมือ' },
         { id:'smart', label:'เครื่องมือช่วย', icon:'ri-sparkling-2-fill', group:'เครื่องมือ' },
         { id:'dashboard', label:'รายงานสมาชิก', icon:'ri-pie-chart-2-fill', group:'รายงาน' },
         { id:'annual', label:'สรุปปี', icon:'ri-file-chart-fill', group:'รายงาน' },
@@ -3615,11 +5099,11 @@
                           onExportByInterest={exportByDepartment}
                         />
                       )}
-                      {activeTab === 'activities' && <ClubActivitiesPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
+                      {activeTab === 'activities' && <ActivitySafePage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
                       {activeTab === 'works' && <MemberWorksPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
                       {activeTab === 'council' && <ClubCouncilPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
                       {activeTab === 'today' && <TodayMorningPage students={students} currentAcademicYear={currentAcademicYear} onNavigate={setActiveTab} />}
-                      {activeTab === 'duty' && <DutySchedulePage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
+                      {activeTab === 'duty' && <MasterDutySafePage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
                       {activeTab === 'smart' && <SmartClubToolsPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} onNavigate={setActiveTab} />}
                       {activeTab === 'dashboard' && <DashboardPage students={students} yearsList={yearsList} currentAcademicYear={currentAcademicYear} onIssueFilter={(key) => { setFilterPhoto(key); setActiveTab('members'); }} />}
                       {activeTab === 'annual' && <AnnualSummaryPage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />}
@@ -4008,6 +5492,40 @@
       );
     }
 
+
+    class ActivityErrorBoundary extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = { error: null };
+      }
+      static getDerivedStateFromError(error) {
+        return { error };
+      }
+      componentDidCatch(error, info) {
+        console.error('Activity page crashed', error, info);
+      }
+      render() {
+        if (this.state.error) {
+          return (
+            <section className="rounded-[2rem] bg-rose-950/70 border border-rose-500/40 text-white p-6 md:p-8 soft-shadow">
+              <p className="text-xs font-black tracking-[0.25em] uppercase text-rose-200">ACTIVITY RECOVERY</p>
+              <h3 className="text-2xl md:text-3xl font-black mt-2">หน้ากิจกรรมเกิดข้อผิดพลาด แต่ข้อมูลยังไม่ถูกลบ</h3>
+              <p className="mt-2 text-rose-100 font-bold">ระบบกันหน้าขาวไว้แล้ว กดปุ่มด้านล่างเพื่อลองเปิดหน้ากิจกรรมใหม่อีกครั้ง</p>
+              <pre className="mt-4 rounded-2xl bg-slate-950/80 border border-white/10 p-4 text-sm overflow-auto">{String(this.state.error?.message || this.state.error)}</pre>
+              <button type="button" onClick={() => this.setState({ error: null })} className="mt-5 px-5 py-3 rounded-2xl bg-slate-950 hover:bg-slate-900 text-white font-black border border-white/10">
+                <i className="ri-refresh-line mr-1"></i>ลองเปิดหน้ากิจกรรมใหม่
+              </button>
+            </section>
+          );
+        }
+        return this.props.children;
+      }
+    }
+
+    function ActivitySafePage(props) {
+      return <ActivityErrorBoundary><ClubActivitiesPage {...props} /></ActivityErrorBoundary>;
+    }
+
     function ClubActivitiesPage({ students, currentAcademicYear, yearsList }) {
       const emptyForm = () => ({
         title: '',
@@ -4066,13 +5584,15 @@
       }, [year, editingId]);
 
       const yearOptions = useMemo(() => [...new Set([currentAcademicYear, ...(yearsList || []), ...activities.map(a => a.academicYear)].filter(Boolean))], [currentAcademicYear, yearsList, activities]);
-      const activeStudents = useMemo(() => students
+      // v74.1.3: กันหน้ากิจกรรมจอขาวจาก safeStudents undefined / students ไม่ใช่ array
+      const safeStudents = useMemo(() => Array.isArray(students) ? students : [], [students]);
+      const activeStudents = useMemo(() => safeStudents
         // v71.1: ปีในข้อมูลสมาชิกคือปีที่เข้าชมรม ไม่ใช่ปีที่ใช้ตัดสิทธิ์การเลือกชื่อ
         // จึงแสดงสมาชิกที่ยังใช้งานอยู่ทุกปี และใช้ปีของหน้านี้เป็นปีของกิจกรรม/เอกสารเท่านั้น
-        .filter(s => !['dismissed','graduated'].includes(s.status || 'active'))
+        .filter(s => s && !['dismissed','graduated'].includes(s.status || 'active'))
         .sort((a,b) => String(a.level || '').localeCompare(String(b.level || ''), 'th') || String(a.group || '').localeCompare(String(b.group || ''), 'th') || String(a.fullName || '').localeCompare(String(b.fullName || ''), 'th'))
-      , [students]);
-      const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
+      , [safeStudents]);
+      const studentMap = useMemo(() => new Map(safeStudents.filter(Boolean).map(s => [s.id, s])), [safeStudents]);
       const filteredActivities = useMemo(() => {
         const q = String(query || '').trim().toLowerCase();
         return activities.filter(a => String(a.academicYear || '') === String(year || '')).filter(a => {
@@ -5315,13 +6835,758 @@
       );
     }
 
+
+
+    class MasterDutyErrorBoundary extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = { hasError: false, message: '' };
+      }
+      static getDerivedStateFromError(error) {
+        return { hasError: true, message: String(error?.message || error || 'unknown error') };
+      }
+      componentDidCatch(error, info) {
+        console.error('Master Duty crashed but was recovered:', error, info);
+      }
+      render() {
+        if (this.state.hasError) {
+          return (
+            <div className="master-duty-error-box">
+              <div className="text-xs font-black tracking-[0.2em] uppercase text-red-200">MASTER DUTY RECOVERY</div>
+              <h2 className="text-2xl font-black mt-1">หน้าตารางเวรหลักเกิดข้อผิดพลาด แต่ระบบไม่ได้ล่มทั้งหน้า</h2>
+              <p className="font-bold text-red-100 mt-2">กดปุ่มด้านล่างเพื่อล้างสถานะหน้าจอชั่วคราว แล้วกลับมาเปิดตารางเวรหลักใหม่ ข้อมูลในฐานข้อมูลยังไม่ถูกลบ</p>
+              <pre>{this.state.message}</pre>
+              <button onClick={() => this.setState({ hasError:false, message:'' })} className="mt-4 px-5 py-3 rounded-2xl bg-white text-red-700 font-black">ลองเปิดหน้านี้ใหม่</button>
+            </div>
+          );
+        }
+        return this.props.children;
+      }
+    }
+
+    function MasterDutySafePage(props) {
+      return <MasterDutyErrorBoundary><MasterDutySchedulePage {...props} /></MasterDutyErrorBoundary>;
+    }
+
+    function MasterDutySchedulePage({ students, currentAcademicYear, yearsList }) {
+      const safeStudents = Array.isArray(students) ? students : [];
+      const safeYearsList = Array.isArray(yearsList) ? yearsList : [];
+      const safeCurrentYear = String(currentAcademicYear || thaiAcademicYearNow());
+      const safeDutyDays = Array.isArray(dutyDays) && dutyDays.length ? dutyDays : [{ key:'mon', label:'วันจันทร์' }];
+      const [legacyOpen, setLegacyOpen] = useState(false);
+      const [duties, setDuties] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [masterYear, setMasterYear] = useState(safeCurrentYear);
+      const [master, setMaster] = useState(null);
+      const [form, setForm] = useState(() => ({ ...createDutyForm(safeCurrentYear), scheduleType: 'MASTER' }));
+      const [activeMode, setActiveMode] = useState('schedule');
+      const [activeDay, setActiveDay] = useState(safeDutyDays[0].key);
+      const [saving, setSaving] = useState(false);
+      const [picker, setPicker] = useState({ open:false, dayKey:'', roleKey:'', slot:0, query:'' });
+      const [isPrinting, setIsPrinting] = useState(false);
+      const [roleSettingsOpen, setRoleSettingsOpen] = useState(false);
+      const [checkDate, setCheckDate] = useState(todayFileDate());
+      const [checkDay, setCheckDay] = useState(safeDutyDays[0].key);
+      const [checkRecords, setCheckRecords] = useState({});
+
+      // v74.1.1: helper เฉพาะหน้า Master Duty กันจอขาวจาก initialsOf ที่อยู่นอก scope
+      const masterInitialsOf = (person) => {
+        try {
+          const text = String(person?.nickname || person?.fullName || person?.studentId || '?').trim();
+          return text ? text.charAt(0) : '?';
+        } catch (error) {
+          return '?';
+        }
+      };
+
+      const isValidDayKey = (dayKey) => safeDutyDays.some(day => day.key === dayKey);
+      const safeActiveDay = isValidDayKey(activeDay) ? activeDay : safeDutyDays[0].key;
+      const normalizeMasterForm = (rawForm) => {
+        const base = rawForm && typeof rawForm === 'object' ? rawForm : createDutyForm(safeCurrentYear);
+        const roleDefs = normalizeDutyRoles(base.roleDefs || defaultDutyRoleDefs(), base.roleSlots || {});
+        const roleSlots = normalizeRoleSlots(base.roleSlots || {}, roleDefs);
+        return {
+          ...base,
+          academicYear: base.academicYear || masterYear || safeCurrentYear,
+          scheduleType: 'MASTER',
+          roleDefs,
+          roleSlots,
+          weeklyAssignments: normalizeWeeklyAssignmentIds(base.weeklyAssignments || {}, roleSlots, roleDefs)
+        };
+      };
+
+
+      useEffect(() => {
+        const unsub = getDutyRef().onSnapshot(snapshot => {
+          const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          data.sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+          setDuties(data);
+        }, err => console.error('load duty history failed', err));
+        return () => unsub();
+      }, []);
+
+      useEffect(() => {
+        setLoading(true);
+        const unsub = getMasterDutyRef().doc(String(masterYear || safeCurrentYear)).onSnapshot(doc => {
+          if (doc.exists) {
+            const data = { id: doc.id, ...doc.data() };
+            setMaster(data);
+            const roleDefs = getDutyRoles(data);
+            const roleSlots = normalizeRoleSlots(data.roleSlots || {}, roleDefs);
+            setForm({
+              date: getWeekStartDate(data.effectiveFrom || todayFileDate()),
+              academicYear: data.academicYear || masterYear || safeCurrentYear,
+              scheduleType: 'MASTER',
+              note: data.note || '',
+              roleDefs,
+              roleSlots,
+              weeklyAssignments: normalizeWeeklyAssignmentIds(data, roleSlots, roleDefs)
+            });
+          } else {
+            setMaster(null);
+            const base = createDutyForm(masterYear || safeCurrentYear);
+            setForm({ ...base, scheduleType: 'MASTER', note: 'ตารางเวรหลัก ใช้ยาวจนกว่าจะมีการแก้ไข' });
+          }
+          setLoading(false);
+        }, err => {
+          console.error(err);
+          setLoading(false);
+          alert('โหลดตารางเวรหลักไม่สำเร็จ');
+        });
+        return () => unsub();
+      }, [masterYear, safeCurrentYear]);
+
+      const activeStudents = useMemo(() => safeStudents.filter(s => !['dismissed','graduated'].includes(s.status || 'active')).sort((a,b) => String(a.group || '').localeCompare(String(b.group || ''), 'th') || String(a.nickname || a.fullName || '').localeCompare(String(b.nickname || b.fullName || ''), 'th')), [safeStudents]);
+      const studentMap = useMemo(() => new Map(safeStudents.map(s => [s.id, s])), [safeStudents]);
+      const roles = useMemo(() => normalizeDutyRoles(form?.roleDefs || defaultDutyRoleDefs(), form?.roleSlots || {}), [form?.roleDefs, form?.roleSlots]);
+      const weekly = useMemo(() => normalizeWeeklyAssignmentIds(form?.weeklyAssignments || {}, form?.roleSlots || {}, roles), [form?.weeklyAssignments, form?.roleSlots, roles]);
+      useEffect(() => { if (!isValidDayKey(activeDay)) setActiveDay(safeDutyDays[0].key); }, [activeDay]);
+      const latestDutyForYear = useMemo(() => duties.filter(d => String(d.academicYear || '') === String(masterYear || '')).sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')))[0] || null, [duties, masterYear]);
+      const totalAssigned = useMemo(() => countAssignedInWeekly(weekly, roles), [weekly, roles]);
+
+      const buildSnapshot = () => {
+        const lookup = new Map(safeStudents.map(s => [s.id, s]));
+        const snapshot = {};
+        dutyDays.forEach(day => {
+          snapshot[day.key] = {};
+          roles.forEach(role => {
+            const ids = [...new Set((weekly?.[day.key]?.[role.key] || []).filter(Boolean).map(item => typeof item === 'string' ? item : item?.id).filter(Boolean))];
+            snapshot[day.key][role.key] = ids.map(id => {
+              const s = lookup.get(id);
+              return s ? { id:s.id, studentId:s.studentId || '', fullName:s.fullName || '', nickname:s.nickname || '', level:s.level || '', group:s.group || '', actualInterest:s.actualInterest || s.interest || '' } : { id };
+            });
+          });
+        });
+        return snapshot;
+      };
+
+      const saveMaster = async () => {
+        const invalidRoles = roles.filter(role => !String(role.title || '').trim());
+        if (invalidRoles.length) return alert('กรุณาใส่ชื่อตำแหน่งเวรให้ครบก่อนบันทึก');
+        if (!totalAssigned && !confirm('ยังไม่มีรายชื่อในตารางเวรหลัก ต้องการบันทึกโครงตารางเปล่าใช่ไหม?')) return;
+        setSaving(true);
+        try {
+          const payload = {
+            academicYear: masterYear,
+            effectiveFrom: form.date || todayFileDate(),
+            scheduleType: 'MASTER',
+            note: form.note || '',
+            roleDefs: normalizeDutyRoles(form.roleDefs, form.roleSlots),
+            roleSlots: normalizeRoleSlots(form.roleSlots, form.roleDefs),
+            weeklyAssignments: buildSnapshot(),
+            updatedAt: new Date().toISOString(),
+            updatedBy: 'staff'
+          };
+          await getMasterDutyRef().doc(String(masterYear)).set(payload, { merge:true });
+          await logSystemAction('save_master_duty_schedule', { academicYear: masterYear, totalAssigned });
+          alert('บันทึกตารางเวรหลักเรียบร้อย');
+        } catch (err) {
+          alert('บันทึกตารางเวรหลักไม่สำเร็จ: ' + String(err?.message || err));
+        } finally {
+          setSaving(false);
+        }
+      };
+
+      const importLatestDuty = () => {
+        try {
+          if (!latestDutyForYear) return alert('ยังไม่มีตารางเวรรายสัปดาห์เก่าของปีนี้ให้นำเข้า');
+          if (!confirm(`นำเข้าจากตารางล่าสุด (${formatThaiWeekRange(latestDutyForYear.date)}) มาเป็นตารางเวรหลักใช่ไหม?`)) return;
+          const roleDefs = normalizeDutyRoles(getDutyRoles(latestDutyForYear), latestDutyForYear.roleSlots || {});
+          const roleSlots = normalizeRoleSlots(latestDutyForYear.roleSlots || {}, roleDefs);
+          const weeklyAssignments = normalizeWeeklyAssignmentIds(latestDutyForYear, roleSlots, roleDefs);
+          setForm(prev => normalizeMasterForm({
+            ...prev,
+            academicYear: masterYear || safeCurrentYear,
+            date: getWeekStartDate(latestDutyForYear.date || todayFileDate()),
+            roleDefs,
+            roleSlots,
+            weeklyAssignments,
+            note: `นำเข้าจากตารางเวรล่าสุด ${formatThaiWeekRange(latestDutyForYear.date)}`
+          }));
+          setActiveDay(safeDutyDays[0].key);
+          setPicker({ open:false, dayKey:'', roleKey:'', slot:0, query:'' });
+          setActiveMode('schedule');
+        } catch (error) {
+          console.error('import latest duty failed', error);
+          alert('นำเข้าเวรล่าสุดไม่สำเร็จ: ' + String(error?.message || error));
+        }
+      };
+
+      const setAssignment = (dayKey, roleKey, slot, value) => {
+        const safeDayKey = String(dayKey || '').trim();
+        const safeRoleKey = String(roleKey || '').trim();
+        const safeSlot = Math.max(0, Number(slot) || 0);
+        if (!safeDayKey || !safeRoleKey) {
+          console.warn('Master duty picker missing target', { dayKey, roleKey, slot, value });
+          return;
+        }
+        setForm(prev => {
+          const safePrev = normalizeMasterForm(prev);
+          const nextRoles = normalizeDutyRoles(safePrev.roleDefs, safePrev.roleSlots);
+          const roleSlots = normalizeRoleSlots(safePrev.roleSlots || {}, nextRoles);
+          const nextWeekly = JSON.parse(JSON.stringify(normalizeWeeklyAssignmentIds(safePrev.weeklyAssignments || {}, roleSlots, nextRoles)));
+          if (!nextWeekly[safeDayKey]) nextWeekly[safeDayKey] = emptyDutyAssignments(roleSlots, nextRoles);
+          if (!Array.isArray(nextWeekly[safeDayKey][safeRoleKey])) nextWeekly[safeDayKey][safeRoleKey] = [];
+          const arr = [...nextWeekly[safeDayKey][safeRoleKey]];
+          while (arr.length <= safeSlot) arr.push('');
+          arr[safeSlot] = value ? String(value) : '';
+          nextWeekly[safeDayKey][safeRoleKey] = arr;
+          return normalizeMasterForm({ ...safePrev, roleSlots, weeklyAssignments: nextWeekly });
+        });
+      };
+
+      const setRoleSlotCount = (roleKey, value) => {
+        const nextCount = Math.max(0, Math.min(10, Number(value) || 0));
+        setForm(prev => {
+          const nextRoles = normalizeDutyRoles(prev.roleDefs, { ...(prev.roleSlots || {}), [roleKey]: nextCount });
+          const roleSlots = normalizeRoleSlots({ ...(prev.roleSlots || {}), [roleKey]: nextCount }, nextRoles);
+          return { ...prev, roleDefs: nextRoles, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(prev.weeklyAssignments || {}, roleSlots, nextRoles) };
+        });
+      };
+
+      const setRoleField = (roleKey, field, value) => {
+        setForm(prev => {
+          const nextRoles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots).map(role => role.key === roleKey ? { ...role, [field]: value } : role);
+          const roleSlots = normalizeRoleSlots(prev.roleSlots, nextRoles);
+          return { ...prev, roleDefs: nextRoles, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(prev.weeklyAssignments || {}, roleSlots, nextRoles) };
+        });
+      };
+
+      const addRole = () => {
+        setForm(prev => {
+          const nextRoles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots);
+          const key = `master_${Date.now()}`;
+          const newRole = { key, title:`ตำแหน่งใหม่ ${nextRoles.length + 1}`, shortTitle:`ตำแหน่ง ${nextRoles.length + 1}`, slots:1, icon:'ri-user-star-fill', tone:'blue' };
+          const roleDefs = [...nextRoles, newRole];
+          const roleSlots = normalizeRoleSlots({ ...(prev.roleSlots || {}), [key]:1 }, roleDefs);
+          return { ...prev, roleDefs, roleSlots, weeklyAssignments: normalizeWeeklyAssignmentIds(prev.weeklyAssignments || {}, roleSlots, roleDefs) };
+        });
+      };
+
+      const removeRole = (roleKey) => {
+        setForm(prev => {
+          const nextRoles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots);
+          if (nextRoles.length <= 1) { alert('ต้องมีอย่างน้อย 1 ตำแหน่งเวร'); return prev; }
+          const target = nextRoles.find(r => r.key === roleKey);
+          if (!confirm(`ลบตำแหน่ง "${target?.title || roleKey}" ออกจากตารางเวรหลักใช่ไหม?`)) return prev;
+          const roleDefs = nextRoles.filter(role => role.key !== roleKey);
+          const roleSlots = { ...(prev.roleSlots || {}) };
+          delete roleSlots[roleKey];
+          const nextWeekly = JSON.parse(JSON.stringify(prev.weeklyAssignments || {}));
+          dutyDays.forEach(day => { if (nextWeekly?.[day.key]) delete nextWeekly[day.key][roleKey]; });
+          return { ...prev, roleDefs, roleSlots: normalizeRoleSlots(roleSlots, roleDefs), weeklyAssignments: normalizeWeeklyAssignmentIds(nextWeekly, roleSlots, roleDefs) };
+        });
+      };
+
+      const clearDay = (dayKey) => {
+        if (!confirm(`ล้างรายชื่อของ${dutyDays.find(d => d.key === dayKey)?.label || dayKey} ทั้งวันใช่ไหม?`)) return;
+        setForm(prev => {
+          const nextRoles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots);
+          const nextWeekly = normalizeWeeklyAssignmentIds(prev.weeklyAssignments || {}, prev.roleSlots, nextRoles);
+          nextWeekly[dayKey] = emptyDutyAssignments(prev.roleSlots, nextRoles);
+          return normalizeMasterForm({ ...prev, weeklyAssignments: nextWeekly });
+        });
+      };
+
+      const pickerResults = useMemo(() => {
+        const q = String(picker.query || '').trim().toLowerCase();
+        return activeStudents.filter(s => {
+          if (!s || !s.id) return false;
+          const searchable = [s.studentId, s.fullName, s.nickname, s.level, s.group, s.major, s.actualInterest, s.interest].filter(Boolean).join(' ').toLowerCase();
+          const noClass = picker.dayKey ? isNoClassDay(s, picker.dayKey) : false;
+          return !noClass && (!q || searchable.includes(q));
+        }).slice(0, 80);
+      }, [activeStudents, picker.query, picker.dayKey]);
+
+      const openPicker = (dayKey, roleKey, slot) => {
+        const safeDayKey = String(dayKey || '').trim();
+        const safeRoleKey = String(roleKey || '').trim();
+        if (!safeDayKey || !safeRoleKey) return alert('ไม่พบช่องเวรที่ต้องการแก้ไข กรุณาลองกดช่องใหม่อีกครั้ง');
+        setPicker({ open:true, dayKey:safeDayKey, roleKey:safeRoleKey, slot:Math.max(0, Number(slot) || 0), query:'' });
+      };
+      const closePicker = () => setPicker(prev => ({ ...prev, open:false, query:'' }));
+      const chooseStudent = (studentId) => {
+        try {
+          const target = { ...picker };
+          if (!target.open || !target.dayKey || !target.roleKey) return closePicker();
+          setAssignment(target.dayKey, target.roleKey, target.slot, studentId);
+          closePicker();
+        } catch (error) {
+          console.error('choose master duty student failed', error);
+          alert('เลือกสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+        }
+      };
+
+      const startPrint = () => {
+        try {
+          const esc = (value) => String(value ?? '').replace(/[&<>\"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+          const safeRoles = Array.isArray(roles) && roles.length ? roles : normalizeDutyRoles(form?.roleDefs, form?.roleSlots);
+          const safeWeekly = normalizeWeeklyAssignmentIds(weekly || form?.weeklyAssignments || {}, form?.roleSlots || {}, safeRoles);
+          const roleRows = safeRoles.map(role => {
+            const roleName = esc(role?.title || role?.shortTitle || '-');
+            const needCount = esc(getRoleSlotCount(role, form?.roleSlots || {}));
+            const cells = safeDutyDays.map(day => {
+              const ids = ((safeWeekly?.[day.key]?.[role.key]) || []).filter(Boolean);
+              const peopleHtml = ids.length ? ids.map((item, idx) => {
+                const id = typeof item === 'string' ? item : item?.id;
+                const p = id ? studentMap.get(id) : null;
+                const name = esc(p?.nickname || p?.fullName || 'ไม่พบข้อมูล');
+                const img = p?.photo
+                  ? `<img class="person-photo" src="${esc(p.photo)}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"/><span class="person-initial" style="display:none">${esc(masterInitialsOf(p))}</span>`
+                  : `<span class="person-initial">${esc(masterInitialsOf(p))}</span>`;
+                return `<div class="person">${img}<span class="person-name">${name}</span></div>`;
+              }).join('') : '<div class="empty">-</div>';
+              return `<td>${peopleHtml}</td>`;
+            }).join('');
+            return `<tr><td class="role-cell"><div class="role-title">${roleName}</div><div class="role-count">ต้องการ ${needCount} คน</div></td>${cells}</tr>`;
+          }).join('');
+          const dayHeads = safeDutyDays.map(day => `<th>${esc(day.label)}</th>`).join('');
+          const html = `<!doctype html><html><head><meta charset="utf-8"><title>ตารางเวรหลัก</title><style>
+            @page { size: A4 landscape; margin: 7mm; }
+            * { box-sizing: border-box; }
+            body { margin:0; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color:#0f172a; background:#fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .page { width:100%; padding:0; }
+            .head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; border-bottom:3px solid #1d4ed8; padding-bottom:9px; margin-bottom:10px; }
+            .brand { font-size:11px; font-weight:950; letter-spacing:1.5px; color:#1d4ed8; }
+            .title { font-size:24px; line-height:1.1; font-weight:950; margin-top:2px; }
+            .sub { margin-top:3px; font-size:11px; font-weight:800; color:#475569; }
+            .logo { width:82px; height:34px; object-fit:contain; }
+            table { width:100%; border-collapse:collapse; table-layout:fixed; }
+            th { background:#0f172a; color:#fff; border:1px solid #334155; padding:8px 6px; font-size:13px; line-height:1.1; text-align:center; font-weight:950; }
+            th:first-child { text-align:left; width:20%; }
+            td { border:1px solid #cbd5e1; vertical-align:top; padding:5px; font-size:11px; min-height:28px; }
+            tr:nth-child(even) td { background:#f8fafc; }
+            .role-cell { background:#eaf2ff !important; color:#0f172a; vertical-align:middle; }
+            .role-title { font-size:13.5px; line-height:1.16; font-weight:950; overflow-wrap:anywhere; }
+            .role-count { display:inline-block; margin-top:4px; border:1px solid #bfdbfe; background:#fff; color:#1d4ed8; border-radius:999px; padding:1px 6px; font-size:8.5px; font-weight:950; }
+            .person { display:flex; align-items:center; gap:5px; min-height:27px; border:1px solid #dbeafe; border-radius:8px; background:#fff; padding:3px 4px; margin-bottom:3px; break-inside:avoid; page-break-inside:avoid; }
+            .person-photo, .person-initial { width:22px; height:22px; flex:0 0 22px; border-radius:6px; border:1px solid #cbd5e1; object-fit:cover; }
+            .person-initial { display:inline-flex; align-items:center; justify-content:center; background:#dbeafe; color:#1d4ed8; font-size:8px; font-weight:950; }
+            .person-name { font-size:10.5px; line-height:1.08; font-weight:950; color:#0f172a; overflow-wrap:anywhere; }
+            .empty { text-align:center; color:#94a3b8; font-weight:900; padding-top:7px; }
+            .foot { display:flex; justify-content:space-between; gap:10px; margin-top:10px; padding-top:8px; border-top:1px solid #cbd5e1; font-size:9px; color:#64748b; font-weight:700; }
+            @media print { .no-print { display:none !important; } }
+          </style></head><body><section class="page"><div class="head"><div><div class="brand">MDEC MASTER DUTY</div><div class="title">ตารางเวรหลัก ปีการศึกษา ${esc(masterYear)}</div><div class="sub">เริ่มใช้: ${esc(formatThaiDate(form?.date))} · ${esc(form?.note || 'ใช้ยาวจนกว่าจะมีการแก้ไข')}</div></div><img class="logo" src="${esc(MDEC_LOGO)}"/></div><table><thead><tr><th>ตำแหน่งเวร</th>${dayHeads}</tr></thead><tbody>${roleRows || '<tr><td colspan="7" class="empty">ยังไม่มีข้อมูลตารางเวรหลัก</td></tr>'}</tbody></table><div class="foot"><div>Generated by MDEC Photo Club Center</div><div>ผู้จัดทำ ____________________ &nbsp;&nbsp; ผู้ตรวจสอบ ____________________</div></div></section><script>setTimeout(function(){ window.focus(); window.print(); }, 350);<\/script></body></html>`;
+          const printWindow = window.open('', '_blank', 'width=1200,height=800');
+          if (!printWindow) {
+            alert('เบราว์เซอร์บล็อกหน้าต่างพิมพ์ กรุณาอนุญาต Pop-up หรือกด Ctrl+P หลังจากเปิดหน้า PDF');
+            return;
+          }
+          printWindow.document.open();
+          printWindow.document.write(html);
+          printWindow.document.close();
+        } catch (error) {
+          console.error('master duty print failed', error);
+          alert('สร้างหน้าพิมพ์ไม่สำเร็จ: ' + (error?.message || error));
+        }
+      };
+
+      const renderPerson = (studentId) => {
+        const safeId = typeof studentId === 'string' ? studentId : studentId?.id;
+        const person = safeId ? studentMap.get(safeId) : null;
+        if (!person) return <><span className="master-avatar master-avatar-fallback">?</span><span className="truncate text-slate-400">ไม่พบข้อมูล</span></>;
+        return <><span className="master-avatar master-avatar-fallback overflow-hidden">{person.photo ? <img src={person.photo} className="w-full h-full object-cover" onError={e => { e.currentTarget.style.display = 'none'; }} /> : masterInitialsOf(person)}</span><span className="truncate">{person.nickname || person.fullName || '-'}</span></>;
+      };
+
+      const currentDayLabel = safeDutyDays.find(d => d.key === safeActiveDay)?.label || '';
+      const safeCheckDay = isValidDayKey(checkDay) ? checkDay : safeDutyDays[0].key;
+      const checkDayLabel = safeDutyDays.find(d => d.key === safeCheckDay)?.label || '';
+      const checkStorageKey = `mdec_master_duty_check_${masterYear}_${checkDate}_${safeCheckDay}`;
+      useEffect(() => {
+        try {
+          const raw = localStorage.getItem(checkStorageKey);
+          setCheckRecords(raw ? JSON.parse(raw) || {} : {});
+        } catch (error) {
+          setCheckRecords({});
+        }
+      }, [checkStorageKey]);
+      const assignedForCheckDay = useMemo(() => {
+        const list = [];
+        try {
+          roles.forEach(role => {
+            const ids = (weekly?.[safeCheckDay]?.[role.key] || []).filter(Boolean);
+            ids.forEach((item, idx) => {
+              const id = typeof item === 'string' ? item : item?.id;
+              if (!id) return;
+              const person = studentMap.get(id) || { id, nickname:'ไม่พบข้อมูล', fullName:'ไม่พบข้อมูล' };
+              list.push({ id, roleKey:role.key, roleTitle:role.title || role.shortTitle || 'ตำแหน่งเวร', slot:idx, person });
+            });
+          });
+        } catch (error) {
+          console.error('build master check list failed', error);
+        }
+        return list;
+      }, [roles, weekly, safeCheckDay, studentMap]);
+      const setCheckStatus = (entry, status) => {
+        const key = `${entry.roleKey}_${entry.slot}_${entry.id}`;
+        setCheckRecords(prev => {
+          const next = { ...(prev || {}), [key]: { status, studentId: entry.id, roleKey: entry.roleKey, slot: entry.slot, updatedAt: new Date().toISOString() } };
+          try { localStorage.setItem(checkStorageKey, JSON.stringify(next)); } catch (error) { console.warn('save check local failed', error); }
+          return next;
+        });
+      };
+      const checkStatusOf = (entry) => {
+        const key = `${entry.roleKey}_${entry.slot}_${entry.id}`;
+        return checkRecords?.[key]?.status || 'present';
+      };
+      const saveCheckSummary = () => {
+        try { localStorage.setItem(checkStorageKey, JSON.stringify(checkRecords || {})); alert('บันทึกเช็คเวรวันนี้แล้ว'); }
+        catch (error) { alert('บันทึกเช็คเวรไม่สำเร็จ: ' + String(error?.message || error)); }
+      };
+
+      if (loading) {
+        return <div className="bg-white rounded-[2rem] p-12 text-center soft-shadow"><div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p className="font-bold text-slate-500">กำลังโหลดตารางเวรหลัก...</p></div>;
+      }
+
+      if (legacyOpen) {
+        return (
+          <div className="duty-contrast-page space-y-4">
+            <div className="no-print flex flex-wrap items-center justify-between gap-3 rounded-[1.5rem] bg-slate-950 border border-slate-700 p-4 text-white">
+              <div>
+                <div className="text-xs font-black tracking-[0.2em] text-blue-300 uppercase">LEGACY WEEKLY DUTY</div>
+                <h2 className="text-2xl font-black">ประวัติเวรเดิม / ระบบรายสัปดาห์</h2>
+                <p className="text-sm text-slate-300 font-bold mt-1">ข้อมูลเวรเก่าอยู่หน้านี้ ไม่ได้ถูกลบ และยังพิมพ์/ดูย้อนหลังได้เหมือนเดิม</p>
+              </div>
+              <button onClick={() => setLegacyOpen(false)} className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black"><i className="ri-arrow-left-line mr-2"></i>กลับตารางเวรหลัก</button>
+            </div>
+            <DutySchedulePage students={students} currentAcademicYear={currentAcademicYear} yearsList={yearsList} />
+          </div>
+        );
+      }
+
+      return (
+        <div className="master-duty-shell">
+          <div className="master-duty-hero no-print">
+            <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-5">
+              <div>
+                <div className="text-xs font-black tracking-[0.24em] text-blue-100 uppercase">v74.1.6 Master Duty Week View Default</div>
+                <h2 className="text-3xl md:text-4xl font-black mt-1">ตารางเวรหลัก</h2>
+                <p className="text-blue-100 mt-2 max-w-3xl">ใช้ตารางเดียวระยะยาว แก้เฉพาะช่องที่เปลี่ยน ไม่ต้องสร้างตารางเวรใหม่ทุกสัปดาห์ ข้อมูลเวรรายสัปดาห์เดิมยังอยู่ครบใน “ประวัติเวรเดิม / รายสัปดาห์” และสามารถนำเข้าตารางล่าสุดมาเป็นฐานได้</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={saveMaster} disabled={saving} className="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black shadow-lg disabled:opacity-60"><i className="ri-save-3-fill mr-2"></i>{saving ? 'กำลังบันทึก...' : 'บันทึกตารางหลัก'}</button>
+                <button onClick={startPrint} className="px-5 py-3 rounded-2xl bg-white text-slate-950 font-black"><i className="ri-printer-fill mr-2"></i>พิมพ์ / PDF</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="master-duty-tabs no-print">
+            {[['schedule','ตารางเวรหลัก','ri-table-fill'],['check','เช็คเวร','ri-user-follow-fill'],['print','พิมพ์ / PDF','ri-file-pdf-2-fill'],['settings','ตั้งค่า','ri-settings-3-fill']].map(([id,label,icon]) => (
+              <button key={id} onClick={() => setActiveMode(id)} className={`master-duty-tab ${activeMode === id ? 'active' : ''}`}><i className={`${icon} mr-2`}></i>{label}</button>
+            ))}
+            <button onClick={() => setLegacyOpen(true)} className="master-duty-tab ml-auto"><i className="ri-history-fill mr-2"></i>ประวัติเวรเดิม / รายสัปดาห์</button>
+          </div>
+
+          <div className="master-duty-card no-print">
+            <div className="master-duty-toolbar">
+              <div className="flex flex-wrap items-center gap-3">
+                <Select label="ปีการศึกษา" value={masterYear} onChange={setMasterYear} options={[...new Set([currentAcademicYear, ...yearsList])]} />
+                <Input label="เริ่มใช้ตั้งแต่" type="date" value={form.date} onChange={v => setForm(prev => ({ ...prev, date:v }))} />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={importLatestDuty} className="px-4 py-3 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100 font-black"><i className="ri-download-cloud-2-fill mr-2"></i>นำเข้าจากตารางล่าสุด</button>
+                <button onClick={() => setLegacyOpen(true)} className="px-4 py-3 rounded-2xl bg-slate-900 text-white border border-slate-700 font-black"><i className="ri-history-fill mr-2"></i>ดูเวรเดิม</button>
+                <button onClick={() => setRoleSettingsOpen(v => !v)} className="px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 font-black"><i className="ri-list-settings-fill mr-2"></i>ตำแหน่งเวร</button>
+              </div>
+            </div>
+            <div className="px-5 py-4 grid md:grid-cols-3 gap-3 bg-white border-b border-slate-200">
+              <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4"><p className="text-xs font-black text-slate-400">สถานะ</p><p className="text-xl font-black text-slate-950">{master ? 'มีตารางหลักแล้ว' : 'ยังไม่เคยบันทึก'}</p></div>
+              <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4"><p className="text-xs font-black text-slate-400">ตำแหน่งเวร</p><p className="text-xl font-black text-slate-950">{roles.length} ตำแหน่ง</p></div>
+              <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4"><p className="text-xs font-black text-slate-400">รายชื่อในตาราง</p><p className="text-xl font-black text-slate-950">{totalAssigned} ช่อง</p></div>
+            </div>
+            {(!master && latestDutyForYear) && (
+              <div className="px-5 py-4 bg-white border-b border-slate-200">
+                <div className="master-duty-empty-guide">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                    <div>
+                      <div className="text-lg font-black text-slate-950"><i className="ri-information-fill mr-2 text-blue-500"></i>ตารางเวรหลักยังว่าง แต่เวรเดิมยังอยู่</div>
+                      <p className="text-sm font-bold text-slate-500 mt-1">พบตารางเวรรายสัปดาห์ล่าสุด: {formatThaiWeekRange(latestDutyForYear.date)} ถ้าต้องการใช้เป็นตารางหลัก ให้กดนำเข้าก่อน แล้วค่อยแก้เฉพาะช่องที่เปลี่ยน</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button onClick={importLatestDuty} className="px-4 py-3 rounded-2xl bg-blue-600 text-white font-black"><i className="ri-download-cloud-2-fill mr-2"></i>นำเข้าตารางล่าสุด</button>
+                      <button onClick={() => setLegacyOpen(true)} className="px-4 py-3 rounded-2xl bg-slate-900 text-white font-black"><i className="ri-history-fill mr-2"></i>ดูเวรเดิม</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {(!master && !latestDutyForYear) && (
+              <div className="px-5 py-4 bg-white border-b border-slate-200">
+                <div className="master-duty-warning"><i className="ri-alert-fill mr-2"></i>ยังไม่พบตารางเวรรายสัปดาห์เดิมของปีนี้ จึงเริ่มเป็นตารางหลักเปล่า</div>
+              </div>
+            )}
+            <div className="px-5 py-4 bg-white">
+              <TextArea label="หมายเหตุของตารางเวรหลัก" value={form.note} onChange={v => setForm(prev => ({ ...prev, note:v }))} />
+            </div>
+          </div>
+
+          {roleSettingsOpen && (
+            <div className="master-duty-card no-print p-5">
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <div><h3 className="text-2xl font-black text-slate-950">ตั้งค่าตำแหน่งเวรหลัก</h3><p className="text-slate-500 font-bold">ตั้งครั้งเดียว แล้วใช้ยาว แก้เพิ่มลดได้ภายหลัง</p></div>
+                <button onClick={addRole} className="px-4 py-3 rounded-2xl bg-blue-600 text-white font-black"><i className="ri-add-line mr-2"></i>เพิ่มตำแหน่ง</button>
+              </div>
+              <div className="master-setting-grid">
+                {roles.map(role => (
+                  <div key={role.key} className="rounded-3xl bg-slate-50 border border-slate-200 p-4 space-y-3">
+                    <Input label="ชื่อตำแหน่ง" value={role.title} onChange={v => setRoleField(role.key, 'title', v)} />
+                    <Input label="ชื่อย่อ" value={role.shortTitle} onChange={v => setRoleField(role.key, 'shortTitle', v)} />
+                    <Select label="จำนวนคน" value={String(getRoleSlotCount(role, form.roleSlots))} onChange={v => setRoleSlotCount(role.key, v)} options={['0','1','2','3','4','5','6','7','8','9','10']} />
+                    <button onClick={() => removeRole(role.key)} className="w-full px-4 py-3 rounded-2xl bg-rose-50 text-rose-700 border border-rose-100 font-black">ลบตำแหน่งนี้</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeMode === 'schedule' && (
+            <div className="master-capture-sheet">
+              <div className="master-capture-head">
+                <div>
+                  <div className="master-capture-brand">MDEC MASTER DUTY</div>
+                  <div className="master-capture-title">ตารางเวรหลัก ปีการศึกษา {masterYear}</div>
+                  <div className="master-capture-subtitle">เริ่มใช้: {formatThaiDate(form.date)} · {form.note || 'ใช้ยาวจนกว่าจะมีการแก้ไข'}</div>
+                </div>
+                <img src={MDEC_LOGO} alt="MDEC" className="master-capture-logo" />
+              </div>
+
+              <div className="master-capture-toolbar no-print">
+                <div className="hint"><i className="ri-camera-line mr-1"></i>มุมมองนี้ทำไว้สำหรับแคปส่งเด็กโดยตรง กดที่ชื่อหรือช่องว่างเพื่อแก้รายชื่อได้</div>
+                <div className="master-capture-actions">
+                  <button onClick={importLatestDuty} className="bg-blue-600 text-white"><i className="ri-download-cloud-2-fill mr-1"></i>นำเข้าล่าสุด</button>
+                  <button onClick={saveMaster} disabled={saving} className="bg-emerald-500 text-white disabled:opacity-60"><i className="ri-save-3-fill mr-1"></i>{saving ? 'กำลังบันทึก' : 'บันทึก'}</button>
+                  <button onClick={startPrint} className="bg-slate-900 text-white"><i className="ri-printer-fill mr-1"></i>พิมพ์ / PDF</button>
+                  <button onClick={() => setRoleSettingsOpen(v => !v)} className="bg-white text-slate-800 border border-slate-200"><i className="ri-list-settings-line mr-1"></i>ตำแหน่งเวร</button>
+                </div>
+              </div>
+
+              <div className="master-capture-table-wrap">
+                <table className="master-capture-table">
+                  <thead>
+                    <tr>
+                      <th>ตำแหน่งเวร</th>
+                      {safeDutyDays.map(day => <th key={day.key}>{day.label}</th>)}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {roles.length ? roles.map(role => {
+                      const slots = getRoleSlotCount(role, form.roleSlots);
+                      return (
+                        <tr key={role.key}>
+                          <td className="master-capture-role-cell">
+                            <div className="master-capture-role-title">{role.title || role.shortTitle || 'ยังไม่ได้ตั้งชื่อ'}</div>
+                            <div className="master-capture-role-meta">
+                              <span className="master-capture-chip">ต้องการ {slots} คน</span>
+                              {role.shortTitle && role.shortTitle !== role.title && <span className="master-capture-chip">{role.shortTitle}</span>}
+                            </div>
+                          </td>
+                          {safeDutyDays.map(day => {
+                            const items = weekly?.[day.key]?.[role.key] || [];
+                            return (
+                              <td key={`${role.key}-${day.key}`} className="master-capture-duty-cell">
+                                <div className="master-capture-people">
+                                  {Array.from({ length: Math.max(1, slots) }).map((_, slot) => {
+                                    const id = items[slot] || '';
+                                    const safeId = typeof id === 'string' ? id : id?.id;
+                                    const person = safeId ? studentMap.get(safeId) : null;
+                                    return (
+                                      <button key={slot} onClick={() => openPicker(day.key, role.key, slot)} className={safeId ? 'master-capture-person' : 'master-capture-empty'} title="กดเพื่อเลือก/เปลี่ยนสมาชิก">
+                                        {person ? (
+                                          <>
+                                            {person.photo ? <img src={person.photo} onError={e => { e.currentTarget.style.display = 'none'; }} className="master-capture-avatar" /> : <span className="master-capture-initial">{masterInitialsOf(person)}</span>}
+                                            <span className="master-capture-name">{person.nickname || person.fullName || '-'}</span>
+                                          </>
+                                        ) : safeId ? (
+                                          <>
+                                            <span className="master-capture-initial">?</span>
+                                            <span className="master-capture-name">ไม่พบข้อมูล</span>
+                                          </>
+                                        ) : (
+                                          <span>-</span>
+                                        )}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    }) : (
+                      <tr><td colSpan={safeDutyDays.length + 1} className="master-capture-duty-cell"><div className="master-capture-empty">ยังไม่มีข้อมูลตารางเวรหลัก</div></td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="master-capture-foot">
+                <div>Generated by MDEC Photo Club Center</div>
+                <div>ผู้จัดทำ ____________________ &nbsp;&nbsp; ผู้ตรวจสอบ ____________________</div>
+              </div>
+
+              <div className="p-4 no-print flex flex-wrap gap-2 border-t border-slate-200 bg-white mt-3">
+                {safeDutyDays.map(day => <button key={day.key} onClick={() => clearDay(day.key)} className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 font-black text-sm"><i className="ri-eraser-line mr-1"></i>ล้าง{day.label.replace('วัน','')}</button>)}
+              </div>
+            </div>
+          )}
+
+          {activeMode === 'check' && (
+            <div className="master-duty-card p-6 no-print">
+              <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-4 mb-5">
+                <div>
+                  <h3 className="text-2xl font-black text-slate-950 mb-1">เช็คเวรจากตารางเวรหลัก</h3>
+                  <p className="text-slate-500 font-bold">เลือกวัน แล้วกดสถานะ มา / สาย / ขาด / ลา / แทน ได้ทันที ข้อมูลเช็คเวรจะจำไว้ในเครื่องนี้ก่อน</p>
+                </div>
+                <div className="flex flex-wrap gap-2 items-end">
+                  <Input label="วันที่เช็คเวร" type="date" value={checkDate} onChange={setCheckDate} />
+                  <button onClick={saveCheckSummary} className="px-4 py-3 rounded-2xl bg-emerald-600 text-white font-black"><i className="ri-save-3-fill mr-2"></i>บันทึกเช็คเวร</button>
+                </div>
+              </div>
+
+              <div className="master-check-daybar">
+                {safeDutyDays.map(day => {
+                  const count = roles.reduce((sum, role) => sum + ((weekly?.[day.key]?.[role.key] || []).filter(Boolean).length), 0);
+                  return <button key={day.key} onClick={() => setCheckDay(day.key)} className={`master-check-daybtn ${safeCheckDay === day.key ? 'active' : ''}`}><div>{day.label}</div><div className="text-xs opacity-80">{count} คน</div></button>;
+                })}
+              </div>
+
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4 mb-4">
+                <div className="font-black text-slate-950 text-lg">{checkDayLabel}</div>
+                <div className="text-sm font-bold text-slate-500">รายชื่อจากตารางเวรหลักปัจจุบัน {assignedForCheckDay.length} คน</div>
+              </div>
+
+              {assignedForCheckDay.length ? (
+                <div className="master-check-list">
+                  {assignedForCheckDay.map(entry => {
+                    const person = entry.person || {};
+                    const status = checkStatusOf(entry);
+                    const statuses = [['present','มา'],['late','สาย'],['absent','ขาด'],['leave','ลา'],['substitute','แทน']];
+                    return (
+                      <div key={`${entry.roleKey}-${entry.slot}-${entry.id}`} className="master-check-row">
+                        <div className="master-check-person">
+                          {person.photo ? <img src={person.photo} onError={e => { e.currentTarget.style.display = 'none'; }} className="master-check-avatar" /> : <div className="master-check-avatar">{masterInitialsOf(person)}</div>}
+                          <div className="min-w-0">
+                            <div className="font-black text-slate-950 truncate">{person.nickname || person.fullName || 'ไม่พบข้อมูล'}</div>
+                            <div className="text-xs font-bold text-slate-500 truncate">{person.fullName || '-'} · {person.level || '-'} / {person.group || '-'}</div>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-xs font-black text-slate-400">ตำแหน่งเวร</div>
+                          <div className="master-check-role">{entry.roleTitle}</div>
+                        </div>
+                        <div className="master-check-actions">
+                          {statuses.map(([key,label]) => <button key={key} onClick={() => setCheckStatus(entry, key)} className={`master-check-status ${key} ${status === key ? 'active' : ''}`}>{label}</button>)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
+                  <div className="text-2xl font-black text-slate-950">วันนี้ยังไม่มีรายชื่อเวรในตารางหลัก</div>
+                  <p className="text-slate-500 font-bold mt-2">ให้กลับไปที่ “ตารางเวรหลัก” แล้วเลือกชื่อเด็กลงเวรก่อน หรือกด “นำเข้าจากตารางล่าสุด”</p>
+                  <div className="mt-4 flex flex-wrap justify-center gap-2">
+                    <button onClick={() => setActiveMode('schedule')} className="px-4 py-3 rounded-2xl bg-blue-600 text-white font-black">ไปตารางเวรหลัก</button>
+                    <button onClick={importLatestDuty} className="px-4 py-3 rounded-2xl bg-slate-900 text-white font-black">นำเข้าจากตารางล่าสุด</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeMode === 'print' && (
+            <div className="master-duty-card p-6 no-print">
+              <h3 className="text-2xl font-black text-slate-950 mb-2">พิมพ์ / PDF ตารางเวรหลัก</h3>
+              <p className="text-slate-500 font-bold mb-5">พิมพ์จากตารางหลักปัจจุบัน ไม่ต้องเลือกสัปดาห์</p>
+              <button onClick={startPrint} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-black"><i className="ri-printer-fill mr-2"></i>เปิดหน้าพิมพ์ / Save as PDF</button>
+            </div>
+          )}
+
+          {activeMode === 'settings' && (
+            <div className="master-duty-card p-6 no-print">
+              <h3 className="text-2xl font-black text-slate-950 mb-2">ตั้งค่า / ประวัติเดิม</h3>
+              <p className="text-slate-500 font-bold mb-5">ตารางเวรรายสัปดาห์เดิมยังอยู่ ใช้สำหรับอ้างอิงย้อนหลังหรือนำเข้ามาเป็นตารางหลักได้</p>
+              <div className="flex flex-wrap gap-2"><button onClick={() => setLegacyOpen(true)} className="px-4 py-3 rounded-2xl bg-slate-900 text-white font-black">เปิดประวัติเวรเดิม / รายสัปดาห์</button><button onClick={importLatestDuty} className="px-4 py-3 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100 font-black">นำเข้าจากตารางล่าสุด</button></div>
+            </div>
+          )}
+
+          {picker.open && (
+            <div className="fixed inset-0 z-[70] bg-slate-950/70 backdrop-blur-md p-4 no-print flex items-center justify-center">
+              <div className="bg-white rounded-[2rem] w-full max-w-3xl max-h-[86vh] overflow-hidden soft-shadow flex flex-col">
+                <div className="p-5 border-b border-slate-200 flex items-center justify-between gap-3">
+                  <div><h3 className="text-2xl font-black text-slate-950">เลือกนักศึกษา</h3><p className="text-slate-500 font-bold">{dutyDays.find(d => d.key === picker.dayKey)?.label || ''} · {roles.find(r => r.key === picker.roleKey)?.title || ''}</p></div>
+                  <button onClick={closePicker} className="w-11 h-11 rounded-2xl hover:bg-slate-100 font-black">✕</button>
+                </div>
+                <div className="p-5 border-b border-slate-200"><input autoFocus value={picker.query} onChange={e => setPicker(prev => ({ ...prev, query:e.target.value }))} placeholder="ค้นหาชื่อเล่น ชื่อจริง ห้อง หรือรหัสนักศึกษา" className="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900 bg-white" /></div>
+                <div className="p-5 overflow-y-auto bg-slate-50 space-y-2">
+                  <button onClick={() => chooseStudent('')} className="master-picker-row text-rose-700 font-black"><i className="ri-delete-bin-line text-xl"></i>ล้างชื่อในช่องนี้</button>
+                  {pickerResults.length ? pickerResults.map(s => (
+                    <button key={s.id} onClick={() => chooseStudent(s.id)} className="master-picker-row">
+                      {s.photo ? <img src={s.photo} onError={e => { e.currentTarget.style.display = 'none'; }} className="w-12 h-12 rounded-2xl object-cover border border-slate-200" /> : <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">{masterInitialsOf(s)}</div>}
+                      <div className="min-w-0"><div className="font-black text-slate-950 truncate">{s.nickname || s.fullName || '-'}</div><div className="text-xs font-bold text-slate-500 truncate">{s.fullName || '-'} · {s.level || '-'} / {s.group || '-'}</div></div>
+                    </button>
+                  )) : <div className="text-center p-10 text-slate-500 font-bold">ไม่พบรายชื่อที่พร้อมเลือกในวันนี้</div>}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(
+            <div className="master-duty-print-overlay hidden">
+              <section className="master-print-page">
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',borderBottom:'2px solid #1d4ed8',paddingBottom:8,marginBottom:8}}>
+                  <div><div style={{fontSize:11,fontWeight:900,color:'#1d4ed8',letterSpacing:1.5}}>MDEC MASTER DUTY</div><div style={{fontSize:22,fontWeight:950}}>ตารางเวรหลัก ปีการศึกษา {masterYear}</div><div style={{fontSize:10,color:'#475569'}}>เริ่มใช้: {formatThaiDate(form.date)} · {form.note || 'ใช้ยาวจนกว่าจะมีการแก้ไข'}</div></div>
+                  <img src={MDEC_LOGO} style={{width:78,height:32,objectFit:'contain'}} />
+                </div>
+                <table className="master-print-table">
+                  <thead><tr><th className="master-print-role">ตำแหน่งเวร</th>{safeDutyDays.map(day => <th key={day.key}>{day.label}</th>)}</tr></thead>
+                  <tbody>
+                    {roles.map(role => (
+                      <tr key={role.key}>
+                        <td className="master-print-role"><div>{role.title || role.shortTitle || '-'}</div><div style={{fontSize:8,color:'#475569',marginTop:2}}>ต้องการ {getRoleSlotCount(role, form.roleSlots)} คน</div></td>
+                        {safeDutyDays.map(day => {
+                          const ids = (weekly?.[day.key]?.[role.key] || []).filter(Boolean);
+                          return <td key={`${role.key}-${day.key}`}>{ids.length ? ids.map((id,idx) => { const p = studentMap.get(typeof id === 'string' ? id : id?.id); return <div key={idx} className="master-print-person">{p?.photo ? <img src={p.photo} onError={e => { e.currentTarget.style.display = 'none'; }} className="master-print-avatar" /> : <span className="master-print-avatar" style={{display:'inline-flex',alignItems:'center',justifyContent:'center',background:'#dbeafe'}}>{masterInitialsOf(p)}</span>}<span>{p?.nickname || p?.fullName || '-'}</span></div>; }) : <div style={{textAlign:'center',color:'#94a3b8',fontWeight:900}}>-</div>}</td>;
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </section>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     function DutySchedulePage({ students, currentAcademicYear, yearsList }) {
       const [duties, setDuties] = useState([]);
       const [templates, setTemplates] = useState({});
       const [loading, setLoading] = useState(true);
       const [year, setYear] = useState(currentAcademicYear);
       const [search, setSearch] = useState('');
-      const [form, setForm] = useState(() => createDutyForm(currentAcademicYear));
+      const [form, setForm] = useState(() => ({ ...createDutyForm(safeCurrentYear), scheduleType: 'MASTER' }));
       const [editingId, setEditingId] = useState(null);
       const [saving, setSaving] = useState(false);
       const [isPrinting, setIsPrinting] = useState(false);
@@ -5340,6 +7605,8 @@
       const [attendanceDayKey, setAttendanceDayKey] = useState(dutyDays[0].key);
       const [plannerDayKey, setPlannerDayKey] = useState(dutyDays[0].key);
       const [dutyManagePanel, setDutyManagePanel] = useState('planner');
+      const [dutyWorkspaceMode, setDutyWorkspaceMode] = useState('plan');
+      const [dutySettingsOpen, setDutySettingsOpen] = useState(false);
 
       useEffect(() => {
         const unsub = getDutyRef().onSnapshot(snapshot => {
@@ -5722,10 +7989,42 @@
 
       const suggestedNextType = nextDutyTableType(latestDutyForYear?.scheduleType || form.scheduleType || '1');
 
+      const applyLatestRoleSetup = () => {
+        if (!latestDutyForYear) return alert('ยังไม่มีตารางเวรเก่าของปีนี้ให้ดึงตำแหน่ง');
+        const roleDefs = getDutyRoles(latestDutyForYear);
+        const roleSlots = normalizeRoleSlots(latestDutyForYear.roleSlots || {}, roleDefs);
+        setForm(prev => ({
+          ...prev,
+          roleDefs,
+          roleSlots,
+          weeklyAssignments: normalizeWeeklyAssignmentIds(prev.weeklyAssignments || {}, roleSlots, roleDefs)
+        }));
+        alert('ดึงตำแหน่งเวรจากตารางล่าสุดมาใช้แล้ว ไม่ต้องสร้างตำแหน่งใหม่ซ้ำ');
+      };
+
       const applySuggestedTemplate = () => {
         const type = suggestedNextType || '1';
         applyTemplate(type, form.academicYear);
       };
+
+      useEffect(() => {
+        if (editingId || saving || !duties.length) return;
+        setForm(prev => {
+          const roles = normalizeDutyRoles(prev.roleDefs, prev.roleSlots);
+          const assigned = countAssignedInWeekly(prev.weeklyAssignments, roles);
+          if (assigned) return prev;
+          const latestForYear = duties
+            .filter(d => String(d.academicYear || '') === String(prev.academicYear || currentAcademicYear || ''))
+            .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')))[0];
+          if (!latestForYear) return prev;
+          const latestRoles = getDutyRoles(latestForYear);
+          const roleSlots = normalizeRoleSlots(latestForYear.roleSlots || {}, latestRoles);
+          const currentKey = roles.map(r => `${r.title}|${getRoleSlotCount(r, prev.roleSlots)}`).join('::');
+          const nextKey = latestRoles.map(r => `${r.title}|${getRoleSlotCount(r, roleSlots)}`).join('::');
+          if (currentKey === nextKey) return prev;
+          return { ...prev, roleDefs: latestRoles, roleSlots, weeklyAssignments: emptyWeeklyDutyAssignments(roleSlots, latestRoles) };
+        });
+      }, [duties.length, currentAcademicYear, editingId, saving]);
 
       const autoFillCurrentDutyForm = () => {
         if (!activeStudents.length) return alert('ยังไม่มีรายชื่อนักศึกษาที่พร้อมใช้งาน');
@@ -5757,17 +8056,30 @@
       };
 
 
+      const buildStarterDutyForm = (yearValue = currentAcademicYear) => {
+        const base = createDutyForm(yearValue);
+        const latestForYear = duties
+          .filter(d => String(d.academicYear || '') === String(yearValue || ''))
+          .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')))[0];
+        if (!latestForYear) return base;
+        const roleDefs = getDutyRoles(latestForYear);
+        const roleSlots = normalizeRoleSlots(latestForYear.roleSlots || {}, roleDefs);
+        return { ...base, roleDefs, roleSlots, weeklyAssignments: emptyWeeklyDutyAssignments(roleSlots, roleDefs) };
+      };
+
       const resetForm = () => {
         setEditingId(null);
         setPlannerDayKey(dutyDays[0].key);
         setDutyManagePanel('planner');
-        setForm(createDutyForm(currentAcademicYear));
+        setDutyWorkspaceMode('plan');
+        setDutySettingsOpen(false);
+        setForm(buildStarterDutyForm(currentAcademicYear));
       };
 
       const buildWeeklySnapshot = () => {
         // v72.6: บันทึกเฉพาะข้อมูลย่อที่จำเป็น ห้ามฝังรูป base64 / เบอร์ / Line ลงในเอกสารตารางเวร
         // Firestore จำกัดขนาด document ประมาณ 1MB ถ้าเก็บรูปนักศึกษาซ้ำในตารางทั้งสัปดาห์จะบันทึกไม่สำเร็จ
-        const lookup = new Map(students.map(s => [s.id, s]));
+        const lookup = new Map(safeStudents.map(s => [s.id, s]));
         const weekly = {};
         dutyDays.forEach(day => {
           weekly[day.key] = {};
@@ -5838,6 +8150,7 @@
         if (duty.locked && !confirm('ตารางนี้ถูกล็อกไว้ ต้องการแก้ไขตารางนี้ต่อไหม?')) return;
         setPlannerDayKey(dutyDays[0].key);
         setDutyManagePanel('planner');
+        setDutyWorkspaceMode('plan');
         setEditingId(duty.id);
         const roleDefs = getDutyRoles(duty);
         const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
@@ -5848,6 +8161,7 @@
       const duplicateDuty = (duty) => {
         setPlannerDayKey(dutyDays[0].key);
         setDutyManagePanel('planner');
+        setDutyWorkspaceMode('plan');
         setEditingId(null);
         const roleDefs = getDutyRoles(duty);
         const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
@@ -5874,335 +8188,287 @@
 
       return (
         <div className="space-y-5 duty-contrast-page duty-redesign">
-          <section className="bg-white rounded-[2rem] soft-shadow border border-white p-4 md:p-5">
+          <section className="bg-white rounded-[2rem] soft-shadow border border-white p-4 md:p-5 duty-rebuild-hero">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
               <div>
-                <h3 className="text-xl md:text-2xl font-extrabold text-slate-950"><i className="ri-calendar-schedule-fill text-blue-600 mr-2"></i>จัดการตารางเวรตอนเช้า</h3>
-                <p className="text-slate-500">ทำงานเป็นขั้นตอนแบบเข้าใจง่าย: 1 เลือกสัปดาห์ 2 ตั้งหน้าที่ 3 เลือกคนลงช่อง 4 ดูย้อนหลัง / ออก PDF</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-blue-600 font-extrabold mb-2">Duty Center Rebuild v73.9.0</p>
+                <h3 className="text-xl md:text-2xl font-extrabold text-slate-950"><i className="ri-calendar-check-fill text-blue-600 mr-2"></i>ตารางเวรแบบใช้งานจริง</h3>
+                <p className="text-slate-500">รอบนี้ย่อให้เหลือ flow หลัก: เลือกสัปดาห์ → เลือกวัน → กดช่องเพื่อใส่ชื่อ ส่วนตำแหน่งและแบบตารางซ่อนไว้ในตั้งค่า ไม่ต้องเจอทุกครั้ง</p>
               </div>
-              <button type="button" onClick={autoFillCurrentDutyForm} className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-700"><i className="ri-magic-fill mr-1"></i>จัดเวรอัตโนมัติ</button>
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={() => setDutyWorkspaceMode('display')} className="px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-extrabold hover:bg-slate-200"><i className="ri-tv-2-fill mr-1"></i>เปิดจอแสดงผล</button>
+                <button type="button" onClick={() => { setDutyWorkspaceMode('plan'); setDutySettingsOpen(true); }} className="px-4 py-3 rounded-2xl bg-slate-900 text-white font-extrabold hover:bg-slate-800"><i className="ri-settings-4-fill mr-1"></i>ตั้งค่าเวร</button>
+              </div>
             </div>
-            <div className="duty-step-nav">
+            <div className="grid md:grid-cols-3 gap-3">
               {[
-                ['planner','1) จัดคนลงตาราง','หน้าหลักสำหรับเลือกคนลงเวร'],
-                ['roles','2) ตั้งตำแหน่ง','กำหนดหน้าที่และจำนวนคน'],
-                ['templates','3) แบบตาราง','บันทึก/เรียกใช้ ตาราง 1, 2, 3...'],
-                ['list','4) ย้อนหลัง / PDF','เช็กรายการย้อนหลังและออกเอกสาร']
-              ].map(([key,title,desc]) => (
-                <button key={key} type="button" onClick={() => setDutyManagePanel(key)} className={`duty-step-btn ${dutyManagePanel === key ? 'is-active' : ''}`}>
-                  <span className="step-title">{title}</span>
-                  <span className="step-desc">{desc}</span>
+                ['plan','จัดเวร','เลือกสัปดาห์ เลือกวัน แล้วใส่ชื่อ','ri-user-add-fill'],
+                ['check','เช็คเวร','บันทึกเฉพาะ สาย ขาด ลา ทำแทน','ri-user-follow-fill'],
+                ['history','ย้อนหลัง / พิมพ์','ค้นหา แก้ไข คัดลอก PDF CSV','ri-folder-history-fill']
+              ].map(([key,title,desc,icon]) => (
+                <button key={key} type="button" onClick={() => setDutyWorkspaceMode(key)} className={`duty-workspace-tab ${dutyWorkspaceMode === key ? 'is-active' : ''}`}>
+                  <i className={`${icon} text-xl`}></i>
+                  <span><b>{title}</b><small>{desc}</small></span>
                 </button>
               ))}
             </div>
           </section>
-          <div className={`grid xl:grid-cols-[1.1fr_.9fr] gap-5 ${dutyManagePanel === 'list' ? 'hidden' : ''}`}> 
-            <form onSubmit={handleSave} className="duty-form-shell bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-7 space-y-6">
-              <div className="flex flex-col md:flex-row gap-4 md:items-start md:justify-between">
+          {dutyWorkspaceMode === 'display' && (
+            <div className="bg-white rounded-[2rem] soft-shadow border border-white overflow-hidden">
+              <DutyDisplayPage currentAcademicYear={currentAcademicYear} yearsList={yearsList} students={students} onBack={() => setDutyWorkspaceMode('plan')} onNavigate={() => setDutyWorkspaceMode('plan')} />
+            </div>
+          )}
+
+          {dutyWorkspaceMode === 'check' && (
+            <section className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6 duty-v2-check">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-5">
                 <div>
-                  <h3 className="text-2xl font-extrabold text-slate-950"><i className="ri-calendar-schedule-fill text-blue-600 mr-2"></i>{editingId ? 'แก้ไขตารางเวรตอนเช้า' : 'เพิ่มตารางเวรตอนเช้าประจำสัปดาห์'}</h3>
-                  <p className="text-slate-500">เลือกสัปดาห์ แล้วจัดรายชื่อทั้งจันทร์–เสาร์ในตารางเดียว อ่านง่ายกว่าเดิม</p>
+                  <h3 className="text-2xl font-extrabold text-slate-950"><i className="ri-user-follow-fill text-blue-600 mr-2"></i>เช็คเวรในตารางเดียว</h3>
+                  <p className="text-slate-500">หน้าจอเวรเช้าเดิมถูกรวมมาไว้ตรงนี้ เลือกสัปดาห์แล้วกดบันทึกเฉพาะปัญหา เช่น สาย ขาด ลา หรือทำแทน</p>
                 </div>
-                {editingId && <button type="button" onClick={resetForm} className="px-4 py-2 rounded-2xl bg-slate-100 text-slate-700 font-bold">ยกเลิกแก้ไข</button>}
+                <button type="button" onClick={() => setDutyWorkspaceMode('plan')} className="px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-extrabold"><i className="ri-add-line mr-1"></i>กลับไปจัดตาราง</button>
               </div>
-
-              <div className="grid md:grid-cols-4 gap-4">
-                <label className="block md:col-span-2">
-                  <span className="block text-xs font-extrabold text-slate-400 mb-2 uppercase tracking-wide">เลือกสัปดาห์</span>
-                  <div className="grid grid-cols-[44px_1fr_44px] gap-2">
-                    <button type="button" onClick={() => shiftFormWeek(-1)} className="h-12 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 font-black hover:bg-slate-200" title="สัปดาห์ก่อนหน้า"><i className="ri-arrow-left-s-line"></i></button>
-                    <select value={getWeekStartDate(form.date || todayFileDate())} onChange={e => setForm(prev => ({ ...prev, date: e.target.value }))} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-950">
-                      {weekPickerOptions.map(week => <option key={week.value} value={week.value}>{week.label}</option>)}
-                    </select>
-                    <button type="button" onClick={() => shiftFormWeek(1)} className="h-12 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 font-black hover:bg-slate-200" title="สัปดาห์ถัดไป"><i className="ri-arrow-right-s-line"></i></button>
-                  </div>
-                  <div className="mt-2 text-xs text-slate-500 font-bold">เลือกเป็นสัปดาห์ได้เลย ระบบจะตั้งเป็นวันจันทร์ของสัปดาห์นั้นอัตโนมัติ</div>
-                </label>
-                <Select label="ปีการศึกษา" value={form.academicYear} onChange={v => setForm(prev => ({ ...prev, academicYear: v, weeklyAssignments: emptyWeeklyDutyAssignments(prev.roleSlots, prev.roleDefs) }))} options={[...new Set([currentAcademicYear, ...yearsList])]} />
-                <Select label="ตารางที่ใช้" value={normalizeDutyTableType(form.scheduleType)} onChange={v => setForm(prev => ({ ...prev, scheduleType: normalizeDutyTableType(v) }))} options={dutyTableTypes.map(t => t.key)} optionLabels={Object.fromEntries(dutyTableTypes.map(t => [t.key, t.label]))} />
-                <Input label="หมายเหตุประจำสัปดาห์" value={form.note} onChange={v => setForm(prev => ({ ...prev, note: v }))} placeholder="เช่น สัปดาห์เปิดเทอม / สอบกลางภาค" className="md:col-span-4" />
-              </div>
-
-
-
-              {dutyManagePanel === 'roles' && (
-
-              <div className="rounded-3xl bg-blue-50 border border-blue-100 p-4">
-                <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
-                  <div>
-                    <h4 className="font-extrabold text-slate-950"><i className="ri-user-settings-fill text-blue-600 mr-2"></i>จัดการตำแหน่งเวรตอนเช้า</h4>
-                    <p className="text-sm text-slate-500">กำหนดเองได้ว่ามีตำแหน่งอะไร ชื่อตำแหน่งอะไร ใช้นักศึกษากี่คน และจะปิดตำแหน่งไหนก็ได้</p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <button type="button" onClick={addRole} className="px-4 py-2 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700"><i className="ri-add-line mr-1"></i>เพิ่มตำแหน่ง</button>
-                    <button type="button" onClick={resetRolesToDefault} className="px-4 py-2 rounded-2xl bg-white text-blue-200 border border-blue-100 font-bold hover:bg-blue-50"><i className="ri-refresh-line mr-1"></i>กลับค่าเริ่มต้น</button>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="rounded-2xl bg-white/70 border border-blue-100 px-4 py-3">
-                    <div className="grid md:grid-cols-4 gap-3 text-xs md:text-sm font-bold">
-                      <div className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700"><span className="block text-[11px] uppercase tracking-wide text-slate-400 mb-1">วิธีใช้งาน</span>พิมพ์ <span className="text-slate-950">ชื่อตำแหน่งเต็ม</span> ให้ชัดเจน เช่น “คุมเครื่องเสียง”</div>
-                      <div className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700"><span className="block text-[11px] uppercase tracking-wide text-slate-400 mb-1">ชื่อย่อบนจอ</span>ใช้ชื่อสั้นสำหรับจอแสดงเวร เช่น “เครื่องเสียง”</div>
-                      <div className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700"><span className="block text-[11px] uppercase tracking-wide text-slate-400 mb-1">จำนวนคน</span>กำหนดจำนวนนักศึกษาที่ต้องใช้ในหน้าที่นั้น</div>
-                      <div className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700"><span className="block text-[11px] uppercase tracking-wide text-slate-400 mb-1">คำแนะนำ</span>ถ้าไม่ใช้หน้าที่นี้ในสัปดาห์นั้น ให้ตั้งจำนวนเป็น <span className="text-slate-950">0</span></div>
-                    </div>
-                  </div>
-                  {formRoles.map((role, idx) => {
-                    const slots = getRoleSlotCount(role, form.roleSlots);
-                    const toneMap = {
-                      blue: 'from-sky-500 to-blue-600',
-                      cyan: 'from-cyan-500 to-sky-500',
-                      emerald: 'from-emerald-500 to-teal-600',
-                      purple: 'from-violet-500 to-purple-600',
-                      orange: 'from-amber-500 to-orange-600'
-                    };
-                    const toneLabelMap = { blue: 'ฟ้า', cyan: 'น้ำเงินอมฟ้า', emerald: 'เขียว', purple: 'ม่วง', orange: 'ส้ม' };
+              {loading ? <div className="p-10 text-center text-slate-500 font-bold">กำลังโหลดตารางเวร...</div> : visibleDuties.length ? (
+                <div className="grid lg:grid-cols-2 gap-4">
+                  {visibleDuties.map(duty => {
+                    const weekly = getDutyWeeklyAssignments(duty);
+                    const attendance = dutyAttendanceSummary(duty);
                     return (
-                      <div key={`role-editor-${role.key}`} className="role-editor-card rounded-[28px] bg-white border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="role-editor-head flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 px-5 py-4 border-b border-slate-200 bg-slate-900 text-white">
-                          <div className="flex items-center gap-4 min-w-0">
-                            <div className={`role-editor-icon w-14 h-14 rounded-2xl bg-gradient-to-br ${toneMap[role.tone] || toneMap.blue} text-white flex items-center justify-center shadow-sm flex-shrink-0`}>
-                              <i className={`${role.icon} text-2xl`}></i>
-                            </div>
-                            <div className="min-w-0">
-                              <div className="text-xs font-extrabold uppercase tracking-[0.18em] text-white/70 mb-1">ตำแหน่งที่ {idx + 1}</div>
-                              <div className="text-xl font-black text-white leading-tight break-words">{role.title || 'ยังไม่ได้ตั้งชื่อตำแหน่ง'}</div>
-                              <div className="flex flex-wrap gap-2 mt-2">
-                                <span className="role-summary-chip inline-flex items-center px-3 py-1 rounded-full bg-white text-slate-900 border border-white/20 text-xs font-extrabold">ชื่อย่อ: {role.shortTitle || '-'}</span>
-                                <span className="role-summary-chip inline-flex items-center px-3 py-1 rounded-full bg-white text-slate-900 border border-white/20 text-xs font-extrabold">{slots} คน</span>
-                                <span className="role-summary-chip inline-flex items-center px-3 py-1 rounded-full bg-white text-slate-900 border border-white/20 text-xs font-extrabold">สี {toneLabelMap[role.tone] || 'ฟ้า'}</span>
-                              </div>
-                            </div>
+                      <div key={duty.id} className="rounded-[1.6rem] border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-xs font-black text-blue-600">{duty.academicYear} · {dutyTableLabel(duty.scheduleType)}</p>
+                            <h4 className="text-lg font-extrabold text-slate-950">{formatThaiWeekRange(duty.date)}</h4>
+                            <p className="text-sm text-slate-500 mt-1">{duty.note || 'ไม่มีหมายเหตุ'}</p>
                           </div>
-                          <button type="button" onClick={() => removeRole(role.key)} className="self-start lg:self-center inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-white text-red-700 border border-red-200 hover:bg-red-50 font-extrabold"><i className="ri-delete-bin-fill"></i>ลบตำแหน่ง</button>
+                          <button type="button" onClick={() => openDutyAttendance(duty)} className="px-4 py-2.5 rounded-2xl bg-blue-600 text-white font-extrabold hover:bg-blue-700">เช็คเวร</button>
                         </div>
-                        <div className="p-5">
-                          <div className="grid xl:grid-cols-12 gap-4">
-                            <label className="block xl:col-span-5">
-                              <span className="block text-sm font-extrabold text-slate-700 mb-2">ชื่อตำแหน่ง</span>
-                              <input value={role.title} onChange={e => setRoleField(role.key, 'title', e.target.value)} className="w-full px-4 py-4 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 text-base md:text-lg font-extrabold text-slate-950" placeholder="เช่น คุมเครื่องเสียง" />
-                            </label>
-                            <label className="block xl:col-span-3">
-                              <span className="block text-sm font-extrabold text-slate-700 mb-2">ชื่อย่อบนจอ</span>
-                              <input value={role.shortTitle} onChange={e => setRoleField(role.key, 'shortTitle', e.target.value)} className="w-full px-4 py-4 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 text-base font-bold text-slate-950" placeholder="เช่น เครื่องเสียง" />
-                            </label>
-                            <label className="block xl:col-span-4">
-                              <span className="block text-sm font-extrabold text-slate-700 mb-2">จำนวนคนที่ต้องใช้</span>
-                              <div className="flex items-center gap-2">
-                                <button type="button" onClick={() => setRoleSlotCount(role.key, slots - 1)} className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-700 font-extrabold text-xl hover:bg-slate-200"><i className="ri-subtract-line"></i></button>
-                                <input type="number" min="0" max="10" value={slots} onChange={e => setRoleSlotCount(role.key, e.target.value)} className="flex-1 px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 text-center text-xl font-black text-slate-950 outline-none focus:border-blue-500" />
-                                <button type="button" onClick={() => setRoleSlotCount(role.key, slots + 1)} className="w-12 h-12 rounded-2xl bg-blue-600 text-white font-extrabold text-xl hover:bg-blue-700"><i className="ri-add-line"></i></button>
-                              </div>
-                            </label>
-                            <label className="block xl:col-span-4">
-                              <span className="block text-sm font-extrabold text-slate-700 mb-2">สีประจำตำแหน่ง</span>
-                              <select value={role.tone} onChange={e => setRoleField(role.key, 'tone', e.target.value)} className="w-full px-4 py-4 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-950">
-                                <option value="blue">ฟ้า</option>
-                                <option value="cyan">น้ำเงินอมฟ้า</option>
-                                <option value="emerald">เขียว</option>
-                                <option value="purple">ม่วง</option>
-                                <option value="orange">ส้ม</option>
-                              </select>
-                            </label>
-                            <label className="block xl:col-span-5">
-                              <span className="block text-sm font-extrabold text-slate-700 mb-2">ไอคอน</span>
-                              <select value={role.icon} onChange={e => setRoleField(role.key, 'icon', e.target.value)} className="w-full px-4 py-4 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-950">
-                                {dutyRoleIcons.map(icon => <option key={icon} value={icon}>{icon}</option>)}
-                              </select>
-                            </label>
-                            <div className="block xl:col-span-3">
-                              <span className="block text-sm font-extrabold text-slate-700 mb-2">ตัวอย่างบนจอ</span>
-                              <div className={`h-[58px] rounded-2xl bg-gradient-to-br ${toneMap[role.tone] || toneMap.blue} text-white flex items-center gap-3 px-4 shadow-sm`}>
-                                <i className={`${role.icon} text-xl flex-shrink-0`}></i>
-                                <div className="min-w-0">
-                                  <div className="text-sm font-black truncate">{role.shortTitle || role.title || '-'}</div>
-                                  <div className="text-[11px] opacity-90">{slots} คน</div>
-                                </div>
-                              </div>
+                        <div className="grid grid-cols-4 gap-2 mt-4 text-center text-xs font-extrabold">
+                          <div className="rounded-2xl bg-white border border-slate-200 p-3"><p className="text-slate-400">รวม</p><p className="text-xl text-slate-950">{attendance.total}</p></div>
+                          <div className="rounded-2xl bg-white border border-slate-200 p-3"><p className="text-slate-400">ปัญหา</p><p className="text-xl text-rose-600">{attendance.problems}</p></div>
+                          <div className="rounded-2xl bg-white border border-slate-200 p-3"><p className="text-slate-400">สาย</p><p className="text-xl text-amber-600">{attendance.late}</p></div>
+                          <div className="rounded-2xl bg-white border border-slate-200 p-3"><p className="text-slate-400">ทำแทน</p><p className="text-xl text-violet-600">{attendance.substitute}</p></div>
+                        </div>
+                        <div className="mt-4 grid sm:grid-cols-2 gap-2">
+                          {dutyDays.map(day => (
+                            <div key={day.key} className="rounded-2xl bg-white border border-slate-100 p-3">
+                              <p className="text-xs font-black text-slate-500">{day.label} · {formatThaiDate(getDutyDayDate(duty.date, day.key))}</p>
+                              <p className="text-sm font-bold text-slate-900 mt-1 line-clamp-2">{getDutyRoles(duty).map(role => `${role.shortTitle}: ${dailyDutyRoleText(weekly, day.key, role.key)}`).join(' / ')}</p>
                             </div>
-                          </div>
-                          <p className="text-sm text-slate-500 mt-4">ตำแหน่งนี้จะสร้างช่องเลือกนักศึกษา <span className="font-extrabold text-slate-700">{slots} ช่อง</span> ในทุกวันของสัปดาห์นี้</p>
+                          ))}
                         </div>
                       </div>
                     );
                   })}
                 </div>
-              </div>
-              )}
+              ) : <div className="p-12 text-center rounded-3xl bg-slate-50 border border-slate-100 text-slate-500 font-bold">ยังไม่มีตารางเวรให้เช็ค</div>}
+            </section>
+          )}
 
-              {dutyManagePanel === 'templates' && (
-
-              <div className="rounded-3xl bg-slate-50 border border-slate-100 p-4">
-                <div className="flex flex-col xl:flex-row gap-3 xl:items-center xl:justify-between">
+          {dutyWorkspaceMode === 'plan' && (
+            <section className="bg-white rounded-[2rem] soft-shadow border border-white p-4 md:p-6 duty-rebuild-planner">
+              <form onSubmit={handleSave} className="space-y-5">
+                <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4 border-b border-slate-100 pb-5">
                   <div>
-                    <h4 className="font-extrabold text-slate-950"><i className="ri-repeat-2-fill text-blue-600 mr-2"></i>ชุดตารางเวรตอนเช้าแบบตัวเลข</h4>
-                    <p className="text-sm text-slate-500">แต่ละชุดเป็นตารางทั้งสัปดาห์ จันทร์–เสาร์ และเลือกใช้เป็นชุดตารางตามสัปดาห์</p>
+                    <p className="text-xs uppercase tracking-[0.16em] text-blue-600 font-extrabold">Step 1</p>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-slate-950 mt-1">จัดเวรประจำสัปดาห์</h3>
+                    <p className="text-slate-500 mt-1">หน้านี้เอาไว้จัดคนเท่านั้น ถ้าจะเปลี่ยนตำแหน่งหรือแบบตารางให้กด “ตั้งค่าเวร”</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {dutyTableTypes.map(t => <button key={t.key} type="button" onClick={() => applyTemplate(t.key, form.academicYear)} className="px-4 py-2 rounded-2xl bg-white text-blue-200 border border-blue-100 font-bold hover:bg-blue-50"><i className="ri-download-cloud-2-line mr-1"></i>เรียกใช้{t.label}</button>)}
-                    <button type="button" onClick={applySuggestedTemplate} className="px-4 py-2 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700"><i className="ri-swap-2-fill mr-1"></i>ใช้ตารางสัปดาห์ถัดไป: {dutyTableLabel(suggestedNextType)}</button>
-                  </div>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {dutyTableTypes.map(t => <button key={t.key} type="button" onClick={() => saveTemplate(t.key)} className="px-4 py-2 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 font-bold"><i className="ri-save-3-line mr-1"></i>บันทึกทั้งสัปดาห์เป็น{t.label}</button>)}
-                </div>
-              </div>
-              )}
-
-              {dutyManagePanel === 'planner' && (<>
-
-              {!activeStudents.length && <div className="rounded-3xl bg-orange-50 border border-orange-100 text-orange-800 p-4 text-sm"><i className="ri-alert-fill mr-2"></i>ยังไม่มีสมาชิกที่ยังอยู่ในชมรม หรือยังไม่ได้เพิ่มสมาชิก</div>}
-              {duplicateIds.length > 0 && <div className="rounded-3xl bg-yellow-50 border border-yellow-100 text-yellow-800 p-4 text-sm"><i className="ri-alert-fill mr-2"></i><b>พบชื่อซ้ำในสัปดาห์นี้:</b> {duplicateNames.join(' / ') || `${duplicateIds.length} คน`} <span className="text-yellow-700">ถ้าจงใจให้ทำซ้ำยังบันทึกได้</span></div>}
-
-              <div className="rounded-[1.7rem] bg-slate-950 border border-slate-800 p-4 md:p-5">
-                <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
-                  <div>
-                    <h4 className="duty-section-title text-lg text-white"><i className="ri-table-2 text-blue-300"></i>จัดตารางเวรแบบรายสัปดาห์</h4>
-                    <p className="text-sm text-slate-300">มองทั้งสัปดาห์ในหน้าเดียว: เลือกสัปดาห์ก่อน แล้วกดช่อง "เลือกชื่อ" เพื่อใส่นักศึกษาลงเวรได้ทันที</p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-extrabold text-slate-100">รวม {dutyDays.reduce((sum, day) => sum + countAssignmentsForDay(day.key), 0)} คน</span>
-                    <button type="button" onClick={() => dutyDays.slice(1).forEach(day => copyDay('mon', day.key))} className="px-3 py-2 rounded-xl bg-blue-600 text-white border border-blue-500 font-bold text-xs"><i className="ri-file-copy-2-fill mr-1"></i>คัดลอกจันทร์ทั้งสัปดาห์</button>
+                    {editingId && <button type="button" onClick={resetForm} className="px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-extrabold">ยกเลิกแก้ไข</button>}
+                    <button type="button" onClick={applyLatestRoleSetup} className="px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-extrabold hover:bg-slate-200"><i className="ri-history-fill mr-1"></i>ใช้ตำแหน่งล่าสุด</button>
+                    <button type="button" onClick={() => setDutySettingsOpen(v => !v)} className="px-4 py-3 rounded-2xl bg-slate-900 text-white font-extrabold hover:bg-slate-800"><i className="ri-settings-4-fill mr-1"></i>ตั้งค่าเวร</button>
+                    <button disabled={saving} className="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold disabled:opacity-50"><i className="ri-save-3-fill mr-1"></i>{saving ? 'กำลังบันทึก...' : editingId ? 'บันทึกแก้ไข' : 'บันทึกตารางเวร'}</button>
                   </div>
                 </div>
 
-                <div className="mb-4 grid sm:grid-cols-3 gap-3">
-                  <div className="rounded-2xl bg-slate-900 border border-slate-700 p-3">
-                    <div className="text-xs font-extrabold text-slate-400">เริ่มต้นง่าย ๆ</div>
-                    <div className="text-sm font-bold text-slate-200">ถ้าจะใช้งานเร็ว ให้เลือกสัปดาห์ แล้วกด “เลือกชื่อ” ในช่องว่างได้เลย</div>
+                <div className="grid xl:grid-cols-[1fr_auto_auto] gap-3 items-end">
+                  <label className="block">
+                    <span className="block text-xs font-extrabold text-slate-400 mb-2 uppercase tracking-wide">เลือกสัปดาห์</span>
+                    <div className="grid grid-cols-[44px_1fr_44px] gap-2">
+                      <button type="button" onClick={() => shiftFormWeek(-1)} className="h-12 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 font-black hover:bg-slate-200"><i className="ri-arrow-left-s-line"></i></button>
+                      <select value={getWeekStartDate(form.date || todayFileDate())} onChange={e => setForm(prev => ({ ...prev, date: e.target.value }))} className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none focus:border-blue-500 font-bold text-slate-950">
+                        {weekPickerOptions.map(week => <option key={week.value} value={week.value}>{week.label}</option>)}
+                      </select>
+                      <button type="button" onClick={() => shiftFormWeek(1)} className="h-12 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 font-black hover:bg-slate-200"><i className="ri-arrow-right-s-line"></i></button>
+                    </div>
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Select label="ปีการศึกษา" value={form.academicYear} onChange={v => setForm(prev => ({ ...prev, academicYear: v, weeklyAssignments: emptyWeeklyDutyAssignments(prev.roleSlots, prev.roleDefs) }))} options={[...new Set([currentAcademicYear, ...yearsList])]} />
+                    <Select label="แบบตาราง" value={normalizeDutyTableType(form.scheduleType)} onChange={v => setForm(prev => ({ ...prev, scheduleType: normalizeDutyTableType(v) }))} options={dutyTableTypes.map(t => t.key)} optionLabels={Object.fromEntries(dutyTableTypes.map(t => [t.key, t.label]))} />
                   </div>
-                  <div className="rounded-2xl bg-slate-900 border border-slate-700 p-3">
-                    <div className="text-xs font-extrabold text-slate-400">เลือกคนลงช่อง</div>
-                    <div className="text-sm font-bold text-slate-200">แต่ละช่องคือ 1 คน กดเลือกชื่อ / ล้างชื่อได้ทันที</div>
+                  <button type="button" onClick={() => applyTemplate(form.scheduleType, form.academicYear)} className="h-12 px-4 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100 font-extrabold hover:bg-blue-100"><i className="ri-download-2-fill mr-1"></i>โหลดแม่แบบ</button>
+                </div>
+
+                <Input label="หมายเหตุประจำสัปดาห์" value={form.note} onChange={v => setForm(prev => ({ ...prev, note: v }))} placeholder="เช่น สัปดาห์เปิดเทอม / สอบกลางภาค" />
+
+                {dutySettingsOpen && (
+                  <div className="rounded-[1.6rem] bg-slate-950 text-white border border-slate-800 p-4 space-y-4">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                      <div>
+                        <h4 className="text-lg font-extrabold"><i className="ri-settings-4-fill text-blue-300 mr-2"></i>ตั้งค่าเวร</h4>
+                        <p className="text-sm text-slate-400">ซ่อนไว้ตรงนี้เพราะไม่ใช่งานที่ต้องทำทุกครั้ง</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button type="button" onClick={() => setDutyManagePanel('roles')} className={`px-4 py-2 rounded-2xl font-extrabold ${dutyManagePanel === 'roles' ? 'bg-blue-600 text-white' : 'bg-white/10 text-slate-200'}`}>ตำแหน่งเวร</button>
+                        <button type="button" onClick={() => setDutyManagePanel('templates')} className={`px-4 py-2 rounded-2xl font-extrabold ${dutyManagePanel === 'templates' ? 'bg-blue-600 text-white' : 'bg-white/10 text-slate-200'}`}>แม่แบบตาราง</button>
+                        <button type="button" onClick={() => setDutySettingsOpen(false)} className="px-4 py-2 rounded-2xl bg-white/10 text-slate-200 font-extrabold">ปิด</button>
+                      </div>
+                    </div>
+
+                    {dutyManagePanel === 'roles' && (
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap gap-2">
+                          <button type="button" onClick={addRole} className="px-4 py-2 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700"><i className="ri-add-line mr-1"></i>เพิ่มตำแหน่ง</button>
+                          <button type="button" onClick={resetRolesToDefault} className="px-4 py-2 rounded-2xl bg-white/10 text-slate-200 font-bold"><i className="ri-refresh-line mr-1"></i>ค่าเริ่มต้น</button>
+                          <button type="button" onClick={applyLatestRoleSetup} className="px-4 py-2 rounded-2xl bg-white/10 text-slate-200 font-bold"><i className="ri-history-fill mr-1"></i>ดึงจากตารางล่าสุด</button>
+                        </div>
+                        <div className="grid lg:grid-cols-2 gap-3">
+                          {formRoles.map((role, idx) => (
+                            <div key={role.key} className="rounded-2xl bg-white/10 border border-white/10 p-3 grid md:grid-cols-[1fr_1fr_100px_auto] gap-2 items-end">
+                              <Input label="ชื่อตำแหน่ง" value={role.title || ''} onChange={v => setRoleField(role.key, 'title', v)} />
+                              <Input label="ชื่อย่อ" value={role.shortTitle || ''} onChange={v => setRoleField(role.key, 'shortTitle', v)} />
+                              <label className="block">
+                                <span className="block text-xs font-extrabold text-slate-400 mb-2">จำนวนคน</span>
+                                <input type="number" min="0" max="10" value={getRoleSlotCount(role, form.roleSlots)} onChange={e => setRoleSlotCount(role.key, e.target.value)} className="w-full px-3 py-3 rounded-2xl bg-white border-2 border-slate-200 outline-none font-bold text-slate-950" />
+                              </label>
+                              <button type="button" onClick={() => removeRole(role.key)} className="px-3 py-3 rounded-2xl bg-red-600 text-white font-bold"><i className="ri-delete-bin-line"></i></button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {dutyManagePanel === 'templates' && (
+                      <div className="grid md:grid-cols-3 gap-3">
+                        {dutyTableTypes.map(type => {
+                          const docId = dutyTemplateDocId(form.academicYear, type.key);
+                          const hasTemplate = !!templates[docId];
+                          return (
+                            <div key={type.key} className="rounded-2xl bg-white/10 border border-white/10 p-4">
+                              <div className="font-extrabold text-lg">{type.label}</div>
+                              <div className="text-sm text-slate-400 mt-1">{hasTemplate ? 'มีแม่แบบแล้ว' : 'ยังไม่มีแม่แบบ'}</div>
+                              <div className="flex gap-2 mt-4">
+                                <button type="button" onClick={() => applyTemplate(type.key, form.academicYear)} className="flex-1 px-3 py-2 rounded-xl bg-blue-600 text-white font-bold disabled:opacity-40" disabled={!hasTemplate}>เรียกใช้</button>
+                                <button type="button" onClick={() => saveTemplate(type.key)} className="flex-1 px-3 py-2 rounded-xl bg-white/10 text-white font-bold">บันทึกทับ</button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                  <div className="rounded-2xl bg-slate-900 border border-slate-700 p-3">
-                    <div className="text-xs font-extrabold text-slate-400">ตรวจสอบก่อนบันทึก</div>
-                    <div className="text-sm font-bold text-slate-200">เช็กชื่อซ้ำ ช่องที่ยังว่าง และกดบันทึกตารางทั้งสัปดาห์ด้านล่าง</div>
+                )}
+
+                <div className="rounded-[1.6rem] bg-slate-50 border border-slate-100 p-3">
+                  <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                    {dutyDays.map(day => {
+                      const assigned = countAssignmentsForDay(day.key);
+                      return (
+                        <button key={day.key} type="button" onClick={() => setPlannerDayKey(day.key)} className={`rounded-2xl px-3 py-3 text-left border font-extrabold transition ${plannerDayKey === day.key ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/20' : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300'}`}>
+                          <span className="block text-base">{day.label}</span>
+                          <span className={`block text-xs mt-1 ${plannerDayKey === day.key ? 'text-blue-100' : 'text-slate-400'}`}>{assigned} คน</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
-                <div className="overflow-x-auto rounded-[1.5rem] border border-slate-700 bg-slate-950 shadow-sm">
-                  <table className="min-w-[1180px] w-full text-left border-collapse">
-                    <thead>
-                      <tr className="bg-slate-900 text-white">
-                        <th className="sticky left-0 z-10 bg-slate-900 px-4 py-3 w-[170px] text-sm font-black">หน้าที่ / วัน</th>
-                        {dutyDays.map(day => (
-                          <th key={day.key} className="px-3 py-3 min-w-[165px] border-l border-white/10">
-                            <div className="font-black text-sm">{day.label}</div>
-                            <div className="text-[11px] text-slate-300 font-bold">{formatThaiDate(getDutyDayDate(form.date, day.key))}</div>
-                            <div className="mt-1 inline-flex px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-black">{countAssignmentsForDay(day.key)} คน</div>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {formRoles.map(role => {
+                {duplicateNames.length > 0 && (
+                  <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-amber-900 font-bold">
+                    <i className="ri-alert-fill mr-1"></i>มีชื่อซ้ำในสัปดาห์นี้: {duplicateNames.slice(0, 6).join(', ')}{duplicateNames.length > 6 ? ` และอีก ${duplicateNames.length - 6} คน` : ''}
+                  </div>
+                )}
+
+                <div className="grid lg:grid-cols-[1fr_280px] gap-4">
+                  <div className="rounded-[1.8rem] bg-slate-950 text-white p-4 md:p-5">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.16em] text-blue-300 font-extrabold">Step 2</p>
+                        <h4 className="text-2xl font-extrabold mt-1">{plannerDay.label}</h4>
+                        <p className="text-slate-400 text-sm">กดช่องว่างเพื่อเลือกเด็ก ระบบซ่อนคนที่ไม่มีเรียนวันนี้ออกให้อัตโนมัติ</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button type="button" onClick={() => copyDay(dutyDays[Math.max(0, dutyDays.findIndex(d => d.key === plannerDayKey) - 1)]?.key || plannerDayKey, plannerDayKey)} className="px-3 py-2 rounded-xl bg-white/10 text-slate-200 font-bold">คัดลอกจากวันก่อน</button>
+                        <button type="button" onClick={() => clearDay(plannerDayKey)} className="px-3 py-2 rounded-xl bg-red-600 text-white font-bold">ล้างวันนี้</button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      {formRoles.map((role, roleIndex) => {
                         const slots = getRoleSlotCount(role, form.roleSlots);
+                        if (slots <= 0) return null;
                         return (
-                          <tr key={role.key} className="border-t border-slate-200 align-top">
-                            <td className="sticky left-0 z-[5] bg-slate-900 px-4 py-3 border-r border-slate-700">
-                              <div className="flex items-start gap-2">
-                                <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0"><i className={role.icon}></i></div>
+                          <div key={role.key} className="rounded-2xl bg-white/10 border border-white/10 p-3">
+                            <div className="flex items-center justify-between gap-3 mb-3">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center shrink-0"><i className={`${role.icon || 'ri-user-star-fill'} text-lg`}></i></div>
                                 <div className="min-w-0">
-                                  <div className="font-black text-white leading-tight">{role.shortTitle || role.title}</div>
-                                  <div className="text-[11px] text-slate-400 font-bold">{slots ? `${slots} คน/วัน` : 'ไม่ใช้หน้าที่นี้'}</div>
+                                  <div className="font-black text-lg leading-tight truncate">{role.title || role.shortTitle || `ตำแหน่ง ${roleIndex + 1}`}</div>
+                                  <div className="text-xs text-slate-400 font-bold">ต้องใช้ {slots} คน</div>
                                 </div>
                               </div>
-                            </td>
-
-                            {dutyDays.map((day, dayIndex) => (
-                              <td key={`${role.key}-${day.key}`} className="px-2.5 py-3 border-l border-slate-800 bg-slate-900/70">
-                                {slots === 0 ? (
-                                  <div className="rounded-xl bg-slate-800 text-slate-400 px-3 py-3 text-xs font-bold text-center">ปิด</div>
-                                ) : (
-                                  <div className="space-y-2">
-                                    {Array.from({ length: slots }).map((_, idx) => {
-                                      const selectedId = (form.weeklyAssignments?.[day.key]?.[role.key] || [])[idx] || '';
-                                      const selectedStudent = selectedId ? studentMap.get(selectedId) : null;
-                                      return (
-                                        <div key={idx} className="rounded-2xl border border-slate-700 bg-slate-950 p-2">
-                                          <div className="flex items-center justify-between gap-2 mb-1">
-                                            <div className="text-[10px] font-black text-slate-500">{slots > 1 ? `คนที่ ${idx + 1}` : 'ผู้รับผิดชอบ'}</div>
-                                            {selectedId && <button type="button" onClick={() => setAssignment(day.key, role.key, idx, '')} className="text-[10px] font-black text-rose-600 hover:text-rose-700">ล้าง</button>}
-                                          </div>
-
-                                          <button type="button" onClick={() => openStudentPicker(day.key, role.key, idx)} className={`w-full text-left rounded-xl border px-2.5 py-2 transition ${selectedStudent ? 'bg-slate-800 border-slate-700 hover:border-blue-400' : 'bg-slate-800 border-slate-700 hover:border-blue-400'}`}>
-                                            {selectedStudent ? (
-                                              <div className="flex items-center gap-2">
-                                                {selectedStudent.photo ? (
-                                                  <img src={selectedStudent.photo} loading="lazy" alt={studentDutyName(selectedStudent)} className="w-9 h-9 rounded-xl object-cover border border-slate-700 shrink-0" />
-                                                ) : (
-                                                  <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm font-black shrink-0">{String((selectedStudent.nickname || selectedStudent.fullName || '?')).trim().charAt(0) || '?'}</div>
-                                                )}
-                                                <div className="min-w-0 flex-1">
-                                                  <div className="font-black text-white truncate text-sm">{selectedStudent.nickname || selectedStudent.fullName || '-'}</div>
-                                                  <div className="text-[10px] text-slate-400 truncate">{selectedStudent.level || '-'} / {selectedStudent.group || '-'}</div>
-                                                </div>
-                                              </div>
-                                            ) : (
-                                              <div className="flex items-center gap-2 text-blue-200">
-                                                <div className="w-9 h-9 rounded-xl bg-slate-950 text-blue-300 flex items-center justify-center text-base shrink-0"><i className="ri-user-add-fill"></i></div>
-                                                <div className="min-w-0 flex-1">
-                                                  <div className="font-black text-sm text-blue-100">เลือกชื่อ</div>
-                                                  <div className="text-[10px] text-slate-400">ค้นหา/เลือก</div>
-                                                </div>
-                                              </div>
-                                            )}
-                                          </button>
+                              <button type="button" onClick={() => { setDutySettingsOpen(true); setDutyManagePanel('roles'); }} className="px-3 py-2 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 text-xs font-extrabold">แก้</button>
+                            </div>
+                            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">
+                              {Array.from({ length: slots }).map((_, idx) => {
+                                const selectedId = (form.weeklyAssignments?.[plannerDayKey]?.[role.key] || [])[idx] || '';
+                                const selectedStudent = selectedId ? studentMap.get(selectedId) : null;
+                                return (
+                                  <button key={idx} type="button" onClick={() => openStudentPicker(plannerDayKey, role.key, idx)} className={`text-left rounded-2xl border p-3 transition ${selectedStudent ? 'bg-slate-900 border-blue-500' : 'bg-slate-900/70 border-slate-700 hover:border-blue-400'}`}>
+                                    <div className="text-[10px] font-black text-slate-500 mb-2">{slots > 1 ? `คนที่ ${idx + 1}` : 'ผู้รับผิดชอบ'}</div>
+                                    {selectedStudent ? (
+                                      <div className="flex items-center gap-2">
+                                        {selectedStudent.photo ? <img src={selectedStudent.photo} loading="lazy" alt={studentDutyName(selectedStudent)} className="w-11 h-11 rounded-xl object-cover border border-slate-700 shrink-0" /> : <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm font-black shrink-0">{String((selectedStudent.nickname || selectedStudent.fullName || '?')).trim().charAt(0) || '?'}</div>}
+                                        <div className="min-w-0 flex-1">
+                                          <div className="font-black text-white truncate">{selectedStudent.nickname || selectedStudent.fullName || '-'}</div>
+                                          <div className="text-xs text-slate-400 truncate">{selectedStudent.level || '-'} / {selectedStudent.group || '-'}</div>
                                         </div>
-                                      );
-                                    })}
-
-                                    <div className="flex gap-1 pt-1">
-                                      {dayIndex > 0 && (
-                                        <button type="button" onClick={() => copyDay(dutyDays[dayIndex - 1].key, day.key)} className="flex-1 px-2 py-1 rounded-lg bg-white text-blue-200 border border-blue-100 font-bold text-[10px]">คัดลอกวันก่อน</button>
-                                      )}
-                                      <button type="button" onClick={() => clearDay(day.key)} className="flex-1 px-2 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 font-bold text-[10px]">ล้างวัน</button>
-                                    </div>
-                                  </div>
-                                )}
-                              </td>
-                            ))}
-                          </tr>
+                                        <span onClick={(e) => { e.stopPropagation(); setAssignment(plannerDayKey, role.key, idx, ''); }} className="px-2 py-1 rounded-lg bg-red-600 text-white text-[10px] font-black">ล้าง</span>
+                                      </div>
+                                    ) : (
+                                      <div className="flex items-center gap-2 text-blue-100">
+                                        <div className="w-11 h-11 rounded-xl bg-slate-950 text-blue-300 flex items-center justify-center text-lg shrink-0"><i className="ri-user-add-fill"></i></div>
+                                        <div>
+                                          <div className="font-black">เลือกชื่อ</div>
+                                          <div className="text-xs text-slate-400">กดเพื่อค้นหา</div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
                         );
                       })}
-                    </tbody>
-                  </table>
+                    </div>
+                  </div>
+
+                  <aside className="space-y-3">
+                    <div className="rounded-[1.6rem] bg-blue-50 border border-blue-100 p-4">
+                      <p className="text-xs font-black text-blue-700 uppercase tracking-wide">สรุปวันนี้</p>
+                      <div className="text-4xl font-extrabold text-slate-950 mt-2">{countAssignmentsForDay(plannerDayKey)}</div>
+                      <p className="text-sm text-slate-500 font-bold">คนที่จัดลง {plannerDay.label}</p>
+                    </div>
+                    <div className="rounded-[1.6rem] bg-slate-50 border border-slate-100 p-4">
+                      <p className="font-extrabold text-slate-950"><i className="ri-information-fill text-blue-600 mr-1"></i>วิธีใช้</p>
+                      <ol className="text-sm text-slate-600 mt-2 space-y-1 list-decimal pl-5">
+                        <li>เลือกสัปดาห์และแบบตาราง</li>
+                        <li>เลือกวันด้านบน</li>
+                        <li>กดช่อง “เลือกชื่อ”</li>
+                        <li>บันทึกตารางเวร</li>
+                      </ol>
+                    </div>
+                    <button type="button" onClick={autoFillCurrentDutyForm} className="w-full px-4 py-3 rounded-2xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-700"><i className="ri-magic-fill mr-1"></i>จัดเวรอัตโนมัติ</button>
+                    <button type="button" onClick={resetForm} className="w-full px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-extrabold hover:bg-slate-200">ล้างฟอร์ม / เริ่มใหม่</button>
+                  </aside>
                 </div>
+              </form>
+            </section>
+          )}
 
-                <div className="mt-4 rounded-2xl bg-slate-900 border border-slate-700 px-4 py-3 text-sm text-slate-200">
-                  <b>ทิปใช้งาน:</b> ถ้าอยากทำงานง่ายที่สุด ให้เริ่มจากหน้า “จัดคนลงตาราง” ก่อน แล้วค่อยไปหน้า “ตั้งตำแหน่ง” เมื่อต้องการเพิ่ม/ลดหน้าที่ ส่วน PDF แบบอ่านง่ายพร้อมรูปนักศึกษาอยู่ที่หน้า “ย้อนหลัง / PDF”
-                </div>
-              </div>
-              </>)}
-
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button disabled={saving} className="flex-1 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold disabled:opacity-50 active:scale-[.98] transition"><i className="ri-save-3-fill mr-2"></i>{saving ? 'กำลังบันทึก...' : editingId ? 'บันทึกการแก้ไข' : 'บันทึกตารางเวรทั้งสัปดาห์'}</button>
-                <button type="button" onClick={resetForm} className="px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/15 font-bold">ล้างฟอร์ม</button>
-              </div>
-            </form>
-
-            <div className="space-y-5 duty-side-shell">
-              <div className="duty-list-shell bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6">
-                <h3 className="text-xl font-extrabold text-slate-950 mb-4"><i className="ri-dashboard-2-fill text-blue-600 mr-2"></i>สรุปตารางเวร</h3>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div className="rounded-3xl bg-blue-50 border border-blue-100 p-4"><p className="text-xs text-blue-200 font-bold">สัปดาห์ที่แสดง</p><p className="text-3xl font-extrabold text-slate-950">{visibleDuties.length}</p></div>
-                  <div className="rounded-3xl bg-emerald-50 border border-emerald-100 p-4"><p className="text-xs text-emerald-700 font-bold">สมาชิกที่ยังอยู่ในชมรม</p><p className="text-3xl font-extrabold text-slate-950">{activeStudents.length}</p><p className="text-xs text-emerald-700/80 font-bold mt-1">รวมทุกปีที่เข้าชมรม</p></div>
-                </div>
-                <div className="mt-4 rounded-3xl bg-slate-50 border border-slate-100 p-4">
-                  <p className="text-xs text-slate-500 font-bold">เวรสัปดาห์ถัดไป</p>
-                  {nextDuty ? <div><p className="font-extrabold text-slate-950 text-lg">{formatThaiWeekRange(nextDuty.date)}</p><p className="text-sm text-slate-500">{nextDuty.note || 'ไม่มีหมายเหตุ'}</p></div> : <p className="text-slate-500 text-sm">ยังไม่มีตารางเวรตอนเช้าล่วงหน้าของปีปัจจุบัน</p>}
-                </div>
-              </div>
-
-              <div className="bg-slate-950 text-white rounded-[2rem] soft-shadow p-5 md:p-6">
-                <h3 className="font-extrabold text-xl mb-2"><i className="ri-lightbulb-flash-fill text-yellow-300 mr-2"></i>แนะนำการใช้จริง</h3>
-                <p className="text-slate-300 text-sm leading-relaxed">ให้ตั้งตาราง 1, 2, 3... เป็น “ตารางทั้งสัปดาห์” โดยแยกคนแต่ละวัน จันทร์–เสาร์ จากนั้นเลือกใช้เป็นชุดตารางตามสัปดาห์ ระบบจะเตือนถ้ามีชื่อซ้ำในสัปดาห์เดียวกัน</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`${dutyManagePanel === 'list' ? '' : 'hidden'} bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6`}>
+          {dutyWorkspaceMode === 'history' && (<div className="bg-white rounded-[2rem] soft-shadow border border-white p-5 md:p-6">
             <div className="flex flex-col xl:flex-row gap-4 xl:items-center xl:justify-between mb-5">
               <div>
                 <h3 className="text-xl font-extrabold text-slate-950"><i className="ri-list-check-3 text-blue-600 mr-2"></i>รายการตารางเวรตอนเช้า</h3>
@@ -6259,7 +8525,7 @@
                 })}
               </div>
             ) : <div className="p-12 text-center rounded-3xl bg-slate-50 border border-slate-100 text-slate-500 font-bold">ยังไม่มีตารางเวรตามเงื่อนไขที่เลือก</div>}
-          </div>
+          </div>)}
 
           {attendanceDuty && (
             <div className="duty-attendance-modal fixed inset-0 z-[96] bg-slate-950/78 backdrop-blur-sm flex items-center justify-center p-3 md:p-5">
@@ -6606,26 +8872,26 @@
         <div className="print-overlay print-overlay-duty-preview fixed inset-0 z-[100] bg-white overflow-y-auto p-3 md:p-5 animate-fade-in">
           <div className="no-print flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 pb-5 border-b">
             <div>
-              <h2 className="font-extrabold text-2xl">โหมดแคปหน้าจอ / PDF ตารางเวรทั้งสัปดาห์</h2>
-              <p className="text-slate-500">เหมาะสำหรับส่งให้เด็กดูในไลน์/แชท และใช้แคปหน้าจอส่งต่อได้เลย · โหมดแคปทั้งสัปดาห์หน้าเดียว 6 วันครบในภาพเดียว</p>
+              <h2 className="font-extrabold text-2xl">PDF ตารางเวรแบบตาราง อ่านง่ายขึ้น</h2>
+              <p className="text-slate-500">ปรับใหม่ให้คอลัมน์ชื่อตำแหน่งเวรแสดงครบขึ้น ตัวหนังสือใหญ่และชัดเจนกว่าเดิม</p>
             </div>
             <div className="flex flex-col items-start md:items-end gap-2">
               <div className="flex gap-2">
                 <button onClick={() => window.print()} className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold"><i className="ri-printer-fill mr-2"></i>ดาวน์โหลด PDF / พิมพ์</button>
                 <button onClick={onClose} className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold">ปิด</button>
               </div>
-              <div className="text-xs text-slate-500 font-bold">นี่คือหน้าโหมดแคปแล้ว: ซ่อนแถบปุ่มด้านบนตอนแคป หรือกดดาวน์โหลด PDF / พิมพ์ เพื่อ Save as PDF</div>
+              <div className="text-xs text-slate-500 font-bold">กดดาวน์โหลด PDF / พิมพ์ แล้วเลือก Save as PDF ได้เลย</div>
             </div>
           </div>
 
           <div className="no-print mb-4 rounded-[1.5rem] bg-blue-50 border border-blue-100 px-5 py-4 text-blue-900">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <div>
-                <div className="font-black text-lg"><i className="ri-screenshot-2-fill mr-2"></i>โหมดแคปหน้าจออยู่ตรงนี้</div>
-                <div className="text-sm font-bold text-blue-700 mt-1">ตารางด้านล่างคือภาพสำหรับแคปส่งไลน์: 1 สัปดาห์ / 1 หน้า / 6 วันครบในภาพเดียว • ชื่อเล่นใหญ่ขึ้นนิดนึง แต่ตารางไม่กินขอบ</div>
+                <div className="font-black text-lg"><i className="ri-screenshot-2-fill mr-2"></i>PDF ตารางเวรแบบช่องตามตำแหน่ง · ชื่อตำแหน่งเต็ม / ตัวใหญ่ชัด</div>
+                <div className="text-sm font-bold text-blue-700 mt-1">ตารางด้านล่างขยายคอลัมน์ตำแหน่งเวรให้กว้างขึ้น ไม่ตัดชื่อยาวง่าย และเพิ่มขนาดตัวหนังสือให้ชัดขึ้น</div>
               </div>
               <div className="text-xs font-extrabold bg-white border border-blue-100 rounded-2xl px-4 py-2 text-blue-700">
-                แนะนำ: เปิดเต็มหน้าจอก่อนแคป จะคมและอ่านง่ายกว่า
+                แนะนำ: ถ้ารายชื่อเยอะมาก ให้ใช้แนวนอน A4 และเปิด Background graphics ตอนพิมพ์
               </div>
             </div>
           </div>
@@ -6657,42 +8923,77 @@
                   <div className="duty-week-pdf-meta-card"><div className="duty-week-pdf-meta-label">หมายเหตุ</div><div className="duty-week-pdf-meta-value">{duty.note || '-'}</div></div>
                 </div>
 
-                <div className="duty-week-grid">
-                  {dutyDays.map(day => (
-                    <div key={day.key} className="duty-day-box">
-                      <div className="duty-day-head">
-                        <div className="duty-day-label">{day.label}</div>
-                        <div className="duty-day-date">{formatThaiDate(getDutyDayDate(duty.date, day.key))}</div>
-                      </div>
-
-                      {roles.length ? roles.map(role => {
-                        const people = ((weekly?.[day.key]?.[role.key]) || []).filter(Boolean).map(resolvePerson);
-                        return (
-                          <div key={role.key} className="duty-role-block">
-                            <div className="duty-role-name">{role.shortTitle || role.title || '-'}</div>
-                            {people.length ? people.map((person, idx) => (
-                              <div key={`${role.key}-${day.key}-${person?.id || idx}`} className="duty-pdf-person">
-                                {person?.photo ? (
-                                  <img src={person.photo} alt={person.nickname || person.fullName || 'student'} className="duty-pdf-photo" />
-                                ) : (
-                                  <div className="duty-pdf-initial">{initialsOf(person)}</div>
-                                )}
-                                <div className="duty-pdf-person-info">
-                                  <div className="duty-pdf-nick">{person?.nickname || person?.fullName || '-'}</div>
-                                  <div className="duty-pdf-name">{person?.fullName || '-'}</div>
-                                  <div className="duty-pdf-room">{[person?.level, person?.group].filter(Boolean).join(' / ') || '-'}</div>
+                <div className="duty-pdf-table-wrap">
+                  <table className="duty-pdf-role-table">
+                    <colgroup>
+                      <col className="duty-pdf-col-role" />
+                      {dutyDays.map(day => <col key={`col-${day.key}`} className="duty-pdf-col-day" />)}
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th className="duty-pdf-role-head">ตำแหน่งเวร</th>
+                        {dutyDays.map(day => (
+                          <th key={day.key} className="duty-pdf-day-head">
+                            <div className="duty-pdf-day-title">{day.label}</div>
+                            <div className="duty-pdf-day-date-small">{formatThaiDate(getDutyDayDate(duty.date, day.key))}</div>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {roles.length ? roles.map(role => (
+                        <tr key={role.key}>
+                          <td className="duty-pdf-role-title-cell">
+                            {(() => {
+                              const roleTitle = String(role?.title || '').trim();
+                              const roleShort = String(role?.shortTitle || '').trim();
+                              const roleKeyLabel = String(role?.key || '').replace(/[_-]+/g, ' ').trim();
+                              const hasVisibleTitle = !!(roleTitle || roleShort);
+                              const visibleTitle = roleTitle || roleShort || 'ยังไม่ได้ตั้งชื่อตำแหน่งเวร';
+                              const detailText = roleTitle && roleShort && roleShort !== roleTitle
+                                ? `ชื่อย่อ: ${roleShort}`
+                                : (hasVisibleTitle ? '' : (roleKeyLabel ? `คีย์ตำแหน่ง: ${roleKeyLabel}` : 'กรุณาตั้งชื่อในเมนูตั้งค่าตำแหน่งเวร'));
+                              return (
+                                <div className="duty-pdf-role-cell-inner">
+                                  <div className={`duty-pdf-role-title-main ${hasVisibleTitle ? '' : 'is-missing'}`}>{visibleTitle}</div>
+                                  {!!detailText && <div className="duty-pdf-role-title-detail">{detailText}</div>}
+                                  <div className="duty-pdf-role-title-count">ต้องการ {getRoleSlotCount(role, duty.roleSlots)} คน</div>
                                 </div>
-                              </div>
-                            )) : (
-                              <div className="duty-pdf-empty">ยังไม่เลือกชื่อ</div>
-                            )}
-                          </div>
-                        );
-                      }) : (
-                        <div className="duty-role-block"><div className="duty-pdf-empty">ยังไม่ได้ตั้งตำแหน่งเวร</div></div>
+                              );
+                            })()}
+                          </td>
+                          {dutyDays.map(day => {
+                            const people = ((weekly?.[day.key]?.[role.key]) || []).filter(Boolean).map(resolvePerson);
+                            return (
+                              <td key={`${role.key}-${day.key}`} className="duty-pdf-duty-cell">
+                                {people.length ? (
+                                  <div className="duty-pdf-cell-people">
+                                    {people.map((person, idx) => (
+                                      <div key={`${role.key}-${day.key}-${person?.id || idx}`} className="duty-pdf-cell-person">
+                                        {person?.photo ? (
+                                          <img src={person.photo} alt={person.nickname || person.fullName || 'student'} className="duty-pdf-cell-photo" />
+                                        ) : (
+                                          <div className="duty-pdf-cell-initial">{initialsOf(person)}</div>
+                                        )}
+                                        <div className="duty-pdf-cell-name">{person?.nickname || person?.fullName || '-'}</div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="duty-pdf-cell-empty">-</div>
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      )) : (
+                        <tr>
+                          <td className="duty-pdf-role-title-cell">ยังไม่ได้ตั้งตำแหน่งเวร</td>
+                          {dutyDays.map(day => <td key={day.key} className="duty-pdf-duty-cell"><div className="duty-pdf-cell-empty">-</div></td>)}
+                        </tr>
                       )}
-                    </div>
-                  ))}
+                    </tbody>
+                  </table>
                 </div>
 
                 <div className="duty-week-pdf-footer">
