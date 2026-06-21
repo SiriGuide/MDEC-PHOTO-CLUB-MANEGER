@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v73.9.0 Duty Center Rebuild Simple Real Use</title>
+  <title>MDEC Photo Club Center v74.1.2 Legacy Duty Fix</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -2482,7 +2482,7 @@
 
 
   <style id="v70-stable-release-polish">
-    /* v70 Stable Release 1.0 — premium UI, mobile, print, and safety polish for real production use */
+    /* v70 Stable Release 1.0 • Legacy Fix — premium UI, mobile, print, and safety polish for real production use */
     :root {
       --mdec-bg: #07111f;
       --mdec-panel: rgba(15, 23, 42, .94);
@@ -7882,6 +7882,7 @@
                               })))))))))));
       }
       function DutySchedulePage({ students, currentAcademicYear, yearsList }) {
+          const safeCurrentYear = String(currentAcademicYear || thaiAcademicYearNow());
           const [duties, setDuties] = useState([]);
           const [templates, setTemplates] = useState({});
           const [loading, setLoading] = useState(true);
