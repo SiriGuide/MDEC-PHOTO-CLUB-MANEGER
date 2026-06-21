@@ -3737,10 +3737,47 @@
     .master-check-status.late.active { background:#f59e0b; }
     .master-check-status.absent.active { background:#dc2626; }
     .master-check-status.leave.active { background:#64748b; }
-    .master-check-status.substitute.active { background:#7c3aed; }
+    .master-check-status.not_found.active { background:#ea580c; }
+    .master-check-issue { grid-column:1/-1; border:1px solid #fed7aa; background:#fff7ed; border-radius:18px; padding:12px; display:grid; grid-template-columns:minmax(220px,.9fr) minmax(260px,1fr); gap:10px; align-items:start; }
+    .master-check-issue-title { display:flex; align-items:center; gap:8px; font-weight:950; color:#9a3412; margin-bottom:7px; }
+    .master-check-issue select, .master-check-issue textarea, .master-check-issue input { width:100%; border-radius:14px; border:1.5px solid #fdba74; background:#fff; color:#0f172a; padding:10px 12px; font-weight:800; outline:none; }
+    .master-check-issue textarea { min-height:76px; resize:vertical; }
+    .master-check-issue-hint { font-size:12px; font-weight:800; color:#c2410c; margin-top:6px; }
+    .master-sub-selected-card { display:flex; align-items:center; gap:12px; border:1.5px solid #fdba74; background:#ffffff; border-radius:18px; padding:12px; box-shadow:0 10px 26px rgba(251,146,60,.12); }
+    .master-sub-selected-card img, .master-sub-selected-initial { width:58px; height:58px; flex:0 0 58px; border-radius:18px; object-fit:cover; border:1px solid #fed7aa; }
+    .master-sub-selected-initial { display:flex; align-items:center; justify-content:center; background:#ffedd5; color:#c2410c; font-size:22px; font-weight:950; }
+    .master-sub-selected-name { font-size:20px; line-height:1.08; font-weight:950; color:#0f172a; }
+    .master-sub-selected-meta { margin-top:3px; font-size:12px; font-weight:850; color:#64748b; }
+    .master-sub-pick-empty { width:100%; min-height:86px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:3px; border:2px dashed #fdba74; background:#fffaf4; border-radius:18px; color:#c2410c; font-weight:950; text-align:center; }
+    .master-sub-pick-empty i { font-size:28px; line-height:1; }
+    .master-sub-action-btn, .master-sub-clear-btn { border-radius:14px; padding:9px 12px; font-size:12px; font-weight:950; border:1px solid transparent; }
+    .master-sub-action-btn { background:#ea580c; color:#fff; }
+    .master-sub-clear-btn { background:#fff; color:#be123c; border-color:#fecdd3; }
+    .master-sub-picker-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .master-sub-profile-card { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; width:100%; text-align:left; padding:12px; border-radius:22px; border:1px solid #e2e8f0; background:#ffffff; transition:all .18s ease; }
+    .master-sub-profile-card:hover { border-color:#60a5fa; background:#eff6ff; transform:translateY(-1px); box-shadow:0 14px 30px rgba(15,23,42,.10); }
+    .master-sub-profile-photo, .master-sub-profile-initial { width:62px; height:62px; border-radius:20px; object-fit:cover; border:1px solid #cbd5e1; background:#dbeafe; }
+    .master-sub-profile-initial { display:flex; align-items:center; justify-content:center; color:#1d4ed8; font-size:24px; font-weight:950; }
+    .master-sub-profile-nick { font-size:22px; line-height:1.05; font-weight:950; color:#0f172a; }
+    .master-sub-profile-name { margin-top:3px; font-size:13px; line-height:1.35; font-weight:850; color:#475569; }
+    .master-sub-profile-tags { margin-top:7px; display:flex; flex-wrap:wrap; gap:5px; }
+    .master-sub-profile-tags span { display:inline-flex; align-items:center; border:1px solid #bfdbfe; background:#eff6ff; color:#1d4ed8; border-radius:999px; padding:3px 8px; font-size:11px; font-weight:950; }
+    .master-sub-profile-choose { white-space:nowrap; border-radius:999px; background:#2563eb; color:white; padding:8px 12px; font-size:12px; font-weight:950; }
     body.dark-mode .master-check-daybtn { background:#0f172a; border-color:#334155; color:#cbd5e1; }
     body.dark-mode .master-check-row { background:#0f172a; border-color:#334155; }
     body.dark-mode .master-check-role { color:#f8fafc; }
+    body.dark-mode .master-check-issue { background:rgba(67, 20, 7, .55); border-color:rgba(251, 146, 60, .45); }
+    body.dark-mode .master-check-issue-title { color:#fed7aa; }
+    body.dark-mode .master-check-issue select, body.dark-mode .master-check-issue textarea, body.dark-mode .master-check-issue input { background:#0f172a !important; color:#f8fafc !important; border-color:rgba(251, 146, 60, .55) !important; }
+    body.dark-mode .master-check-issue-hint { color:#fdba74; }
+    body.dark-mode .master-sub-selected-card, body.dark-mode .master-sub-profile-card { background:#0f172a !important; border-color:rgba(251,146,60,.45) !important; color:#f8fafc !important; }
+    body.dark-mode .master-sub-selected-name, body.dark-mode .master-sub-profile-nick { color:#f8fafc !important; }
+    body.dark-mode .master-sub-selected-meta, body.dark-mode .master-sub-profile-name { color:#cbd5e1 !important; }
+    body.dark-mode .master-sub-pick-empty { background:rgba(67,20,7,.45) !important; border-color:rgba(251,146,60,.55) !important; color:#fed7aa !important; }
+    body.dark-mode .master-sub-clear-btn { background:#0f172a !important; color:#fecdd3 !important; border-color:rgba(251,113,133,.45) !important; }
+    body.dark-mode .master-sub-profile-card:hover { background:rgba(30,64,175,.20) !important; border-color:#60a5fa !important; }
+    body.dark-mode .master-sub-profile-tags span { background:rgba(30,41,59,.95) !important; color:#bfdbfe !important; border-color:rgba(96,165,250,.35) !important; }
+    @media (max-width:900px){ .master-check-row { grid-template-columns:1fr; } .master-check-actions { justify-content:flex-start; } .master-check-issue { grid-template-columns:1fr; } .master-sub-picker-grid { grid-template-columns:1fr; } .master-sub-profile-card { grid-template-columns:auto 1fr; } .master-sub-profile-choose { grid-column:1/-1; text-align:center; } }
 
     @media print {
       body.print-master-duty #root > * { display:block !important; }
@@ -4128,6 +4165,99 @@
     }
   </style>
 
+
+  <style id="v74-legacy-easy-redesign">
+    @media screen {
+      .legacy-easy-shell { display: flex; flex-direction: column; gap: 16px; }
+      .legacy-easy-head {
+        display: flex; align-items: center; justify-content: space-between; gap: 18px;
+        background: linear-gradient(135deg, #071225 0%, #0f2a5d 58%, #1d4ed8 100%);
+        color: #fff; border: 1px solid rgba(147,197,253,.24); border-radius: 28px; padding: 20px 22px;
+        box-shadow: 0 24px 70px rgba(15,23,42,.24);
+      }
+      .legacy-easy-head h2 { font-size: clamp(26px, 3vw, 42px); font-weight: 950; line-height: 1.05; margin: 2px 0 4px; letter-spacing: -.04em; }
+      .legacy-easy-head p { color: #dbeafe; font-weight: 700; max-width: 820px; }
+      .legacy-kicker { font-size: 11px; font-weight: 950; letter-spacing: .22em; color: #93c5fd; text-transform: uppercase; }
+      .legacy-kicker.dark { color: #2563eb; }
+      .legacy-head-actions, .legacy-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-end; }
+      .legacy-primary-btn, .legacy-secondary-btn, .legacy-import-btn, .legacy-clear-btn, .legacy-quick-import button {
+        min-height: 46px; border-radius: 18px; padding: 0 16px; font-weight: 950; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap;
+      }
+      .legacy-primary-btn { background: #2563eb; color: #fff; }
+      .legacy-secondary-btn { background: rgba(255,255,255,.10); color: #fff; border-color: rgba(255,255,255,.18); }
+      .legacy-secondary-btn.light { background: #f8fafc; color: #334155; border-color: #cbd5e1; }
+      .legacy-import-btn { background: #059669; color: #fff; box-shadow: 0 14px 26px rgba(5,150,105,.22); }
+      .legacy-import-btn:disabled, .legacy-quick-import button:disabled { opacity: .6; cursor: wait; }
+      .legacy-howto { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+      .legacy-step { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #dbeafe; border-radius: 22px; padding: 14px; box-shadow: 0 12px 30px rgba(37,99,235,.06); }
+      .legacy-step b { width: 40px; height: 40px; flex: 0 0 auto; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: #2563eb; color: #fff; font-size: 18px; font-weight: 950; }
+      .legacy-step strong { display: block; color: #0f172a; font-weight: 950; }
+      .legacy-step small { display: block; color: #64748b; font-weight: 700; line-height: 1.35; }
+      .legacy-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+      .legacy-stat { background: #fff; border: 1px solid #dbeafe; border-radius: 24px; padding: 16px; display: grid; gap: 4px; box-shadow: 0 12px 30px rgba(37,99,235,.06); }
+      .legacy-stat i { width: 42px; height: 42px; border-radius: 16px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+      .legacy-stat span { color: #64748b; font-size: 12px; font-weight: 900; }
+      .legacy-stat b { color: #0f172a; font-size: 22px; line-height: 1.1; font-weight: 950; }
+      .legacy-main-grid { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 14px; align-items: start; }
+      .legacy-list-panel, .legacy-detail-panel { background: #fff; border: 1px solid #dbeafe; border-radius: 28px; padding: 14px; box-shadow: 0 18px 46px rgba(15,23,42,.08); }
+      .legacy-list-panel { position: sticky; top: 14px; max-height: calc(100vh - 28px); display: flex; flex-direction: column; gap: 12px; }
+      .legacy-filter-card { background: #f8fbff; border: 1px solid #dbeafe; border-radius: 24px; padding: 14px; display: grid; gap: 8px; }
+      .legacy-filter-card label { color: #475569; font-size: 12px; font-weight: 950; }
+      .legacy-filter-card select, .legacy-filter-card input { width: 100%; min-height: 44px; border-radius: 16px; border: 1.5px solid #cbd5e1; background: #fff; color: #0f172a; padding: 0 12px; font-weight: 800; outline: none; }
+      .legacy-search { position: relative; }
+      .legacy-search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+      .legacy-search input { padding-left: 38px; }
+      .legacy-clear-btn { background: #e2e8f0; color: #334155; min-height: 40px; }
+      .legacy-week-list { overflow-y: auto; padding-right: 2px; display: grid; gap: 8px; }
+      .legacy-week-item { text-align: left; border: 1px solid #e2e8f0; background: #fff; border-radius: 20px; padding: 13px; color: #0f172a; transition: .18s ease; }
+      .legacy-week-item:hover { border-color: #93c5fd; transform: translateY(-1px); }
+      .legacy-week-item.active { background: linear-gradient(135deg, #eff6ff, #fff); border-color: #2563eb; box-shadow: 0 12px 28px rgba(37,99,235,.14); }
+      .legacy-week-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+      .legacy-week-top b { font-size: 14px; font-weight: 950; color: #0f172a; line-height: 1.25; }
+      .legacy-week-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; color: #64748b; font-size: 11px; font-weight: 900; }
+      .legacy-week-meta span { background: #f1f5f9; border-radius: 999px; padding: 3px 8px; }
+      .legacy-week-meta .warn { background: #fff7ed; color: #c2410c; }
+      .legacy-week-item small { display: block; margin-top: 8px; color: #64748b; font-weight: 700; line-height: 1.35; }
+      .legacy-pill { flex: 0 0 auto; font-size: 10px; font-weight: 950; background: #e0f2fe; color: #0369a1; border-radius: 999px; padding: 4px 8px; }
+      .legacy-pill.lock { background: #fee2e2; color: #b91c1c; }
+      .legacy-detail-head { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; background: #f8fbff; border: 1px solid #dbeafe; border-radius: 24px; padding: 16px; margin-bottom: 14px; }
+      .legacy-detail-head h3 { color: #0f172a; font-size: clamp(24px, 2vw, 34px); line-height: 1.08; font-weight: 950; letter-spacing: -.035em; }
+      .legacy-detail-head p { color: #64748b; font-weight: 800; margin-top: 4px; }
+      .legacy-warning { display: inline-flex; margin-top: 10px; color: #b45309; background: #fffbeb; border: 1px solid #fde68a; border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 950; }
+      .legacy-duty-board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .legacy-day-card { border: 1px solid #dbeafe; border-radius: 24px; overflow: hidden; background: #fff; }
+      .legacy-day-card header { background: #0f172a; color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; }
+      .legacy-day-card header b { font-size: 18px; font-weight: 950; }
+      .legacy-day-card header span { color: #cbd5e1; font-size: 12px; font-weight: 800; }
+      .legacy-role-row { padding: 12px 14px; border-top: 1px solid #e2e8f0; background: #f8fbff; }
+      .legacy-role-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+      .legacy-role-title span { font-size: 13px; font-weight: 950; color: #1d4ed8; }
+      .legacy-role-title small { color: #64748b; font-size: 11px; font-weight: 900; }
+      .legacy-people { display: grid; gap: 6px; }
+      .legacy-person { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 7px; min-width: 0; }
+      .legacy-person img, .legacy-person span { width: 34px; height: 34px; flex: 0 0 auto; border-radius: 12px; object-fit: cover; border: 1px solid #cbd5e1; }
+      .legacy-person span { display: flex; align-items: center; justify-content: center; background: #dbeafe; color: #1d4ed8; font-style: normal; font-weight: 950; }
+      .legacy-person em { font-style: normal; color: #0f172a; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .legacy-no-person { border: 1px dashed #cbd5e1; background: #fff; color: #94a3b8; border-radius: 16px; padding: 9px; text-align: center; font-size: 12px; font-weight: 900; }
+      .legacy-empty { border: 1px dashed #cbd5e1; border-radius: 20px; padding: 18px; color: #64748b; text-align: center; font-weight: 900; background: #f8fafc; }
+      .legacy-empty.large { min-height: 360px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+      .legacy-empty.large i { font-size: 42px; color: #94a3b8; }
+      .legacy-empty.large b { color: #0f172a; font-size: 22px; }
+      .legacy-quick-import { display: flex; justify-content: space-between; gap: 12px; align-items: center; background: #ecfdf5; border: 1px solid #a7f3d0; color: #064e3b; border-radius: 24px; padding: 14px 16px; }
+      .legacy-quick-import b { display: block; font-weight: 950; }
+      .legacy-quick-import span { color: #047857; font-weight: 800; }
+      .legacy-quick-import button { background: #059669; color: #fff; }
+      body.dark-mode .legacy-step, body.dark-mode .legacy-stat, body.dark-mode .legacy-list-panel, body.dark-mode .legacy-detail-panel, body.dark-mode .legacy-day-card, body.dark-mode .legacy-week-item, body.dark-mode .legacy-person { background: rgba(15,23,42,.94) !important; color: #e5edf8 !important; border-color: rgba(71,85,105,.78) !important; }
+      body.dark-mode .legacy-filter-card, body.dark-mode .legacy-detail-head, body.dark-mode .legacy-role-row { background: rgba(30,41,59,.88) !important; border-color: rgba(71,85,105,.78) !important; }
+      body.dark-mode .legacy-week-item.active { background: rgba(30,64,175,.28) !important; border-color: #60a5fa !important; }
+      body.dark-mode .legacy-step strong, body.dark-mode .legacy-stat b, body.dark-mode .legacy-week-top b, body.dark-mode .legacy-detail-head h3, body.dark-mode .legacy-person em, body.dark-mode .legacy-empty.large b { color: #f8fafc !important; }
+      body.dark-mode .legacy-step small, body.dark-mode .legacy-stat span, body.dark-mode .legacy-detail-head p, body.dark-mode .legacy-week-meta, body.dark-mode .legacy-week-item small { color: #a8b3c7 !important; }
+      body.dark-mode .legacy-filter-card select, body.dark-mode .legacy-filter-card input { background: rgba(15,23,42,.96) !important; color: #f8fafc !important; border-color: rgba(71,85,105,.92) !important; }
+      @media (max-width: 1180px) { .legacy-main-grid { grid-template-columns: 1fr; } .legacy-list-panel { position: static; max-height: none; } }
+      @media (max-width: 820px) { .legacy-easy-head, .legacy-detail-head, .legacy-quick-import { flex-direction: column; align-items: stretch; } .legacy-howto, .legacy-stats, .legacy-duty-board { grid-template-columns: 1fr; } .legacy-head-actions, .legacy-actions { justify-content: flex-start; } }
+    }
+  </style>
+
 </head>
 <body class="text-slate-800 selection:bg-blue-200">
   <div id="root"></div>
@@ -4152,6 +4282,7 @@
     }
   </script>
   <script>
+
     try {
       const firebaseConfig = {
           apiKey: "AIzaSyAoPSXB4qF2onYLtzhMR6U01JGko64C4lA",
@@ -4400,6 +4531,14 @@
           { key: 'substitute', label: 'ทำแทน', icon: 'ri-user-shared-fill', pill: 'bg-violet-900 text-violet-100 border-violet-700', button: 'bg-violet-600 hover:bg-violet-700 text-white' }
       ];
       const dutyNormalAttendance = { key: '', label: 'ปกติ', icon: 'ri-checkbox-circle-fill', pill: 'bg-emerald-900 text-emerald-100 border-emerald-700', button: 'bg-emerald-600 hover:bg-emerald-700 text-white' };
+      const dutyAttendanceIssueKeys = ['late', 'absent', 'leave', 'not_found'];
+      const dutyAttendanceCheckOptions = dutyAttendanceOptions.filter(opt => opt.key !== 'substitute');
+      const dutyNeedsReplacement = (status) => dutyAttendanceIssueKeys.includes(String(status || ''));
+      const dutySubstituteOptionText = (student = {}) => {
+          const nick = student.nickname || student.fullName || student.studentId || '-';
+          const room = [student.level, student.group].filter(Boolean).join(' / ');
+          return room ? `${nick} (${room})` : nick;
+      };
       const dutyTableTypes = Array.from({ length: 8 }, (_, index) => ({
           key: String(index + 1),
           label: `ตาราง ${index + 1}`,
@@ -5254,7 +5393,7 @@
           ];
           const todayTasks = [
               { title: 'เปิดโหมดเช้าวันนี้', desc: 'ดูเวรของวันนี้และบันทึกเฉพาะปัญหา', icon: 'ri-sun-foggy-fill', action: 'today', primary: true },
-              { title: 'บันทึกปัญหาเวร', desc: 'สาย / ขาด / ลา / ไม่พบตัว / ทำแทน', icon: 'ri-user-follow-fill', action: 'duty' },
+              { title: 'บันทึกปัญหาเวร', desc: 'สาย / ขาด / ลา / ไม่พบตัว พร้อมเลือกคนแทน', icon: 'ri-user-follow-fill', action: 'duty' },
               { title: 'เพิ่มกิจกรรมชมรม', desc: 'บันทึกงานที่ชมรมช่วยงานวันนี้', icon: 'ri-calendar-event-fill', action: 'activities' },
               { title: 'สำรองข้อมูล', desc: 'ตรวจความจุฐานข้อมูลและ Backup ก่อนล้างปี', icon: 'ri-database-2-fill', action: 'year' }
           ];
@@ -7199,6 +7338,7 @@
           const [checkDate, setCheckDate] = useState(todayFileDate());
           const [checkDay, setCheckDay] = useState(safeDutyDays[0].key);
           const [checkRecords, setCheckRecords] = useState({});
+          const [subPicker, setSubPicker] = useState({ open: false, entry: null, query: '' });
           // v74.1.1: helper เฉพาะหน้า Master Duty กันจอขาวจาก initialsOf ที่อยู่นอก scope
           const masterInitialsOf = (person) => {
               try {
@@ -7560,23 +7700,106 @@
               }
               return list;
           }, [roles, weekly, safeCheckDay, studentMap]);
+          const issueCheckStatusKeys = ['late', 'absent', 'leave', 'not_found'];
+          const checkRecordKeyOf = (entry) => `${entry.roleKey}_${entry.slot}_${entry.id}`;
+          const persistCheckRecords = (next) => {
+              try {
+                  localStorage.setItem(checkStorageKey, JSON.stringify(next || {}));
+              }
+              catch (error) {
+                  console.warn('save check local failed', error);
+              }
+          };
           const setCheckStatus = (entry, status) => {
-              const key = `${entry.roleKey}_${entry.slot}_${entry.id}`;
+              const key = checkRecordKeyOf(entry);
               setCheckRecords(prev => {
-                  const next = { ...(prev || {}), [key]: { status, studentId: entry.id, roleKey: entry.roleKey, slot: entry.slot, updatedAt: new Date().toISOString() } };
-                  try {
-                      localStorage.setItem(checkStorageKey, JSON.stringify(next));
+                  const oldRecord = (prev || {})[key] || {};
+                  const record = { ...oldRecord, status, studentId: entry.id, roleKey: entry.roleKey, slot: entry.slot, roleTitle: entry.roleTitle, updatedAt: new Date().toISOString() };
+                  if (status === 'present') {
+                      delete record.note;
+                      delete record.substituteId;
+                      delete record.substituteName;
                   }
-                  catch (error) {
-                      console.warn('save check local failed', error);
-                  }
+                  const next = { ...(prev || {}), [key]: record };
+                  persistCheckRecords(next);
                   return next;
               });
           };
-          const checkStatusOf = (entry) => {
-              const key = `${entry.roleKey}_${entry.slot}_${entry.id}`;
-              return checkRecords?.[key]?.status || 'present';
+          const setCheckRecordPatch = (entry, patch) => {
+              const key = checkRecordKeyOf(entry);
+              setCheckRecords(prev => {
+                  const oldRecord = (prev || {})[key] || {};
+                  const nextRecord = { ...oldRecord, ...patch, studentId: entry.id, roleKey: entry.roleKey, slot: entry.slot, roleTitle: entry.roleTitle, updatedAt: new Date().toISOString() };
+                  const next = { ...(prev || {}), [key]: nextRecord };
+                  persistCheckRecords(next);
+                  return next;
+              });
           };
+          const subPickerResults = useMemo(() => {
+              const q = String(subPicker.query || '').trim().toLowerCase();
+              const blockedId = subPicker.entry?.id || '';
+              return activeStudents.filter(s => {
+                  if (!s || !s.id || s.id === blockedId)
+                      return false;
+                  const searchable = [s.studentId, s.fullName, s.nickname, s.level, s.group, s.major, s.actualInterest, s.interest].filter(Boolean).join(' ').toLowerCase();
+                  return !q || searchable.includes(q);
+              }).slice(0, 80);
+          }, [activeStudents, subPicker.query, subPicker.entry?.id]);
+          const openSubstitutePicker = (entry) => {
+              if (!entry || !entry.id)
+                  return alert('ไม่พบรายการเวรที่ต้องการเลือกคนแทน กรุณาลองกดใหม่อีกครั้ง');
+              setSubPicker({ open: true, entry: { id: entry.id, roleKey: entry.roleKey, slot: entry.slot, roleTitle: entry.roleTitle }, query: '' });
+          };
+          const closeSubstitutePicker = () => setSubPicker({ open: false, entry: null, query: '' });
+          const chooseSubstituteStudent = (studentId) => {
+              try {
+                  const target = subPicker.entry;
+                  if (!target || !target.id)
+                      return closeSubstitutePicker();
+                  const sid = String(studentId || '');
+                  const s = sid ? studentMap.get(sid) : null;
+                  setCheckRecordPatch(target, { substituteId: sid, substituteName: s ? studentDutyName(s) : '' });
+                  closeSubstitutePicker();
+              }
+              catch (error) {
+                  console.error('choose substitute failed', error);
+                  alert('เลือกคนแทนเวรไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+              }
+          };
+          const renderSubstitutePickerModal = () => {
+              if (!subPicker.open)
+                  return null;
+              return React.createElement("div", { className: "fixed inset-0 z-[75] bg-slate-950/75 backdrop-blur-md p-4 no-print flex items-center justify-center" },
+                  React.createElement("div", { className: "bg-white rounded-[2rem] w-full max-w-5xl max-h-[88vh] overflow-hidden soft-shadow flex flex-col" },
+                      React.createElement("div", { className: "p-5 border-b border-slate-200 flex items-center justify-between gap-3" },
+                          React.createElement("div", null,
+                              React.createElement("h3", { className: "text-2xl font-black text-slate-950" }, "เลือกคนแทนเวร"),
+                              React.createElement("p", { className: "text-slate-500 font-bold" }, subPicker.entry?.roleTitle ? `ตำแหน่งเวร: ${subPicker.entry.roleTitle}` : 'ค้นหาจากชื่อเล่น ชื่อจริง ห้อง หรือรหัสนักศึกษา')),
+                          React.createElement("button", { onClick: closeSubstitutePicker, className: "w-11 h-11 rounded-2xl hover:bg-slate-100 font-black" }, "✕")),
+                      React.createElement("div", { className: "p-5 border-b border-slate-200 space-y-3" },
+                          React.createElement("input", { autoFocus: true, value: subPicker.query, onChange: e => setSubPicker(prev => ({ ...prev, query: e.target.value })), placeholder: "ค้นหาชื่อเล่น / ชื่อจริง / ห้อง / รหัสนักศึกษา / สาขา", className: "w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900 bg-white" }),
+                          React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-2 text-sm font-bold text-slate-500" },
+                              React.createElement("span", null, `พบ ${subPickerResults.length} คนที่เลือกได้`),
+                              React.createElement("button", { type: "button", onClick: () => chooseSubstituteStudent(''), className: "px-3 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-100 font-black" }, "ล้างคนแทนเวร"))),
+                      React.createElement("div", { className: "p-5 overflow-y-auto bg-slate-50" },
+                          subPickerResults.length ? React.createElement("div", { className: "master-sub-picker-grid" }, subPickerResults.map(s => React.createElement("button", { key: s.id, type: "button", onClick: () => chooseSubstituteStudent(s.id), className: "master-sub-profile-card" },
+                              s.photo ? React.createElement("img", { src: s.photo, onError: e => { e.currentTarget.style.display = 'none'; }, className: "master-sub-profile-photo" }) : React.createElement("div", { className: "master-sub-profile-initial" }, masterInitialsOf(s)),
+                              React.createElement("div", { className: "min-w-0" },
+                                  React.createElement("div", { className: "master-sub-profile-nick truncate" }, s.nickname || s.fullName || '-'),
+                                  React.createElement("div", { className: "master-sub-profile-name truncate" }, s.fullName || '-'),
+                                  React.createElement("div", { className: "master-sub-profile-tags" },
+                                      React.createElement("span", null, `${s.level || '-'} / ${s.group || '-'}`),
+                                      (s.studentId || s.major) ? React.createElement("span", null, s.studentId || s.major) : null,
+                                      (s.actualInterest || s.interest) ? React.createElement("span", null, s.actualInterest || s.interest) : null)),
+                              React.createElement("span", { className: "master-sub-profile-choose" }, "เลือกคนนี้")))) : React.createElement("div", { className: "rounded-3xl bg-white border border-dashed border-slate-300 p-10 text-center" },
+                              React.createElement("div", { className: "text-xl font-black text-slate-950" }, "ไม่พบรายชื่อ"),
+                              React.createElement("p", { className: "text-slate-500 font-bold mt-2" }, "ลองค้นหาด้วยชื่อเล่น ห้อง หรือรหัสนักศึกษาอีกครั้ง")))));
+          };
+          const checkRecordOf = (entry) => {
+              const key = checkRecordKeyOf(entry);
+              return checkRecords?.[key] || {};
+          };
+          const checkStatusOf = (entry) => checkRecordOf(entry).status || 'present';
           const saveCheckSummary = () => {
               try {
                   localStorage.setItem(checkStorageKey, JSON.stringify(checkRecords || {}));
@@ -7601,7 +7824,7 @@
                       React.createElement("button", { onClick: () => setLegacyOpen(false), className: "px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black" },
                           React.createElement("i", { className: "ri-arrow-left-line mr-2" }),
                           "\u0E01\u0E25\u0E31\u0E1A\u0E15\u0E32\u0E23\u0E32\u0E07\u0E40\u0E27\u0E23\u0E2B\u0E25\u0E31\u0E01")),
-                  React.createElement(DutySchedulePage, { students: students, currentAcademicYear: currentAcademicYear, yearsList: yearsList })));
+                  React.createElement(LegacyDutyHistoryPage, { students: students, currentAcademicYear: currentAcademicYear, yearsList: yearsList, onBackToMaster: () => setLegacyOpen(false) })));
           }
           return (React.createElement("div", { className: "master-duty-shell" },
               React.createElement("div", { className: "master-duty-hero no-print" },
@@ -7764,8 +7987,8 @@
               activeMode === 'check' && (React.createElement("div", { className: "master-duty-card p-6 no-print" },
                   React.createElement("div", { className: "flex flex-col xl:flex-row xl:items-start xl:justify-between gap-4 mb-5" },
                       React.createElement("div", null,
-                          React.createElement("h3", { className: "text-2xl font-black text-slate-950 mb-1" }, "\u0E40\u0E0A\u0E47\u0E04\u0E40\u0E27\u0E23\u0E08\u0E32\u0E01\u0E15\u0E32\u0E23\u0E32\u0E07\u0E40\u0E27\u0E23\u0E2B\u0E25\u0E31\u0E01"),
-                          React.createElement("p", { className: "text-slate-500 font-bold" }, "\u0E40\u0E25\u0E37\u0E2D\u0E01\u0E27\u0E31\u0E19 \u0E41\u0E25\u0E49\u0E27\u0E01\u0E14\u0E2A\u0E16\u0E32\u0E19\u0E30 \u0E21\u0E32 / \u0E2A\u0E32\u0E22 / \u0E02\u0E32\u0E14 / \u0E25\u0E32 / \u0E41\u0E17\u0E19 \u0E44\u0E14\u0E49\u0E17\u0E31\u0E19\u0E17\u0E35 \u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E40\u0E0A\u0E47\u0E04\u0E40\u0E27\u0E23\u0E08\u0E30\u0E08\u0E33\u0E44\u0E27\u0E49\u0E43\u0E19\u0E40\u0E04\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E19\u0E35\u0E49\u0E01\u0E48\u0E2D\u0E19")),
+                          React.createElement("h3", { className: "text-2xl font-black text-slate-950 mb-1" }, "เช็คเวรจากตารางเวรหลัก"),
+                          React.createElement("p", { className: "text-slate-500 font-bold" }, "กด มา / สาย / ขาด / ลา / ไม่พบตัว ได้ทันที ถ้าเป็น สาย ขาด ลา หรือไม่พบตัว ระบบจะเปิดช่องให้เลือกคนแทนและกรอกหมายเหตุอัตโนมัติ")),
                       React.createElement("div", { className: "flex flex-wrap gap-2 items-end" },
                           React.createElement(Input, { label: "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48\u0E40\u0E0A\u0E47\u0E04\u0E40\u0E27\u0E23", type: "date", value: checkDate, onChange: setCheckDate }),
                           React.createElement("button", { onClick: saveCheckSummary, className: "px-4 py-3 rounded-2xl bg-emerald-600 text-white font-black" },
@@ -7787,8 +8010,11 @@
                           " \u0E04\u0E19")),
                   assignedForCheckDay.length ? (React.createElement("div", { className: "master-check-list" }, assignedForCheckDay.map(entry => {
                       const person = entry.person || {};
+                      const record = checkRecordOf(entry);
                       const status = checkStatusOf(entry);
-                      const statuses = [['present', 'มา'], ['late', 'สาย'], ['absent', 'ขาด'], ['leave', 'ลา'], ['substitute', 'แทน']];
+                      const needsReplacement = issueCheckStatusKeys.includes(status);
+                      const statuses = [['present', 'มา'], ['late', 'สาย'], ['absent', 'ขาด'], ['leave', 'ลา'], ['not_found', 'ไม่พบตัว']];
+                      const selectedSubstitute = record.substituteId ? studentMap.get(record.substituteId) : null;
                       return (React.createElement("div", { key: `${entry.roleKey}-${entry.slot}-${entry.id}`, className: "master-check-row" },
                           React.createElement("div", { className: "master-check-person" },
                               person.photo ? React.createElement("img", { src: person.photo, onError: e => { e.currentTarget.style.display = 'none'; }, className: "master-check-avatar" }) : React.createElement("div", { className: "master-check-avatar" }, masterInitialsOf(person)),
@@ -7801,9 +8027,37 @@
                                       " / ",
                                       person.group || '-'))),
                           React.createElement("div", null,
-                              React.createElement("div", { className: "text-xs font-black text-slate-400" }, "\u0E15\u0E33\u0E41\u0E2B\u0E19\u0E48\u0E07\u0E40\u0E27\u0E23"),
-                              React.createElement("div", { className: "master-check-role" }, entry.roleTitle)),
-                          React.createElement("div", { className: "master-check-actions" }, statuses.map(([key, label]) => React.createElement("button", { key: key, onClick: () => setCheckStatus(entry, key), className: `master-check-status ${key} ${status === key ? 'active' : ''}` }, label)))));
+                              React.createElement("div", { className: "text-xs font-black text-slate-400" }, "ตำแหน่งเวร"),
+                              React.createElement("div", { className: "master-check-role" }, entry.roleTitle),
+                              selectedSubstitute ? React.createElement("div", { className: "text-xs font-black text-orange-600 mt-1" }, "แทนโดย: ", selectedSubstitute.nickname || selectedSubstitute.fullName || '-') : record.substituteName ? React.createElement("div", { className: "text-xs font-black text-orange-600 mt-1" }, "แทนโดย: ", record.substituteName) : null),
+                          React.createElement("div", { className: "master-check-actions" }, statuses.map(([key, label]) => React.createElement("button", { key: key, onClick: () => setCheckStatus(entry, key), className: `master-check-status ${key} ${status === key ? 'active' : ''}` }, label))),
+                          needsReplacement && React.createElement("div", { className: "master-check-issue" },
+                              React.createElement("div", null,
+                                  React.createElement("div", { className: "master-check-issue-title" }, React.createElement("i", { className: "ri-user-received-2-fill" }), "เลือกคนแทนเวร"),
+                                  selectedSubstitute ? React.createElement("div", { className: "master-sub-selected-card mb-2" },
+                                      selectedSubstitute.photo ? React.createElement("img", { src: selectedSubstitute.photo, onError: e => { e.currentTarget.style.display = 'none'; } }) : React.createElement("div", { className: "master-sub-selected-initial" }, masterInitialsOf(selectedSubstitute)),
+                                      React.createElement("div", { className: "min-w-0 flex-1" },
+                                          React.createElement("div", { className: "master-sub-selected-name truncate" }, selectedSubstitute.nickname || selectedSubstitute.fullName || '-'),
+                                          React.createElement("div", { className: "master-sub-selected-meta truncate" }, `${selectedSubstitute.fullName || '-'} · ${selectedSubstitute.level || '-'} / ${selectedSubstitute.group || '-'}`)))
+                                      : React.createElement("button", { type: "button", onClick: () => openSubstitutePicker(entry), className: "master-sub-pick-empty mb-2" },
+                                          React.createElement("i", { className: "ri-search-eye-line" }),
+                                          React.createElement("span", null, "ค้นหา/เลือกคนแทนแบบโปรไฟล์"),
+                                          React.createElement("small", null, "เห็นรูป ชื่อ ห้อง ก่อนเลือก")),
+                                  React.createElement("div", { className: "mb-2 flex flex-wrap gap-2" },
+                                      React.createElement("button", { type: "button", onClick: () => openSubstitutePicker(entry), className: "master-sub-action-btn" }, selectedSubstitute ? 'เปลี่ยนคนแทน' : 'เปิดหน้าค้นหาโปรไฟล์'),
+                                      (record.substituteId || record.substituteName) ? React.createElement("button", { type: "button", onClick: () => setCheckRecordPatch(entry, { substituteId: '', substituteName: '' }), className: "master-sub-clear-btn" }, "ล้างคนแทน") : null),
+                                  React.createElement("select", { value: record.substituteId || '', onChange: e => {
+                                          const sid = e.target.value;
+                                          const s = sid ? studentMap.get(sid) : null;
+                                          setCheckRecordPatch(entry, { substituteId: sid, substituteName: s ? studentDutyName(s) : (record.substituteName || '') });
+                                      } },
+                                      React.createElement("option", { value: "" }, "-- เลือกคนมาแทนเวรนี้ --"),
+                                      activeStudents.filter(s => s.id !== entry.id).map(s => React.createElement("option", { key: s.id, value: s.id }, `${s.nickname || s.fullName || '-'} · ${s.fullName || '-'} · ${s.level || '-'} / ${s.group || '-'}`))),
+                                  React.createElement("input", { value: record.substituteId ? '' : (record.substituteName || ''), onChange: e => setCheckRecordPatch(entry, { substituteName: e.target.value, substituteId: '' }), placeholder: "หรือพิมพ์ชื่อคนแทนเอง ถ้าไม่มีในรายชื่อ", className: "mt-2" }),
+                                  React.createElement("div", { className: "master-check-issue-hint" }, "สถานะนี้ควรมีคนแทน เพื่อให้รู้ว่าเวรนี้ใครรับผิดชอบต่อ")),
+                              React.createElement("div", null,
+                                  React.createElement("div", { className: "master-check-issue-title" }, React.createElement("i", { className: "ri-sticky-note-fill" }), "หมายเหตุ"),
+                                  React.createElement("textarea", { value: record.note || '', onChange: e => setCheckRecordPatch(entry, { note: e.target.value }), placeholder: "เช่น ลาป่วย / แจ้งลากิจ / มาสาย 08:10 / โทรตามแล้ว / ให้เพื่อนทำแทน" })))));
                   }))) : (React.createElement("div", { className: "rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center" },
                       React.createElement("div", { className: "text-2xl font-black text-slate-950" }, "\u0E27\u0E31\u0E19\u0E19\u0E35\u0E49\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E21\u0E35\u0E23\u0E32\u0E22\u0E0A\u0E37\u0E48\u0E2D\u0E40\u0E27\u0E23\u0E43\u0E19\u0E15\u0E32\u0E23\u0E32\u0E07\u0E2B\u0E25\u0E31\u0E01"),
                       React.createElement("p", { className: "text-slate-500 font-bold mt-2" }, "\u0E43\u0E2B\u0E49\u0E01\u0E25\u0E31\u0E1A\u0E44\u0E1B\u0E17\u0E35\u0E48 \u201C\u0E15\u0E32\u0E23\u0E32\u0E07\u0E40\u0E27\u0E23\u0E2B\u0E25\u0E31\u0E01\u201D \u0E41\u0E25\u0E49\u0E27\u0E40\u0E25\u0E37\u0E2D\u0E01\u0E0A\u0E37\u0E48\u0E2D\u0E40\u0E14\u0E47\u0E01\u0E25\u0E07\u0E40\u0E27\u0E23\u0E01\u0E48\u0E2D\u0E19 \u0E2B\u0E23\u0E37\u0E2D\u0E01\u0E14 \u201C\u0E19\u0E33\u0E40\u0E02\u0E49\u0E32\u0E08\u0E32\u0E01\u0E15\u0E32\u0E23\u0E32\u0E07\u0E25\u0E48\u0E32\u0E2A\u0E38\u0E14\u201D"),
@@ -7848,6 +8102,7 @@
                                       s.level || '-',
                                       " / ",
                                       s.group || '-'))))) : React.createElement("div", { className: "text-center p-10 text-slate-500 font-bold" }, "\u0E44\u0E21\u0E48\u0E1E\u0E1A\u0E23\u0E32\u0E22\u0E0A\u0E37\u0E48\u0E2D\u0E17\u0E35\u0E48\u0E1E\u0E23\u0E49\u0E2D\u0E21\u0E40\u0E25\u0E37\u0E2D\u0E01\u0E43\u0E19\u0E27\u0E31\u0E19\u0E19\u0E35\u0E49"))))),
+              renderSubstitutePickerModal(),
               (React.createElement("div", { className: "master-duty-print-overlay hidden" },
                   React.createElement("section", { className: "master-print-page" },
                       React.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #1d4ed8', paddingBottom: 8, marginBottom: 8 } },
@@ -7881,6 +8136,265 @@
                                       React.createElement("span", null, p?.nickname || p?.fullName || '-')); }) : React.createElement("div", { style: { textAlign: 'center', color: '#94a3b8', fontWeight: 900 } }, "-"));
                               })))))))))));
       }
+      function LegacyDutyHistoryPage({ students, currentAcademicYear, yearsList, onBackToMaster }) {
+          const safeStudents = Array.isArray(students) ? students : [];
+          const safeCurrentYear = String(currentAcademicYear || thaiAcademicYearNow());
+          const [duties, setDuties] = useState([]);
+          const [loading, setLoading] = useState(true);
+          const [year, setYear] = useState(safeCurrentYear);
+          const [search, setSearch] = useState('');
+          const [selectedId, setSelectedId] = useState('');
+          const [advancedOpen, setAdvancedOpen] = useState(false);
+          const [savingMaster, setSavingMaster] = useState(false);
+          const [printDuties, setPrintDuties] = useState(null);
+          useEffect(() => {
+              const unsub = getDutyRef().onSnapshot(snapshot => {
+                  const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                  data.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+                  setDuties(data);
+                  setLoading(false);
+              }, err => {
+                  console.error('load legacy duty history failed', err);
+                  setLoading(false);
+                  alert('โหลดประวัติเวรเดิมไม่สำเร็จ: ' + String(err?.message || err));
+              });
+              return () => unsub();
+          }, []);
+          const studentMap = useMemo(() => new Map(safeStudents.map(s => [s.id, s])), [safeStudents]);
+          const yearOptions = useMemo(() => {
+              const values = new Set([safeCurrentYear, ...(Array.isArray(yearsList) ? yearsList : []), ...duties.map(d => d.academicYear).filter(Boolean)]);
+              return [...values].map(String).filter(Boolean).sort((a, b) => b.localeCompare(a));
+          }, [duties, yearsList, safeCurrentYear]);
+          const dutySearchText = (duty) => {
+              const roles = getDutyRoles(duty || {});
+              const roleSlots = normalizeRoleSlots(duty?.roleSlots || {}, roles);
+              const weekly = normalizeWeeklyAssignmentIds(duty || {}, roleSlots, roles);
+              const peopleText = [];
+              dutyDays.forEach(day => roles.forEach(role => {
+                  (weekly?.[day.key]?.[role.key] || []).filter(Boolean).forEach(item => {
+                      const id = typeof item === 'string' ? item : item?.id;
+                      const s = studentMap.get(id) || item || {};
+                      peopleText.push([s.nickname, s.fullName, s.studentId, s.group, s.level, id].filter(Boolean).join(' '));
+                  });
+              }));
+              return [duty.date, formatThaiWeekRange(duty.date), duty.academicYear, duty.note, dutyTableLabel(duty.scheduleType), ...peopleText].join(' ').toLowerCase();
+          };
+          const visibleDuties = useMemo(() => {
+              const q = String(search || '').trim().toLowerCase();
+              return duties.filter(duty => {
+                  const yearOk = year === 'all' || String(duty.academicYear || '') === String(year);
+                  const searchOk = !q || dutySearchText(duty).includes(q);
+                  return yearOk && searchOk;
+              });
+          }, [duties, year, search, studentMap]);
+          useEffect(() => {
+              if (visibleDuties.length && !visibleDuties.some(d => d.id === selectedId)) {
+                  setSelectedId(visibleDuties[0].id);
+              }
+              if (!visibleDuties.length && selectedId) {
+                  setSelectedId('');
+              }
+          }, [visibleDuties, selectedId]);
+          const selectedDuty = visibleDuties.find(d => d.id === selectedId) || visibleDuties[0] || null;
+          const selectedRoles = useMemo(() => getDutyRoles(selectedDuty || {}), [selectedDuty]);
+          const selectedRoleSlots = useMemo(() => normalizeRoleSlots(selectedDuty?.roleSlots || {}, selectedRoles), [selectedDuty, selectedRoles]);
+          const selectedWeekly = useMemo(() => selectedDuty ? normalizeWeeklyAssignmentIds(selectedDuty, selectedRoleSlots, selectedRoles) : {}, [selectedDuty, selectedRoleSlots, selectedRoles]);
+          const selectedAssigned = useMemo(() => selectedDuty ? countAssignedInWeekly(selectedWeekly, selectedRoles) : 0, [selectedDuty, selectedWeekly, selectedRoles]);
+          const selectedDuplicates = useMemo(() => selectedDuty ? duplicateStudentIdsInWeekly(selectedWeekly, selectedRoles) : [], [selectedDuty, selectedWeekly, selectedRoles]);
+          const latestDutyInYear = useMemo(() => visibleDuties[0] || null, [visibleDuties]);
+          const resolvePerson = (item) => {
+              const id = typeof item === 'string' ? item : item?.id;
+              return studentMap.get(id) || (item && typeof item === 'object' ? item : { id });
+          };
+          const personLabel = (person) => {
+              if (!person)
+                  return '-';
+              const nick = person.nickname || '';
+              const name = person.fullName || '';
+              const room = [person.level, person.group].filter(Boolean).join(' / ');
+              if (nick && room)
+                  return `${nick} · ${room}`;
+              if (nick)
+                  return nick;
+              if (name && room)
+                  return `${name} · ${room}`;
+              return name || person.studentId || person.id || '-';
+          };
+          const dutyWeekSummary = (duty) => {
+              const roles = getDutyRoles(duty || {});
+              const roleSlots = normalizeRoleSlots(duty?.roleSlots || {}, roles);
+              const weekly = normalizeWeeklyAssignmentIds(duty || {}, roleSlots, roles);
+              return {
+                  roles,
+                  assigned: countAssignedInWeekly(weekly, roles),
+                  duplicates: duplicateStudentIdsInWeekly(weekly, roles).length
+              };
+          };
+          const buildMasterSnapshotFromDuty = (duty, roles, roleSlots, weekly) => {
+              const snapshot = {};
+              dutyDays.forEach(day => {
+                  snapshot[day.key] = {};
+                  roles.forEach(role => {
+                      const ids = [...new Set((weekly?.[day.key]?.[role.key] || []).filter(Boolean).map(item => typeof item === 'string' ? item : item?.id).filter(Boolean))];
+                      snapshot[day.key][role.key] = ids.map(id => {
+                          const s = studentMap.get(id);
+                          return s ? { id: s.id, studentId: s.studentId || '', fullName: s.fullName || '', nickname: s.nickname || '', level: s.level || '', group: s.group || '', actualInterest: s.actualInterest || s.interest || '' } : { id };
+                      });
+                  });
+              });
+              return snapshot;
+          };
+          const importSelectedToMaster = async (duty = selectedDuty) => {
+              if (!duty)
+                  return alert('ยังไม่ได้เลือกตารางเวร');
+              const targetYear = String(duty.academicYear || year || safeCurrentYear);
+              if (!confirm(`นำ ${formatThaiWeekRange(duty.date)} ไปเป็น “ตารางเวรหลัก” ปี ${targetYear} ใช่ไหม?\n\nตารางหลักเดิมของปีนี้จะถูกแทนด้วยชุดนี้ แต่ประวัติเวรเดิมจะยังไม่ถูกลบ`))
+                  return;
+              setSavingMaster(true);
+              try {
+                  const roleDefs = normalizeDutyRoles(getDutyRoles(duty), duty.roleSlots || {});
+                  const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
+                  const weeklyAssignments = normalizeWeeklyAssignmentIds(duty, roleSlots, roleDefs);
+                  const payload = {
+                      academicYear: targetYear,
+                      effectiveFrom: getWeekStartDate(duty.date || todayFileDate()),
+                      scheduleType: 'MASTER',
+                      note: `นำเข้าจากประวัติเวรเดิม ${formatThaiWeekRange(duty.date)}`,
+                      roleDefs,
+                      roleSlots,
+                      weeklyAssignments: buildMasterSnapshotFromDuty(duty, roleDefs, roleSlots, weeklyAssignments),
+                      updatedAt: new Date().toISOString(),
+                      updatedBy: 'staff',
+                      importedFromLegacyDutyId: duty.id || '',
+                      importedFromLegacyDutyDate: duty.date || ''
+                  };
+                  await getMasterDutyRef().doc(targetYear).set(payload, { merge: true });
+                  try {
+                      await logSystemAction('import_legacy_duty_to_master', { academicYear: targetYear, dutyId: duty.id || '', date: duty.date || '' });
+                  }
+                  catch (logErr) {
+                      console.warn('legacy import log skipped', logErr);
+                  }
+                  alert('นำเข้าเป็นตารางเวรหลักเรียบร้อยแล้ว');
+                  if (typeof onBackToMaster === 'function')
+                      onBackToMaster();
+              }
+              catch (err) {
+                  alert('นำเข้าเป็นตารางหลักไม่สำเร็จ: ' + String(err?.message || err));
+              }
+              finally {
+                  setSavingMaster(false);
+              }
+          };
+          const exportSelectedCSV = () => {
+              if (!selectedDuty)
+                  return alert('ยังไม่ได้เลือกตารางเวร');
+              downloadFile(`MDEC_Legacy_Duty_${selectedDuty.academicYear || year}_${selectedDuty.date || todayFileDate()}.csv`, dutiesToCSV([selectedDuty]), 'text/csv;charset=utf-8');
+          };
+          if (advancedOpen) {
+              return React.createElement("div", { className: "space-y-4" },
+                  React.createElement("div", { className: "legacy-easy-head no-print" },
+                      React.createElement("div", null,
+                          React.createElement("div", { className: "legacy-kicker" }, "ADVANCED LEGACY MODE"),
+                          React.createElement("h2", null, "เครื่องมือรายสัปดาห์เดิม"),
+                          React.createElement("p", null, "ใช้เฉพาะตอนจำเป็นต้องแก้ข้อมูลเก่าจริง ๆ เท่านั้น ถ้าดูย้อนหลังหรือพิมพ์ ใช้หน้าแบบง่ายจะชัดกว่า")),
+                      React.createElement("button", { type: "button", onClick: () => setAdvancedOpen(false), className: "legacy-primary-btn" },
+                          React.createElement("i", { className: "ri-arrow-left-line mr-2" }), "กลับหน้าแบบง่าย")),
+                  React.createElement(DutySchedulePage, { students: students, currentAcademicYear: currentAcademicYear, yearsList: yearsList }));
+          }
+          const statCards = [
+              ['ประวัติที่พบ', `${visibleDuties.length} สัปดาห์`, 'ri-folder-history-fill'],
+              ['สัปดาห์ที่เลือก', selectedDuty ? formatThaiWeekRange(selectedDuty.date).replace('สัปดาห์ ', '') : '-', 'ri-calendar-event-fill'],
+              ['รายชื่อในตาราง', `${selectedAssigned} ช่อง`, 'ri-team-fill'],
+              ['ตำแหน่งเวร', `${selectedRoles.length} ตำแหน่ง`, 'ri-user-settings-fill']
+          ];
+          return React.createElement("div", { className: "legacy-easy-shell duty-contrast-page" },
+              React.createElement("section", { className: "legacy-easy-head no-print" },
+                  React.createElement("div", null,
+                      React.createElement("div", { className: "legacy-kicker" }, "LEGACY WEEKLY DUTY · EASY MODE"),
+                      React.createElement("h2", null, "ประวัติเวรเดิม / ระบบรายสัปดาห์"),
+                      React.createElement("p", null, "หน้านี้ทำไว้สำหรับดูย้อนหลัง พิมพ์ ส่งออก หรือนำตารางเก่ากลับไปเป็นตารางหลัก ไม่ต้องจัดเวรรายสัปดาห์ใหม่แล้ว")),
+                  React.createElement("div", { className: "legacy-head-actions" },
+                      React.createElement("button", { type: "button", onClick: () => typeof onBackToMaster === 'function' && onBackToMaster(), className: "legacy-primary-btn" },
+                          React.createElement("i", { className: "ri-arrow-left-line mr-2" }), "กลับตารางหลัก"),
+                      React.createElement("button", { type: "button", onClick: () => setAdvancedOpen(true), className: "legacy-secondary-btn" },
+                          React.createElement("i", { className: "ri-tools-fill mr-2" }), "เครื่องมือเก่า"))),
+              React.createElement("section", { className: "legacy-howto no-print" },
+                  [['1', 'เลือกปี / ค้นหา', 'ใช้ช่องซ้ายหาเวรเก่าแบบเร็ว'], ['2', 'กดเลือกสัปดาห์', 'ด้านขวาจะโชว์ตารางวันจันทร์–เสาร์'], ['3', 'เลือกทำงานต่อ', 'พิมพ์ / CSV / นำเข้าเป็นตารางหลัก']].map(([num, title, desc]) => React.createElement("div", { key: num, className: "legacy-step" },
+                      React.createElement("b", null, num),
+                      React.createElement("span", null, React.createElement("strong", null, title), React.createElement("small", null, desc))))),
+              React.createElement("section", { className: "legacy-stats no-print" }, statCards.map(([label, value, icon]) => React.createElement("div", { key: label, className: "legacy-stat" },
+                  React.createElement("i", { className: icon }),
+                  React.createElement("span", null, label),
+                  React.createElement("b", null, value)))),
+              React.createElement("section", { className: "legacy-main-grid" },
+                  React.createElement("aside", { className: "legacy-list-panel no-print" },
+                      React.createElement("div", { className: "legacy-filter-card" },
+                          React.createElement("label", null, "ปีการศึกษา"),
+                          React.createElement("select", { value: year, onChange: e => setYear(e.target.value) },
+                              React.createElement("option", { value: "all" }, "ทุกปี"),
+                              yearOptions.map(y => React.createElement("option", { key: y, value: y }, `ปี ${y}`))),
+                          React.createElement("label", null, "ค้นหา"),
+                          React.createElement("div", { className: "legacy-search" },
+                              React.createElement("i", { className: "ri-search-line" }),
+                              React.createElement("input", { value: search, onChange: e => setSearch(e.target.value), placeholder: "ค้นหาสัปดาห์ / ชื่อ / ห้อง / หมายเหตุ" })),
+                          React.createElement("button", { type: "button", onClick: () => { setYear(safeCurrentYear); setSearch(''); }, className: "legacy-clear-btn" }, "ล้างตัวกรอง")),
+                      React.createElement("div", { className: "legacy-week-list" }, loading ? React.createElement("div", { className: "legacy-empty" }, "กำลังโหลดประวัติเวร...") : visibleDuties.length ? visibleDuties.map(duty => {
+                          const summary = dutyWeekSummary(duty);
+                          const active = selectedDuty?.id === duty.id;
+                          return React.createElement("button", { key: duty.id, type: "button", onClick: () => setSelectedId(duty.id), className: `legacy-week-item ${active ? 'active' : ''}` },
+                              React.createElement("div", { className: "legacy-week-top" },
+                                  React.createElement("b", null, formatThaiWeekRange(duty.date)),
+                                  duty.locked ? React.createElement("span", { className: "legacy-pill lock" }, "ล็อก") : React.createElement("span", { className: "legacy-pill" }, dutyTableLabel(duty.scheduleType))),
+                              React.createElement("div", { className: "legacy-week-meta" },
+                                  React.createElement("span", null, `ปี ${duty.academicYear || '-'}`),
+                                  React.createElement("span", null, `${summary.assigned} ช่อง`),
+                                  summary.duplicates ? React.createElement("span", { className: "warn" }, `ซ้ำ ${summary.duplicates}`) : null),
+                              duty.note ? React.createElement("small", null, duty.note) : null);
+                      }) : React.createElement("div", { className: "legacy-empty" }, "ไม่พบประวัติเวรตามตัวกรองนี้"))),
+                  React.createElement("main", { className: "legacy-detail-panel" }, selectedDuty ? React.createElement(React.Fragment, null,
+                      React.createElement("div", { className: "legacy-detail-head no-print" },
+                          React.createElement("div", null,
+                              React.createElement("div", { className: "legacy-kicker dark" }, "SELECTED WEEK"),
+                              React.createElement("h3", null, formatThaiWeekRange(selectedDuty.date)),
+                              React.createElement("p", null, `ปีการศึกษา ${selectedDuty.academicYear || '-'} · ${dutyTableLabel(selectedDuty.scheduleType)}${selectedDuty.note ? ' · ' + selectedDuty.note : ''}`),
+                              selectedDuplicates.length ? React.createElement("div", { className: "legacy-warning" }, React.createElement("i", { className: "ri-error-warning-fill mr-1" }), `มีรายชื่อซ้ำ ${selectedDuplicates.length} คนในสัปดาห์นี้`) : null),
+                          React.createElement("div", { className: "legacy-actions" },
+                              React.createElement("button", { type: "button", onClick: () => importSelectedToMaster(selectedDuty), disabled: savingMaster, className: "legacy-import-btn" },
+                                  React.createElement("i", { className: "ri-download-cloud-2-fill mr-2" }), savingMaster ? 'กำลังนำเข้า...' : 'นำเข้าเป็นตารางหลัก'),
+                              React.createElement("button", { type: "button", onClick: () => setPrintDuties([selectedDuty]), className: "legacy-secondary-btn light" },
+                                  React.createElement("i", { className: "ri-printer-fill mr-2" }), "พิมพ์ / PDF"),
+                              React.createElement("button", { type: "button", onClick: exportSelectedCSV, className: "legacy-secondary-btn light" },
+                                  React.createElement("i", { className: "ri-file-excel-2-fill mr-2" }), "CSV"))),
+                      React.createElement("div", { className: "legacy-duty-board" }, dutyDays.map(day => React.createElement("section", { key: day.key, className: "legacy-day-card" },
+                          React.createElement("header", null,
+                              React.createElement("b", null, day.label),
+                              React.createElement("span", null, formatThaiDate(getDutyDayDate(selectedDuty.date, day.key)))),
+                          selectedRoles.map(role => {
+                              const ids = (selectedWeekly?.[day.key]?.[role.key] || []).filter(Boolean);
+                              return React.createElement("div", { key: `${day.key}-${role.key}`, className: "legacy-role-row" },
+                                  React.createElement("div", { className: "legacy-role-title" },
+                                      React.createElement("span", null, role.shortTitle || role.title || '-'),
+                                      React.createElement("small", null, `${ids.length}/${getRoleSlotCount(role, selectedRoleSlots)} คน`)),
+                                  ids.length ? React.createElement("div", { className: "legacy-people" }, ids.map((item, idx) => {
+                                      const person = resolvePerson(item);
+                                      return React.createElement("div", { key: `${day.key}-${role.key}-${idx}`, className: "legacy-person" },
+                                          person?.photo ? React.createElement("img", { src: person.photo, onError: e => { e.currentTarget.style.display = 'none'; } }) : React.createElement("span", null, String(person?.nickname || person?.fullName || person?.id || '?').trim().charAt(0) || '?'),
+                                          React.createElement("em", null, personLabel(person)));
+                                  })) : React.createElement("div", { className: "legacy-no-person" }, "ยังไม่มีชื่อ"));
+                          }))))) : React.createElement("div", { className: "legacy-empty large" },
+                              React.createElement("i", { className: "ri-folder-warning-line" }),
+                              React.createElement("b", null, "ยังไม่ได้เลือกตารางเวร"),
+                              React.createElement("p", null, "เลือกสัปดาห์จากรายการด้านซ้ายก่อน")))),
+              latestDutyInYear && React.createElement("section", { className: "legacy-quick-import no-print" },
+                  React.createElement("div", null,
+                      React.createElement("b", null, "ทางลัด"),
+                      React.createElement("span", null, `ตารางล่าสุดที่พบคือ ${formatThaiWeekRange(latestDutyInYear.date)} ถ้าจะใช้เป็นฐานของตารางหลัก กดปุ่มนี้ได้เลย`)),
+                  React.createElement("button", { type: "button", onClick: () => importSelectedToMaster(latestDutyInYear), disabled: savingMaster },
+                      React.createElement("i", { className: "ri-flashlight-fill mr-2" }), "นำเข้าตารางล่าสุดเป็นตารางหลัก")),
+              printDuties && ReactDOM.createPortal(React.createElement(PrintDutySchedule, { duties: printDuties, yearText: year === 'all' ? 'ทุกปี' : year, students: students, onClose: () => setPrintDuties(null) }), document.body));
+      }
+
       function DutySchedulePage({ students, currentAcademicYear, yearsList }) {
           const safeCurrentYear = String(currentAcademicYear || thaiAcademicYearNow());
           const [duties, setDuties] = useState([]);
@@ -8501,7 +9015,7 @@
                               "\u0E15\u0E31\u0E49\u0E07\u0E04\u0E48\u0E32\u0E40\u0E27\u0E23"))),
                   React.createElement("div", { className: "grid md:grid-cols-3 gap-3" }, [
                       ['plan', 'จัดเวร', 'เลือกสัปดาห์ เลือกวัน แล้วใส่ชื่อ', 'ri-user-add-fill'],
-                      ['check', 'เช็คเวร', 'บันทึกเฉพาะ สาย ขาด ลา ทำแทน', 'ri-user-follow-fill'],
+                      ['check', 'เช็คเวร', 'บันทึกสาย/ขาด/ลา พร้อมคนแทน', 'ri-user-follow-fill'],
                       ['history', 'ย้อนหลัง / พิมพ์', 'ค้นหา แก้ไข คัดลอก PDF CSV', 'ri-folder-history-fill']
                   ].map(([key, title, desc, icon]) => (React.createElement("button", { key: key, type: "button", onClick: () => setDutyWorkspaceMode(key), className: `duty-workspace-tab ${dutyWorkspaceMode === key ? 'is-active' : ''}` },
                       React.createElement("i", { className: `${icon} text-xl` }),
@@ -10560,7 +11074,7 @@
           const steps = [
               ['เริ่มวันด้วยหน้าแรก', 'เปิดหน้าแรกเพื่อดูเวรวันนี้ งานค้าง ตรวจสุขภาพระบบ และปุ่มลัดที่ใช้บ่อย'],
               ['เช้าวันนี้', 'ใช้ดูรายชื่อเวรของวันนี้ ระบบถือว่ามาปกติอัตโนมัติ ไม่ต้องกดทุกคน'],
-              ['บันทึกปัญหาเวร', 'กดเฉพาะกรณี สาย / ขาด / ลา / ไม่พบตัว / ทำแทน เพื่อลดงานตอนเช้า'],
+              ['บันทึกปัญหาเวร', 'กด สาย / ขาด / ลา / ไม่พบตัว แล้วเลือกคนแทนกับหมายเหตุได้ทันที'],
               ['เพิ่มสมาชิกใหม่', 'คีย์ข้อมูลจากใบสมัครกระดาษ เลือกปีการศึกษาและฝ่ายที่สนใจให้ถูกต้อง'],
               ['ถ่ายรูปหรืออัปโหลดรูปสมาชิก', 'เก็บรูปโปรไฟล์ให้ครบ เพื่อให้ตารางเวรและบอร์ดสภาดูง่าย'],
               ['กิจกรรมชมรม', 'บันทึกกิจกรรม เช็คการเข้าร่วม และเก็บลิงก์อัลบั้ม/ภาพปก'],
