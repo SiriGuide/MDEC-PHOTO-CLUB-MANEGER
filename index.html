@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v74.1.2 Legacy Duty Fix</title>
+  <title>MDEC Photo Club Center v81.0 Restore Table Legacy Easy</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -3748,8 +3748,8 @@
     .master-sub-selected-initial { display:flex; align-items:center; justify-content:center; background:#ffedd5; color:#c2410c; font-size:22px; font-weight:950; }
     .master-sub-selected-name { font-size:20px; line-height:1.08; font-weight:950; color:#0f172a; }
     .master-sub-selected-meta { margin-top:3px; font-size:12px; font-weight:850; color:#64748b; }
-    .master-sub-pick-empty { width:100%; min-height:86px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:3px; border:2px dashed #fdba74; background:#fffaf4; border-radius:18px; color:#c2410c; font-weight:950; text-align:center; }
-    .master-sub-pick-empty i { font-size:28px; line-height:1; }
+    .master-sub-pick-empty { width:100%; min-height:92px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:3px; border:2px dashed #fdba74; background:#fffaf4; border-radius:18px; color:#c2410c; font-weight:950; text-align:center; }
+    .master-sub-pick-empty i { font-size:30px; line-height:1; }
     .master-sub-action-btn, .master-sub-clear-btn { border-radius:14px; padding:9px 12px; font-size:12px; font-weight:950; border:1px solid transparent; }
     .master-sub-action-btn { background:#ea580c; color:#fff; }
     .master-sub-clear-btn { background:#fff; color:#be123c; border-color:#fecdd3; }
@@ -5393,7 +5393,7 @@
           ];
           const todayTasks = [
               { title: 'เปิดโหมดเช้าวันนี้', desc: 'ดูเวรของวันนี้และบันทึกเฉพาะปัญหา', icon: 'ri-sun-foggy-fill', action: 'today', primary: true },
-              { title: 'บันทึกปัญหาเวร', desc: 'สาย / ขาด / ลา / ไม่พบตัว พร้อมเลือกคนแทน', icon: 'ri-user-follow-fill', action: 'duty' },
+              { title: 'บันทึกปัญหาเวร', desc: 'สาย / ขาด / ลา / ไม่พบตัว / ทำแทน', icon: 'ri-user-follow-fill', action: 'duty' },
               { title: 'เพิ่มกิจกรรมชมรม', desc: 'บันทึกงานที่ชมรมช่วยงานวันนี้', icon: 'ri-calendar-event-fill', action: 'activities' },
               { title: 'สำรองข้อมูล', desc: 'ตรวจความจุฐานข้อมูลและ Backup ก่อนล้างปี', icon: 'ri-database-2-fill', action: 'year' }
           ];
@@ -7766,35 +7766,6 @@
                   alert('เลือกคนแทนเวรไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
               }
           };
-          const renderSubstitutePickerModal = () => {
-              if (!subPicker.open)
-                  return null;
-              return React.createElement("div", { className: "fixed inset-0 z-[75] bg-slate-950/75 backdrop-blur-md p-4 no-print flex items-center justify-center" },
-                  React.createElement("div", { className: "bg-white rounded-[2rem] w-full max-w-5xl max-h-[88vh] overflow-hidden soft-shadow flex flex-col" },
-                      React.createElement("div", { className: "p-5 border-b border-slate-200 flex items-center justify-between gap-3" },
-                          React.createElement("div", null,
-                              React.createElement("h3", { className: "text-2xl font-black text-slate-950" }, "เลือกคนแทนเวร"),
-                              React.createElement("p", { className: "text-slate-500 font-bold" }, subPicker.entry?.roleTitle ? `ตำแหน่งเวร: ${subPicker.entry.roleTitle}` : 'ค้นหาจากชื่อเล่น ชื่อจริง ห้อง หรือรหัสนักศึกษา')),
-                          React.createElement("button", { onClick: closeSubstitutePicker, className: "w-11 h-11 rounded-2xl hover:bg-slate-100 font-black" }, "✕")),
-                      React.createElement("div", { className: "p-5 border-b border-slate-200 space-y-3" },
-                          React.createElement("input", { autoFocus: true, value: subPicker.query, onChange: e => setSubPicker(prev => ({ ...prev, query: e.target.value })), placeholder: "ค้นหาชื่อเล่น / ชื่อจริง / ห้อง / รหัสนักศึกษา / สาขา", className: "w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900 bg-white" }),
-                          React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-2 text-sm font-bold text-slate-500" },
-                              React.createElement("span", null, `พบ ${subPickerResults.length} คนที่เลือกได้`),
-                              React.createElement("button", { type: "button", onClick: () => chooseSubstituteStudent(''), className: "px-3 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-100 font-black" }, "ล้างคนแทนเวร"))),
-                      React.createElement("div", { className: "p-5 overflow-y-auto bg-slate-50" },
-                          subPickerResults.length ? React.createElement("div", { className: "master-sub-picker-grid" }, subPickerResults.map(s => React.createElement("button", { key: s.id, type: "button", onClick: () => chooseSubstituteStudent(s.id), className: "master-sub-profile-card" },
-                              s.photo ? React.createElement("img", { src: s.photo, onError: e => { e.currentTarget.style.display = 'none'; }, className: "master-sub-profile-photo" }) : React.createElement("div", { className: "master-sub-profile-initial" }, masterInitialsOf(s)),
-                              React.createElement("div", { className: "min-w-0" },
-                                  React.createElement("div", { className: "master-sub-profile-nick truncate" }, s.nickname || s.fullName || '-'),
-                                  React.createElement("div", { className: "master-sub-profile-name truncate" }, s.fullName || '-'),
-                                  React.createElement("div", { className: "master-sub-profile-tags" },
-                                      React.createElement("span", null, `${s.level || '-'} / ${s.group || '-'}`),
-                                      (s.studentId || s.major) ? React.createElement("span", null, s.studentId || s.major) : null,
-                                      (s.actualInterest || s.interest) ? React.createElement("span", null, s.actualInterest || s.interest) : null)),
-                              React.createElement("span", { className: "master-sub-profile-choose" }, "เลือกคนนี้")))) : React.createElement("div", { className: "rounded-3xl bg-white border border-dashed border-slate-300 p-10 text-center" },
-                              React.createElement("div", { className: "text-xl font-black text-slate-950" }, "ไม่พบรายชื่อ"),
-                              React.createElement("p", { className: "text-slate-500 font-bold mt-2" }, "ลองค้นหาด้วยชื่อเล่น ห้อง หรือรหัสนักศึกษาอีกครั้ง")))));
-          };
           const checkRecordOf = (entry) => {
               const key = checkRecordKeyOf(entry);
               return checkRecords?.[key] || {};
@@ -8034,25 +8005,19 @@
                           needsReplacement && React.createElement("div", { className: "master-check-issue" },
                               React.createElement("div", null,
                                   React.createElement("div", { className: "master-check-issue-title" }, React.createElement("i", { className: "ri-user-received-2-fill" }), "เลือกคนแทนเวร"),
-                                  selectedSubstitute ? React.createElement("div", { className: "master-sub-selected-card mb-2" },
+                                  selectedSubstitute ? React.createElement("div", { className: "master-sub-selected-card" },
                                       selectedSubstitute.photo ? React.createElement("img", { src: selectedSubstitute.photo, onError: e => { e.currentTarget.style.display = 'none'; } }) : React.createElement("div", { className: "master-sub-selected-initial" }, masterInitialsOf(selectedSubstitute)),
                                       React.createElement("div", { className: "min-w-0 flex-1" },
                                           React.createElement("div", { className: "master-sub-selected-name truncate" }, selectedSubstitute.nickname || selectedSubstitute.fullName || '-'),
-                                          React.createElement("div", { className: "master-sub-selected-meta truncate" }, `${selectedSubstitute.fullName || '-'} · ${selectedSubstitute.level || '-'} / ${selectedSubstitute.group || '-'}`)))
-                                      : React.createElement("button", { type: "button", onClick: () => openSubstitutePicker(entry), className: "master-sub-pick-empty mb-2" },
+                                          React.createElement("div", { className: "master-sub-selected-meta truncate" }, `${selectedSubstitute.fullName || '-'} · ${selectedSubstitute.level || '-'} / ${selectedSubstitute.group || '-'}`),
+                                          React.createElement("div", { className: "master-sub-selected-meta truncate" }, selectedSubstitute.studentId || selectedSubstitute.major || selectedSubstitute.actualInterest || 'สมาชิกชมรม')))
+                                      : React.createElement("button", { type: "button", onClick: () => openSubstitutePicker(entry), className: "master-sub-pick-empty" },
                                           React.createElement("i", { className: "ri-search-eye-line" }),
-                                          React.createElement("span", null, "ค้นหา/เลือกคนแทนแบบโปรไฟล์"),
-                                          React.createElement("small", null, "เห็นรูป ชื่อ ห้อง ก่อนเลือก")),
-                                  React.createElement("div", { className: "mb-2 flex flex-wrap gap-2" },
-                                      React.createElement("button", { type: "button", onClick: () => openSubstitutePicker(entry), className: "master-sub-action-btn" }, selectedSubstitute ? 'เปลี่ยนคนแทน' : 'เปิดหน้าค้นหาโปรไฟล์'),
+                                          React.createElement("span", null, "กดเพื่อค้นหาและเลือกคนแทนเวร"),
+                                          React.createElement("small", null, "เห็นรูปโปรไฟล์ ชื่อ ห้อง ก่อนเลือก")),
+                                  React.createElement("div", { className: "mt-2 flex flex-wrap gap-2" },
+                                      React.createElement("button", { type: "button", onClick: () => openSubstitutePicker(entry), className: "master-sub-action-btn" }, selectedSubstitute ? 'เปลี่ยนคนแทน' : 'ค้นหา/เลือกคนแทน'),
                                       (record.substituteId || record.substituteName) ? React.createElement("button", { type: "button", onClick: () => setCheckRecordPatch(entry, { substituteId: '', substituteName: '' }), className: "master-sub-clear-btn" }, "ล้างคนแทน") : null),
-                                  React.createElement("select", { value: record.substituteId || '', onChange: e => {
-                                          const sid = e.target.value;
-                                          const s = sid ? studentMap.get(sid) : null;
-                                          setCheckRecordPatch(entry, { substituteId: sid, substituteName: s ? studentDutyName(s) : (record.substituteName || '') });
-                                      } },
-                                      React.createElement("option", { value: "" }, "-- เลือกคนมาแทนเวรนี้ --"),
-                                      activeStudents.filter(s => s.id !== entry.id).map(s => React.createElement("option", { key: s.id, value: s.id }, `${s.nickname || s.fullName || '-'} · ${s.fullName || '-'} · ${s.level || '-'} / ${s.group || '-'}`))),
                                   React.createElement("input", { value: record.substituteId ? '' : (record.substituteName || ''), onChange: e => setCheckRecordPatch(entry, { substituteName: e.target.value, substituteId: '' }), placeholder: "หรือพิมพ์ชื่อคนแทนเอง ถ้าไม่มีในรายชื่อ", className: "mt-2" }),
                                   React.createElement("div", { className: "master-check-issue-hint" }, "สถานะนี้ควรมีคนแทน เพื่อให้รู้ว่าเวรนี้ใครรับผิดชอบต่อ")),
                               React.createElement("div", null,
@@ -8102,7 +8067,31 @@
                                       s.level || '-',
                                       " / ",
                                       s.group || '-'))))) : React.createElement("div", { className: "text-center p-10 text-slate-500 font-bold" }, "\u0E44\u0E21\u0E48\u0E1E\u0E1A\u0E23\u0E32\u0E22\u0E0A\u0E37\u0E48\u0E2D\u0E17\u0E35\u0E48\u0E1E\u0E23\u0E49\u0E2D\u0E21\u0E40\u0E25\u0E37\u0E2D\u0E01\u0E43\u0E19\u0E27\u0E31\u0E19\u0E19\u0E35\u0E49"))))),
-              renderSubstitutePickerModal(),
+              subPicker.open && (React.createElement("div", { className: "fixed inset-0 z-[75] bg-slate-950/75 backdrop-blur-md p-4 no-print flex items-center justify-center" },
+                  React.createElement("div", { className: "bg-white rounded-[2rem] w-full max-w-5xl max-h-[88vh] overflow-hidden soft-shadow flex flex-col" },
+                      React.createElement("div", { className: "p-5 border-b border-slate-200 flex items-center justify-between gap-3" },
+                          React.createElement("div", null,
+                              React.createElement("h3", { className: "text-2xl font-black text-slate-950" }, "เลือกคนแทนเวร"),
+                              React.createElement("p", { className: "text-slate-500 font-bold" }, subPicker.entry?.roleTitle ? `ตำแหน่งเวร: ${subPicker.entry.roleTitle}` : 'ค้นหาจากชื่อเล่น ชื่อจริง ห้อง หรือรหัสนักศึกษา')),
+                          React.createElement("button", { onClick: closeSubstitutePicker, className: "w-11 h-11 rounded-2xl hover:bg-slate-100 font-black" }, "✕")),
+                      React.createElement("div", { className: "p-5 border-b border-slate-200 space-y-3" },
+                          React.createElement("input", { autoFocus: true, value: subPicker.query, onChange: e => setSubPicker(prev => ({ ...prev, query: e.target.value })), placeholder: "ค้นหาชื่อเล่น / ชื่อจริง / ห้อง / รหัสนักศึกษา / สาขา", className: "w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900 bg-white" }),
+                          React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-2 text-sm font-bold text-slate-500" },
+                              React.createElement("span", null, `พบ ${subPickerResults.length} คนที่เลือกได้`),
+                              React.createElement("button", { type: "button", onClick: () => chooseSubstituteStudent(''), className: "px-3 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-100 font-black" }, "ล้างคนแทนเวร"))),
+                      React.createElement("div", { className: "p-5 overflow-y-auto bg-slate-50" },
+                          subPickerResults.length ? React.createElement("div", { className: "master-sub-picker-grid" }, subPickerResults.map(s => React.createElement("button", { key: s.id, type: "button", onClick: () => chooseSubstituteStudent(s.id), className: "master-sub-profile-card" },
+                              s.photo ? React.createElement("img", { src: s.photo, onError: e => { e.currentTarget.style.display = 'none'; }, className: "master-sub-profile-photo" }) : React.createElement("div", { className: "master-sub-profile-initial" }, masterInitialsOf(s)),
+                              React.createElement("div", { className: "min-w-0" },
+                                  React.createElement("div", { className: "master-sub-profile-nick truncate" }, s.nickname || s.fullName || '-'),
+                                  React.createElement("div", { className: "master-sub-profile-name truncate" }, s.fullName || '-'),
+                                  React.createElement("div", { className: "master-sub-profile-tags" },
+                                      React.createElement("span", null, `${s.level || '-'} / ${s.group || '-'}`),
+                                      (s.studentId || s.major) ? React.createElement("span", null, s.studentId || s.major) : null,
+                                      (s.actualInterest || s.interest) ? React.createElement("span", null, s.actualInterest || s.interest) : null)),
+                              React.createElement("span", { className: "master-sub-profile-choose" }, "เลือกคนนี้")))) : React.createElement("div", { className: "rounded-3xl bg-white border border-dashed border-slate-300 p-10 text-center" },
+                              React.createElement("div", { className: "text-xl font-black text-slate-950" }, "ไม่พบรายชื่อ"),
+                              React.createElement("p", { className: "text-slate-500 font-bold mt-2" }, "ลองค้นหาด้วยชื่อเล่น ห้อง หรือรหัสนักศึกษาอีกครั้ง")))))),
               (React.createElement("div", { className: "master-duty-print-overlay hidden" },
                   React.createElement("section", { className: "master-print-page" },
                       React.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #1d4ed8', paddingBottom: 8, marginBottom: 8 } },
@@ -8137,105 +8126,155 @@
                               })))))))))));
       }
       function LegacyDutyHistoryPage({ students, currentAcademicYear, yearsList, onBackToMaster }) {
+          const E = React.createElement;
           const safeStudents = Array.isArray(students) ? students : [];
           const safeCurrentYear = String(currentAcademicYear || thaiAcademicYearNow());
           const [duties, setDuties] = useState([]);
           const [loading, setLoading] = useState(true);
-          const [year, setYear] = useState(safeCurrentYear);
+          const [loadError, setLoadError] = useState('');
+          const [year, setYear] = useState('all');
           const [search, setSearch] = useState('');
           const [selectedId, setSelectedId] = useState('');
-          const [advancedOpen, setAdvancedOpen] = useState(false);
           const [savingMaster, setSavingMaster] = useState(false);
           const [printDuties, setPrintDuties] = useState(null);
-          useEffect(() => {
-              const unsub = getDutyRef().onSnapshot(snapshot => {
-                  const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                  data.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
-                  setDuties(data);
-                  setLoading(false);
-              }, err => {
-                  console.error('load legacy duty history failed', err);
-                  setLoading(false);
-                  alert('โหลดประวัติเวรเดิมไม่สำเร็จ: ' + String(err?.message || err));
-              });
-              return () => unsub();
-          }, []);
           const studentMap = useMemo(() => new Map(safeStudents.map(s => [s.id, s])), [safeStudents]);
+
+          useEffect(() => {
+              let unsub = null;
+              let cancelled = false;
+              try {
+                  if (typeof getDutyRef !== 'function') throw new Error('ไม่พบตัวเชื่อมฐานข้อมูลประวัติเวรเดิม');
+                  unsub = getDutyRef().onSnapshot(snapshot => {
+                      if (cancelled) return;
+                      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                      data.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+                      setDuties(data);
+                      setLoadError('');
+                      setLoading(false);
+                  }, err => {
+                      console.error('load legacy duty history failed', err);
+                      if (cancelled) return;
+                      setLoadError(String(err?.message || err || 'โหลดข้อมูลไม่สำเร็จ'));
+                      setLoading(false);
+                  });
+              }
+              catch (err) {
+                  console.error('open legacy duty page failed', err);
+                  if (!cancelled) {
+                      setLoadError(String(err?.message || err || 'เปิดหน้าไม่สำเร็จ'));
+                      setLoading(false);
+                  }
+              }
+              return () => {
+                  cancelled = true;
+                  try { if (typeof unsub === 'function') unsub(); } catch (err) { console.warn('legacy unsubscribe skipped', err); }
+              };
+          }, []);
+
           const yearOptions = useMemo(() => {
-              const values = new Set([safeCurrentYear, ...(Array.isArray(yearsList) ? yearsList : []), ...duties.map(d => d.academicYear).filter(Boolean)]);
+              const values = new Set([safeCurrentYear, ...(Array.isArray(yearsList) ? yearsList : []), ...duties.map(d => d?.academicYear).filter(Boolean)]);
               return [...values].map(String).filter(Boolean).sort((a, b) => b.localeCompare(a));
           }, [duties, yearsList, safeCurrentYear]);
+
+          const readDutyData = (duty) => {
+              try {
+                  const roles = typeof getDutyRoles === 'function' ? getDutyRoles(duty || {}) : [];
+                  const safeRoles = Array.isArray(roles) && roles.length ? roles : (typeof defaultDutyRoleDefs === 'function' ? defaultDutyRoleDefs() : []);
+                  const roleSlots = typeof normalizeRoleSlots === 'function' ? normalizeRoleSlots(duty?.roleSlots || {}, safeRoles) : {};
+                  const weekly = typeof normalizeWeeklyAssignmentIds === 'function'
+                      ? (normalizeWeeklyAssignmentIds(duty || {}, roleSlots, safeRoles) || {})
+                      : (duty?.weeklyAssignments || duty?.weekly || duty?.assignments || {});
+                  return { roles: safeRoles, roleSlots, weekly };
+              }
+              catch (err) {
+                  console.warn('legacy duty normalize failed', err, duty);
+                  return { roles: [], roleSlots: {}, weekly: duty?.weeklyAssignments || duty?.weekly || {} };
+              }
+          };
+          const itemId = (item) => typeof item === 'string' ? item : (item?.id || item?.studentId || '');
+          const resolvePerson = (item) => {
+              const id = itemId(item);
+              return studentMap.get(id) || (item && typeof item === 'object' ? item : { id });
+          };
+          const initialOf = (person) => {
+              try { return masterInitialsOf(person || {}); }
+              catch (_) { return String(person?.nickname || person?.fullName || person?.id || '?').slice(0, 1) || '?'; }
+          };
+          const personLabel = (person) => {
+              if (!person) return '-';
+              const nick = person.nickname || '';
+              const name = person.fullName || '';
+              const room = [person.level, person.group].filter(Boolean).join(' / ');
+              if (nick && room) return `${nick} · ${room}`;
+              if (nick) return nick;
+              if (name && room) return `${name} · ${room}`;
+              return name || person.studentId || person.id || '-';
+          };
+          const safeWeekRange = (date) => {
+              try { return formatThaiWeekRange(date); }
+              catch (_) { return date ? `สัปดาห์ ${date}` : 'ไม่ระบุสัปดาห์'; }
+          };
+          const safeThaiDate = (date) => {
+              try { return formatThaiDate(date); }
+              catch (_) { return date || '-'; }
+          };
+          const countAssigned = (duty) => {
+              try {
+                  const { roles, weekly } = readDutyData(duty || {});
+                  if (typeof countAssignedInWeekly === 'function') return countAssignedInWeekly(weekly, roles);
+                  let n = 0;
+                  dutyDays.forEach(day => roles.forEach(role => { n += ((weekly?.[day.key]?.[role.key] || []).filter(Boolean).length); }));
+                  return n;
+              }
+              catch (_) { return 0; }
+          };
+          const countDuplicates = (duty) => {
+              try {
+                  const { roles, weekly } = readDutyData(duty || {});
+                  if (typeof duplicateStudentIdsInWeekly === 'function') return duplicateStudentIdsInWeekly(weekly, roles).length;
+              }
+              catch (_) {}
+              return 0;
+          };
           const dutySearchText = (duty) => {
-              const roles = getDutyRoles(duty || {});
-              const roleSlots = normalizeRoleSlots(duty?.roleSlots || {}, roles);
-              const weekly = normalizeWeeklyAssignmentIds(duty || {}, roleSlots, roles);
-              const peopleText = [];
-              dutyDays.forEach(day => roles.forEach(role => {
-                  (weekly?.[day.key]?.[role.key] || []).filter(Boolean).forEach(item => {
-                      const id = typeof item === 'string' ? item : item?.id;
-                      const s = studentMap.get(id) || item || {};
-                      peopleText.push([s.nickname, s.fullName, s.studentId, s.group, s.level, id].filter(Boolean).join(' '));
-                  });
-              }));
-              return [duty.date, formatThaiWeekRange(duty.date), duty.academicYear, duty.note, dutyTableLabel(duty.scheduleType), ...peopleText].join(' ').toLowerCase();
+              const parts = [duty?.date, safeWeekRange(duty?.date), duty?.academicYear, duty?.note, duty?.scheduleType];
+              try {
+                  const { roles, weekly } = readDutyData(duty || {});
+                  dutyDays.forEach(day => roles.forEach(role => {
+                      (weekly?.[day.key]?.[role.key] || []).filter(Boolean).forEach(item => {
+                          const p = resolvePerson(item) || {};
+                          parts.push(p.nickname, p.fullName, p.studentId, p.group, p.level, p.id);
+                      });
+                  }));
+              }
+              catch (_) {}
+              return parts.filter(Boolean).join(' ').toLowerCase();
           };
           const visibleDuties = useMemo(() => {
               const q = String(search || '').trim().toLowerCase();
-              return duties.filter(duty => {
-                  const yearOk = year === 'all' || String(duty.academicYear || '') === String(year);
-                  const searchOk = !q || dutySearchText(duty).includes(q);
+              return duties.filter(d => {
+                  const yearOk = year === 'all' || String(d?.academicYear || '') === String(year);
+                  const searchOk = !q || dutySearchText(d).includes(q);
                   return yearOk && searchOk;
               });
           }, [duties, year, search, studentMap]);
           useEffect(() => {
-              if (visibleDuties.length && !visibleDuties.some(d => d.id === selectedId)) {
-                  setSelectedId(visibleDuties[0].id);
-              }
-              if (!visibleDuties.length && selectedId) {
-                  setSelectedId('');
-              }
+              if (visibleDuties.length && !visibleDuties.some(d => d.id === selectedId)) setSelectedId(visibleDuties[0].id);
+              else if (!visibleDuties.length && selectedId) setSelectedId('');
           }, [visibleDuties, selectedId]);
+
           const selectedDuty = visibleDuties.find(d => d.id === selectedId) || visibleDuties[0] || null;
-          const selectedRoles = useMemo(() => getDutyRoles(selectedDuty || {}), [selectedDuty]);
-          const selectedRoleSlots = useMemo(() => normalizeRoleSlots(selectedDuty?.roleSlots || {}, selectedRoles), [selectedDuty, selectedRoles]);
-          const selectedWeekly = useMemo(() => selectedDuty ? normalizeWeeklyAssignmentIds(selectedDuty, selectedRoleSlots, selectedRoles) : {}, [selectedDuty, selectedRoleSlots, selectedRoles]);
-          const selectedAssigned = useMemo(() => selectedDuty ? countAssignedInWeekly(selectedWeekly, selectedRoles) : 0, [selectedDuty, selectedWeekly, selectedRoles]);
-          const selectedDuplicates = useMemo(() => selectedDuty ? duplicateStudentIdsInWeekly(selectedWeekly, selectedRoles) : [], [selectedDuty, selectedWeekly, selectedRoles]);
-          const latestDutyInYear = useMemo(() => visibleDuties[0] || null, [visibleDuties]);
-          const resolvePerson = (item) => {
-              const id = typeof item === 'string' ? item : item?.id;
-              return studentMap.get(id) || (item && typeof item === 'object' ? item : { id });
-          };
-          const personLabel = (person) => {
-              if (!person)
-                  return '-';
-              const nick = person.nickname || '';
-              const name = person.fullName || '';
-              const room = [person.level, person.group].filter(Boolean).join(' / ');
-              if (nick && room)
-                  return `${nick} · ${room}`;
-              if (nick)
-                  return nick;
-              if (name && room)
-                  return `${name} · ${room}`;
-              return name || person.studentId || person.id || '-';
-          };
-          const dutyWeekSummary = (duty) => {
-              const roles = getDutyRoles(duty || {});
-              const roleSlots = normalizeRoleSlots(duty?.roleSlots || {}, roles);
-              const weekly = normalizeWeeklyAssignmentIds(duty || {}, roleSlots, roles);
-              return {
-                  roles,
-                  assigned: countAssignedInWeekly(weekly, roles),
-                  duplicates: duplicateStudentIdsInWeekly(weekly, roles).length
-              };
-          };
+          const selectedData = useMemo(() => selectedDuty ? readDutyData(selectedDuty) : { roles: [], roleSlots: {}, weekly: {} }, [selectedDuty, studentMap]);
+          const selectedAssigned = selectedDuty ? countAssigned(selectedDuty) : 0;
+          const selectedDuplicates = selectedDuty ? countDuplicates(selectedDuty) : 0;
+          const latestDuty = visibleDuties[0] || duties[0] || null;
+
           const buildMasterSnapshotFromDuty = (duty, roles, roleSlots, weekly) => {
               const snapshot = {};
               dutyDays.forEach(day => {
                   snapshot[day.key] = {};
                   roles.forEach(role => {
-                      const ids = [...new Set((weekly?.[day.key]?.[role.key] || []).filter(Boolean).map(item => typeof item === 'string' ? item : item?.id).filter(Boolean))];
+                      const ids = [...new Set((weekly?.[day.key]?.[role.key] || []).map(itemId).filter(Boolean))];
                       snapshot[day.key][role.key] = ids.map(id => {
                           const s = studentMap.get(id);
                           return s ? { id: s.id, studentId: s.studentId || '', fullName: s.fullName || '', nickname: s.nickname || '', level: s.level || '', group: s.group || '', actualInterest: s.actualInterest || s.interest || '' } : { id };
@@ -8245,154 +8284,157 @@
               return snapshot;
           };
           const importSelectedToMaster = async (duty = selectedDuty) => {
-              if (!duty)
-                  return alert('ยังไม่ได้เลือกตารางเวร');
-              const targetYear = String(duty.academicYear || year || safeCurrentYear);
-              if (!confirm(`นำ ${formatThaiWeekRange(duty.date)} ไปเป็น “ตารางเวรหลัก” ปี ${targetYear} ใช่ไหม?\n\nตารางหลักเดิมของปีนี้จะถูกแทนด้วยชุดนี้ แต่ประวัติเวรเดิมจะยังไม่ถูกลบ`))
-                  return;
+              if (!duty) return alert('ยังไม่ได้เลือกตารางเวรเดิม');
+              if (typeof getMasterDutyRef !== 'function') return alert('ไม่พบระบบตารางเวรหลักในไฟล์นี้');
+              const targetYear = String(duty.academicYear || safeCurrentYear);
+              if (!confirm(`นำ ${safeWeekRange(duty.date)} ไปเป็น “ตารางเวรหลัก” ปี ${targetYear} ใช่ไหม?\n\nตารางหลักเดิมของปีนี้จะถูกแทนด้วยชุดนี้ แต่ประวัติเวรเดิมจะยังไม่ถูกลบ`)) return;
               setSavingMaster(true);
               try {
-                  const roleDefs = normalizeDutyRoles(getDutyRoles(duty), duty.roleSlots || {});
-                  const roleSlots = normalizeRoleSlots(duty.roleSlots || {}, roleDefs);
-                  const weeklyAssignments = normalizeWeeklyAssignmentIds(duty, roleSlots, roleDefs);
+                  const { roles, roleSlots, weekly } = readDutyData(duty);
+                  const roleDefs = typeof normalizeDutyRoles === 'function' ? normalizeDutyRoles(roles, roleSlots) : roles;
                   const payload = {
                       academicYear: targetYear,
-                      effectiveFrom: getWeekStartDate(duty.date || todayFileDate()),
-                      scheduleType: 'MASTER',
-                      note: `นำเข้าจากประวัติเวรเดิม ${formatThaiWeekRange(duty.date)}`,
+                      effectiveFrom: typeof getWeekStartDate === 'function' ? getWeekStartDate(duty.date || todayFileDate()) : (duty.date || todayFileDate()),
+                      note: `นำเข้าจากประวัติเวรเดิม ${safeWeekRange(duty.date)}`,
                       roleDefs,
                       roleSlots,
-                      weeklyAssignments: buildMasterSnapshotFromDuty(duty, roleDefs, roleSlots, weeklyAssignments),
+                      weeklyAssignments: buildMasterSnapshotFromDuty(duty, roleDefs, roleSlots, weekly),
                       updatedAt: new Date().toISOString(),
                       updatedBy: 'staff',
                       importedFromLegacyDutyId: duty.id || '',
                       importedFromLegacyDutyDate: duty.date || ''
                   };
                   await getMasterDutyRef().doc(targetYear).set(payload, { merge: true });
-                  try {
-                      await logSystemAction('import_legacy_duty_to_master', { academicYear: targetYear, dutyId: duty.id || '', date: duty.date || '' });
-                  }
-                  catch (logErr) {
-                      console.warn('legacy import log skipped', logErr);
-                  }
+                  try { if (typeof logSystemAction === 'function') await logSystemAction('import_legacy_duty_to_master', { academicYear: targetYear, dutyId: duty.id || '', date: duty.date || '' }); } catch (logErr) { console.warn('legacy import log skipped', logErr); }
                   alert('นำเข้าเป็นตารางเวรหลักเรียบร้อยแล้ว');
-                  if (typeof onBackToMaster === 'function')
-                      onBackToMaster();
+                  if (typeof onBackToMaster === 'function') onBackToMaster();
               }
               catch (err) {
+                  console.error('import legacy to master failed', err);
                   alert('นำเข้าเป็นตารางหลักไม่สำเร็จ: ' + String(err?.message || err));
               }
-              finally {
-                  setSavingMaster(false);
-              }
+              finally { setSavingMaster(false); }
           };
           const exportSelectedCSV = () => {
-              if (!selectedDuty)
-                  return alert('ยังไม่ได้เลือกตารางเวร');
-              downloadFile(`MDEC_Legacy_Duty_${selectedDuty.academicYear || year}_${selectedDuty.date || todayFileDate()}.csv`, dutiesToCSV([selectedDuty]), 'text/csv;charset=utf-8');
+              if (!selectedDuty) return alert('ยังไม่ได้เลือกตารางเวร');
+              try { downloadFile(`MDEC_Legacy_Duty_${selectedDuty.academicYear || year}_${selectedDuty.date || todayFileDate()}.csv`, dutiesToCSV([selectedDuty]), 'text/csv;charset=utf-8'); }
+              catch (err) { alert('ส่งออก CSV ไม่สำเร็จ: ' + String(err?.message || err)); }
           };
-          if (advancedOpen) {
-              return React.createElement("div", { className: "space-y-4" },
-                  React.createElement("div", { className: "legacy-easy-head no-print" },
-                      React.createElement("div", null,
-                          React.createElement("div", { className: "legacy-kicker" }, "ADVANCED LEGACY MODE"),
-                          React.createElement("h2", null, "เครื่องมือรายสัปดาห์เดิม"),
-                          React.createElement("p", null, "ใช้เฉพาะตอนจำเป็นต้องแก้ข้อมูลเก่าจริง ๆ เท่านั้น ถ้าดูย้อนหลังหรือพิมพ์ ใช้หน้าแบบง่ายจะชัดกว่า")),
-                      React.createElement("button", { type: "button", onClick: () => setAdvancedOpen(false), className: "legacy-primary-btn" },
-                          React.createElement("i", { className: "ri-arrow-left-line mr-2" }), "กลับหน้าแบบง่าย")),
-                  React.createElement(DutySchedulePage, { students: students, currentAcademicYear: currentAcademicYear, yearsList: yearsList }));
-          }
+
           const statCards = [
-              ['ประวัติที่พบ', `${visibleDuties.length} สัปดาห์`, 'ri-folder-history-fill'],
-              ['สัปดาห์ที่เลือก', selectedDuty ? formatThaiWeekRange(selectedDuty.date).replace('สัปดาห์ ', '') : '-', 'ri-calendar-event-fill'],
+              ['ประวัติที่พบ', loading ? 'กำลังโหลด...' : `${visibleDuties.length} สัปดาห์`, 'ri-folder-history-fill'],
+              ['สัปดาห์ที่เลือก', selectedDuty ? safeWeekRange(selectedDuty.date).replace('สัปดาห์ ', '') : '-', 'ri-calendar-event-fill'],
               ['รายชื่อในตาราง', `${selectedAssigned} ช่อง`, 'ri-team-fill'],
-              ['ตำแหน่งเวร', `${selectedRoles.length} ตำแหน่ง`, 'ri-user-settings-fill']
+              ['ตำแหน่งเวร', `${selectedData.roles.length} ตำแหน่ง`, 'ri-user-settings-fill']
           ];
-          return React.createElement("div", { className: "legacy-easy-shell duty-contrast-page" },
-              React.createElement("section", { className: "legacy-easy-head no-print" },
-                  React.createElement("div", null,
-                      React.createElement("div", { className: "legacy-kicker" }, "LEGACY WEEKLY DUTY · EASY MODE"),
-                      React.createElement("h2", null, "ประวัติเวรเดิม / ระบบรายสัปดาห์"),
-                      React.createElement("p", null, "หน้านี้ทำไว้สำหรับดูย้อนหลัง พิมพ์ ส่งออก หรือนำตารางเก่ากลับไปเป็นตารางหลัก ไม่ต้องจัดเวรรายสัปดาห์ใหม่แล้ว")),
-                  React.createElement("div", { className: "legacy-head-actions" },
-                      React.createElement("button", { type: "button", onClick: () => typeof onBackToMaster === 'function' && onBackToMaster(), className: "legacy-primary-btn" },
-                          React.createElement("i", { className: "ri-arrow-left-line mr-2" }), "กลับตารางหลัก"),
-                      React.createElement("button", { type: "button", onClick: () => setAdvancedOpen(true), className: "legacy-secondary-btn" },
-                          React.createElement("i", { className: "ri-tools-fill mr-2" }), "เครื่องมือเก่า"))),
-              React.createElement("section", { className: "legacy-howto no-print" },
-                  [['1', 'เลือกปี / ค้นหา', 'ใช้ช่องซ้ายหาเวรเก่าแบบเร็ว'], ['2', 'กดเลือกสัปดาห์', 'ด้านขวาจะโชว์ตารางวันจันทร์–เสาร์'], ['3', 'เลือกทำงานต่อ', 'พิมพ์ / CSV / นำเข้าเป็นตารางหลัก']].map(([num, title, desc]) => React.createElement("div", { key: num, className: "legacy-step" },
-                      React.createElement("b", null, num),
-                      React.createElement("span", null, React.createElement("strong", null, title), React.createElement("small", null, desc))))),
-              React.createElement("section", { className: "legacy-stats no-print" }, statCards.map(([label, value, icon]) => React.createElement("div", { key: label, className: "legacy-stat" },
-                  React.createElement("i", { className: icon }),
-                  React.createElement("span", null, label),
-                  React.createElement("b", null, value)))),
-              React.createElement("section", { className: "legacy-main-grid" },
-                  React.createElement("aside", { className: "legacy-list-panel no-print" },
-                      React.createElement("div", { className: "legacy-filter-card" },
-                          React.createElement("label", null, "ปีการศึกษา"),
-                          React.createElement("select", { value: year, onChange: e => setYear(e.target.value) },
-                              React.createElement("option", { value: "all" }, "ทุกปี"),
-                              yearOptions.map(y => React.createElement("option", { key: y, value: y }, `ปี ${y}`))),
-                          React.createElement("label", null, "ค้นหา"),
-                          React.createElement("div", { className: "legacy-search" },
-                              React.createElement("i", { className: "ri-search-line" }),
-                              React.createElement("input", { value: search, onChange: e => setSearch(e.target.value), placeholder: "ค้นหาสัปดาห์ / ชื่อ / ห้อง / หมายเหตุ" })),
-                          React.createElement("button", { type: "button", onClick: () => { setYear(safeCurrentYear); setSearch(''); }, className: "legacy-clear-btn" }, "ล้างตัวกรอง")),
-                      React.createElement("div", { className: "legacy-week-list" }, loading ? React.createElement("div", { className: "legacy-empty" }, "กำลังโหลดประวัติเวร...") : visibleDuties.length ? visibleDuties.map(duty => {
-                          const summary = dutyWeekSummary(duty);
-                          const active = selectedDuty?.id === duty.id;
-                          return React.createElement("button", { key: duty.id, type: "button", onClick: () => setSelectedId(duty.id), className: `legacy-week-item ${active ? 'active' : ''}` },
-                              React.createElement("div", { className: "legacy-week-top" },
-                                  React.createElement("b", null, formatThaiWeekRange(duty.date)),
-                                  duty.locked ? React.createElement("span", { className: "legacy-pill lock" }, "ล็อก") : React.createElement("span", { className: "legacy-pill" }, dutyTableLabel(duty.scheduleType))),
-                              React.createElement("div", { className: "legacy-week-meta" },
-                                  React.createElement("span", null, `ปี ${duty.academicYear || '-'}`),
-                                  React.createElement("span", null, `${summary.assigned} ช่อง`),
-                                  summary.duplicates ? React.createElement("span", { className: "warn" }, `ซ้ำ ${summary.duplicates}`) : null),
-                              duty.note ? React.createElement("small", null, duty.note) : null);
-                      }) : React.createElement("div", { className: "legacy-empty" }, "ไม่พบประวัติเวรตามตัวกรองนี้"))),
-                  React.createElement("main", { className: "legacy-detail-panel" }, selectedDuty ? React.createElement(React.Fragment, null,
-                      React.createElement("div", { className: "legacy-detail-head no-print" },
-                          React.createElement("div", null,
-                              React.createElement("div", { className: "legacy-kicker dark" }, "SELECTED WEEK"),
-                              React.createElement("h3", null, formatThaiWeekRange(selectedDuty.date)),
-                              React.createElement("p", null, `ปีการศึกษา ${selectedDuty.academicYear || '-'} · ${dutyTableLabel(selectedDuty.scheduleType)}${selectedDuty.note ? ' · ' + selectedDuty.note : ''}`),
-                              selectedDuplicates.length ? React.createElement("div", { className: "legacy-warning" }, React.createElement("i", { className: "ri-error-warning-fill mr-1" }), `มีรายชื่อซ้ำ ${selectedDuplicates.length} คนในสัปดาห์นี้`) : null),
-                          React.createElement("div", { className: "legacy-actions" },
-                              React.createElement("button", { type: "button", onClick: () => importSelectedToMaster(selectedDuty), disabled: savingMaster, className: "legacy-import-btn" },
-                                  React.createElement("i", { className: "ri-download-cloud-2-fill mr-2" }), savingMaster ? 'กำลังนำเข้า...' : 'นำเข้าเป็นตารางหลัก'),
-                              React.createElement("button", { type: "button", onClick: () => setPrintDuties([selectedDuty]), className: "legacy-secondary-btn light" },
-                                  React.createElement("i", { className: "ri-printer-fill mr-2" }), "พิมพ์ / PDF"),
-                              React.createElement("button", { type: "button", onClick: exportSelectedCSV, className: "legacy-secondary-btn light" },
-                                  React.createElement("i", { className: "ri-file-excel-2-fill mr-2" }), "CSV"))),
-                      React.createElement("div", { className: "legacy-duty-board" }, dutyDays.map(day => React.createElement("section", { key: day.key, className: "legacy-day-card" },
-                          React.createElement("header", null,
-                              React.createElement("b", null, day.label),
-                              React.createElement("span", null, formatThaiDate(getDutyDayDate(selectedDuty.date, day.key)))),
-                          selectedRoles.map(role => {
-                              const ids = (selectedWeekly?.[day.key]?.[role.key] || []).filter(Boolean);
-                              return React.createElement("div", { key: `${day.key}-${role.key}`, className: "legacy-role-row" },
-                                  React.createElement("div", { className: "legacy-role-title" },
-                                      React.createElement("span", null, role.shortTitle || role.title || '-'),
-                                      React.createElement("small", null, `${ids.length}/${getRoleSlotCount(role, selectedRoleSlots)} คน`)),
-                                  ids.length ? React.createElement("div", { className: "legacy-people" }, ids.map((item, idx) => {
-                                      const person = resolvePerson(item);
-                                      return React.createElement("div", { key: `${day.key}-${role.key}-${idx}`, className: "legacy-person" },
-                                          person?.photo ? React.createElement("img", { src: person.photo, onError: e => { e.currentTarget.style.display = 'none'; } }) : React.createElement("span", null, String(person?.nickname || person?.fullName || person?.id || '?').trim().charAt(0) || '?'),
-                                          React.createElement("em", null, personLabel(person)));
-                                  })) : React.createElement("div", { className: "legacy-no-person" }, "ยังไม่มีชื่อ"));
-                          }))))) : React.createElement("div", { className: "legacy-empty large" },
-                              React.createElement("i", { className: "ri-folder-warning-line" }),
-                              React.createElement("b", null, "ยังไม่ได้เลือกตารางเวร"),
-                              React.createElement("p", null, "เลือกสัปดาห์จากรายการด้านซ้ายก่อน")))),
-              latestDutyInYear && React.createElement("section", { className: "legacy-quick-import no-print" },
-                  React.createElement("div", null,
-                      React.createElement("b", null, "ทางลัด"),
-                      React.createElement("span", null, `ตารางล่าสุดที่พบคือ ${formatThaiWeekRange(latestDutyInYear.date)} ถ้าจะใช้เป็นฐานของตารางหลัก กดปุ่มนี้ได้เลย`)),
-                  React.createElement("button", { type: "button", onClick: () => importSelectedToMaster(latestDutyInYear), disabled: savingMaster },
-                      React.createElement("i", { className: "ri-flashlight-fill mr-2" }), "นำเข้าตารางล่าสุดเป็นตารางหลัก")),
-              printDuties && ReactDOM.createPortal(React.createElement(PrintDutySchedule, { duties: printDuties, yearText: year === 'all' ? 'ทุกปี' : year, students: students, onClose: () => setPrintDuties(null) }), document.body));
+
+          const renderWeekList = () => {
+              if (loading) return E('div', { className: 'legacy-empty' }, 'กำลังโหลดประวัติเวร...');
+              if (!visibleDuties.length) {
+                  return E('div', { className: 'legacy-empty' }, duties.length ? 'ไม่พบประวัติเวรตามตัวกรองนี้ ลองเลือก “ทุกปี” หรือค้นหาคำอื่น' : 'ยังไม่พบข้อมูลเวรรายสัปดาห์เดิมในฐานข้อมูล');
+              }
+              return visibleDuties.map(duty => {
+                  const active = selectedDuty?.id === duty.id;
+                  const assigned = countAssigned(duty);
+                  const dup = countDuplicates(duty);
+                  let label = 'ตารางเวร';
+                  try { label = dutyTableLabel(duty.scheduleType); } catch (_) {}
+                  return E('button', { key: duty.id, type: 'button', onClick: () => setSelectedId(duty.id), className: `legacy-week-item ${active ? 'active' : ''}` },
+                      E('div', { className: 'legacy-week-top' },
+                          E('b', null, safeWeekRange(duty.date)),
+                          E('span', { className: duty.locked ? 'legacy-pill lock' : 'legacy-pill' }, duty.locked ? 'ล็อก' : label)),
+                      E('div', { className: 'legacy-week-meta' },
+                          E('span', null, `ปี ${duty.academicYear || '-'}`),
+                          E('span', null, `${assigned} ช่อง`),
+                          dup ? E('span', { className: 'warn' }, `ซ้ำ ${dup}`) : null),
+                      duty.note ? E('small', null, duty.note) : null);
+              });
+          };
+          const renderSidebar = () => E('aside', { className: 'legacy-list-panel no-print' },
+              E('div', { className: 'legacy-filter-card' },
+                  E('label', null, 'ปีการศึกษา'),
+                  E('select', { value: year, onChange: e => setYear(e.target.value) },
+                      E('option', { value: 'all' }, 'ทุกปี'),
+                      yearOptions.map(y => E('option', { key: y, value: y }, y))),
+                  E('label', null, 'ค้นหา'),
+                  E('div', { className: 'legacy-search' },
+                      E('i', { className: 'ri-search-line' }),
+                      E('input', { value: search, onChange: e => setSearch(e.target.value), placeholder: 'ค้นหาชื่อเล่น / ชื่อจริง / ห้อง / สัปดาห์' })),
+                  E('button', { type: 'button', onClick: () => { setYear('all'); setSearch(''); }, className: 'legacy-clear-btn' }, 'ล้างตัวกรอง')),
+              E('div', { className: 'legacy-week-list' }, renderWeekList())
+          );
+          const renderPerson = (item, key) => {
+              const person = resolvePerson(item);
+              return E('div', { key, className: 'legacy-person' },
+                  person?.photo ? E('img', { src: person.photo, onError: e => { e.currentTarget.style.display = 'none'; } }) : E('span', null, initialOf(person)),
+                  E('em', null, personLabel(person))
+              );
+          };
+          const renderRoleRows = (day) => {
+              const roles = selectedData.roles.length ? selectedData.roles : [{ key: 'default', title: 'ตำแหน่งเวร', shortTitle: 'เวร' }];
+              return roles.map(role => {
+                  const ids = (selectedData.weekly?.[day.key]?.[role.key] || []).filter(Boolean);
+                  const slotCount = (() => { try { return getRoleSlotCount(role, selectedData.roleSlots); } catch (_) { return ids.length || role.slots || 1; } })();
+                  return E('div', { key: `${day.key}-${role.key}`, className: 'legacy-role-row' },
+                      E('div', { className: 'legacy-role-title' },
+                          E('span', null, role.shortTitle || role.title || '-'),
+                          E('small', null, `${ids.length}/${slotCount} คน`)),
+                      ids.length ? E('div', { className: 'legacy-people' }, ids.map((item, idx) => renderPerson(item, `${day.key}-${role.key}-${idx}`))) : E('div', { className: 'legacy-no-person' }, 'ยังไม่มีชื่อ')
+                  );
+              });
+          };
+          const renderDetail = () => {
+              if (!selectedDuty) {
+                  return E('main', { className: 'legacy-detail-panel' },
+                      E('div', { className: 'legacy-empty large' },
+                          E('i', { className: 'ri-folder-warning-line' }),
+                          E('b', null, loading ? 'กำลังโหลดข้อมูล' : 'ยังไม่ได้เลือกตารางเวร'),
+                          E('p', null, loading ? 'รอสักครู่ ระบบกำลังดึงประวัติเวรเดิม' : 'เลือกสัปดาห์จากรายการด้านซ้ายก่อน'))
+                  );
+              }
+              return E('main', { className: 'legacy-detail-panel' },
+                  E('div', { className: 'legacy-detail-head no-print' },
+                      E('div', null,
+                          E('div', { className: 'legacy-kicker dark' }, 'SELECTED WEEK'),
+                          E('h3', null, safeWeekRange(selectedDuty.date)),
+                          E('p', null, `ปีการศึกษา ${selectedDuty.academicYear || '-'} · ${selectedAssigned} ช่อง`),
+                          selectedDuplicates ? E('div', { className: 'legacy-warning' }, E('i', { className: 'ri-error-warning-fill mr-1' }), `มีรายชื่อซ้ำ ${selectedDuplicates} คนในสัปดาห์นี้`) : null),
+                      E('div', { className: 'legacy-actions' },
+                          E('button', { type: 'button', onClick: () => importSelectedToMaster(selectedDuty), disabled: savingMaster, className: 'legacy-import-btn' }, E('i', { className: 'ri-download-cloud-2-fill mr-2' }), savingMaster ? 'กำลังนำเข้า...' : 'นำเข้าเป็นตารางหลัก'),
+                          E('button', { type: 'button', onClick: () => setPrintDuties([selectedDuty]), className: 'legacy-secondary-btn light' }, E('i', { className: 'ri-printer-fill mr-2' }), 'พิมพ์ / PDF'),
+                          E('button', { type: 'button', onClick: exportSelectedCSV, className: 'legacy-secondary-btn light' }, E('i', { className: 'ri-file-excel-2-fill mr-2' }), 'CSV'))),
+                  E('div', { className: 'legacy-duty-board' },
+                      dutyDays.map(day => E('section', { key: day.key, className: 'legacy-day-card' },
+                          E('header', null,
+                              E('b', null, day.label),
+                              E('span', null, safeThaiDate(typeof getDutyDayDate === 'function' ? getDutyDayDate(selectedDuty.date, day.key) : selectedDuty.date))),
+                          renderRoleRows(day)
+                      ))
+                  )
+              );
+          };
+
+          return E('div', { className: 'legacy-easy-shell duty-contrast-page' },
+              E('section', { className: 'legacy-easy-head no-print' },
+                  E('div', null,
+                      E('div', { className: 'legacy-kicker' }, 'LEGACY WEEKLY DUTY · EASY MODE'),
+                      E('h2', null, 'ประวัติเวรเดิม / ระบบรายสัปดาห์'),
+                      E('p', null, 'หน้าดูย้อนหลังแบบง่าย เลือกสัปดาห์เก่าเพื่อพิมพ์ ส่งออก CSV หรือนำกลับไปใช้เป็นตารางเวรหลัก')),
+                  E('div', { className: 'legacy-head-actions' },
+                      E('button', { type: 'button', onClick: () => typeof onBackToMaster === 'function' && onBackToMaster(), className: 'legacy-primary-btn' }, E('i', { className: 'ri-arrow-left-line mr-2' }), 'กลับตารางหลัก'))),
+              loadError ? E('section', { className: 'rounded-[1.5rem] border border-red-300 bg-red-50 p-5 text-red-800 no-print' },
+                  E('b', { className: 'block text-lg' }, 'โหลดประวัติเวรไม่สำเร็จ'),
+                  E('p', { className: 'font-bold mt-1' }, loadError),
+                  E('p', { className: 'text-sm mt-2' }, 'ข้อมูลเดิมยังไม่ถูกลบ แต่อาจต้องเช็กสิทธิ์ Firestore หรือ Console เพิ่ม')) : null,
+              E('section', { className: 'legacy-howto no-print' },
+                  [['1', 'เลือกปี / ค้นหา', 'ใช้ช่องซ้ายหาเวรเก่าแบบเร็ว'], ['2', 'กดเลือกสัปดาห์', 'ด้านขวาจะแสดงตารางวันจันทร์–เสาร์'], ['3', 'ทำงานต่อ', 'พิมพ์ / CSV / นำเข้าเป็นตารางหลัก']].map(([num, title, desc]) => E('div', { key: num, className: 'legacy-step' }, E('b', null, num), E('span', null, E('strong', null, title), E('small', null, desc))))),
+              E('section', { className: 'legacy-stats no-print' }, statCards.map(([label, value, icon]) => E('div', { key: label, className: 'legacy-stat' }, E('i', { className: icon }), E('span', null, label), E('b', null, value)))),
+              E('section', { className: 'legacy-main-grid' }, renderSidebar(), renderDetail()),
+              latestDuty ? E('section', { className: 'legacy-quick-import no-print' },
+                  E('div', null, E('b', null, 'ทางลัด'), E('span', null, `ตารางล่าสุดที่พบคือ ${safeWeekRange(latestDuty.date)} ถ้าจะใช้เป็นฐานของตารางหลัก กดปุ่มนี้ได้เลย`)),
+                  E('button', { type: 'button', onClick: () => importSelectedToMaster(latestDuty), disabled: savingMaster }, E('i', { className: 'ri-flashlight-fill mr-2' }), 'นำเข้าตารางล่าสุดเป็นตารางหลัก')) : null,
+              printDuties && ReactDOM.createPortal(E(PrintDutySchedule, { duties: printDuties, yearText: year === 'all' ? 'ทุกปี' : year, students: students, onClose: () => setPrintDuties(null) }), document.body)
+          );
       }
 
       function DutySchedulePage({ students, currentAcademicYear, yearsList }) {
@@ -9015,7 +9057,7 @@
                               "\u0E15\u0E31\u0E49\u0E07\u0E04\u0E48\u0E32\u0E40\u0E27\u0E23"))),
                   React.createElement("div", { className: "grid md:grid-cols-3 gap-3" }, [
                       ['plan', 'จัดเวร', 'เลือกสัปดาห์ เลือกวัน แล้วใส่ชื่อ', 'ri-user-add-fill'],
-                      ['check', 'เช็คเวร', 'บันทึกสาย/ขาด/ลา พร้อมคนแทน', 'ri-user-follow-fill'],
+                      ['check', 'เช็คเวร', 'บันทึกเฉพาะ สาย ขาด ลา ทำแทน', 'ri-user-follow-fill'],
                       ['history', 'ย้อนหลัง / พิมพ์', 'ค้นหา แก้ไข คัดลอก PDF CSV', 'ri-folder-history-fill']
                   ].map(([key, title, desc, icon]) => (React.createElement("button", { key: key, type: "button", onClick: () => setDutyWorkspaceMode(key), className: `duty-workspace-tab ${dutyWorkspaceMode === key ? 'is-active' : ''}` },
                       React.createElement("i", { className: `${icon} text-xl` }),
@@ -11074,7 +11116,7 @@
           const steps = [
               ['เริ่มวันด้วยหน้าแรก', 'เปิดหน้าแรกเพื่อดูเวรวันนี้ งานค้าง ตรวจสุขภาพระบบ และปุ่มลัดที่ใช้บ่อย'],
               ['เช้าวันนี้', 'ใช้ดูรายชื่อเวรของวันนี้ ระบบถือว่ามาปกติอัตโนมัติ ไม่ต้องกดทุกคน'],
-              ['บันทึกปัญหาเวร', 'กด สาย / ขาด / ลา / ไม่พบตัว แล้วเลือกคนแทนกับหมายเหตุได้ทันที'],
+              ['บันทึกปัญหาเวร', 'กดเฉพาะกรณี สาย / ขาด / ลา / ไม่พบตัว / ทำแทน เพื่อลดงานตอนเช้า'],
               ['เพิ่มสมาชิกใหม่', 'คีย์ข้อมูลจากใบสมัครกระดาษ เลือกปีการศึกษาและฝ่ายที่สนใจให้ถูกต้อง'],
               ['ถ่ายรูปหรืออัปโหลดรูปสมาชิก', 'เก็บรูปโปรไฟล์ให้ครบ เพื่อให้ตารางเวรและบอร์ดสภาดูง่าย'],
               ['กิจกรรมชมรม', 'บันทึกกิจกรรม เช็คการเข้าร่วม และเก็บลิงก์อัลบั้ม/ภาพปก'],
@@ -11282,6 +11324,7 @@
       console.error(err);
       __mdecShowBootError(err);
     }
+  
   </script>
 
 </body>
