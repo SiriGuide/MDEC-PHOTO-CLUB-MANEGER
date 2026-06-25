@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MDEC Photo Club Center v81.0 Restore Table Legacy Easy</title>
+  <title>MDEC Photo Club Center v83.0 Mobile Quick Check</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -4258,6 +4258,161 @@
     }
   </style>
 
+
+  <style id="v83-mobile-quick-check">
+    /* v83: Mobile Quick Check — เช็คเวรจากมือถือแบบใช้งานหน้างาน */
+    .mobile-check-page { display: grid; gap: 14px; }
+    .mobile-check-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
+      color: #fff;
+      border-radius: 30px;
+      padding: 22px;
+      border: 1px solid rgba(147,197,253,.30);
+      box-shadow: 0 22px 58px rgba(15,23,42,.18);
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .mobile-check-kicker { font-size: 11px; font-weight: 950; letter-spacing: .22em; text-transform: uppercase; color: #bfdbfe; }
+    .mobile-check-title { font-size: clamp(28px, 5vw, 46px); line-height: 1.02; font-weight: 950; letter-spacing: -.045em; margin-top: 4px; }
+    .mobile-check-sub { margin-top: 8px; color: #dbeafe; font-weight: 800; }
+    .mobile-check-save {
+      min-height: 48px;
+      border-radius: 18px;
+      padding: 0 18px;
+      background: #10b981;
+      color: #fff;
+      font-weight: 950;
+      white-space: nowrap;
+      box-shadow: 0 14px 30px rgba(16,185,129,.24);
+    }
+    .mobile-check-controls,
+    .mobile-check-stats,
+    .mobile-check-list { display: grid; gap: 10px; }
+    .mobile-check-controls {
+      background: rgba(255,255,255,.96);
+      border: 1px solid #dbeafe;
+      border-radius: 28px;
+      padding: 14px;
+      box-shadow: 0 14px 36px rgba(37,99,235,.08);
+    }
+    .mobile-check-control-grid { display: grid; grid-template-columns: minmax(180px, 240px) minmax(0, 1fr); gap: 10px; align-items: end; }
+    .mobile-check-label { display: block; font-size: 12px; color: #64748b; font-weight: 950; margin: 0 0 6px 4px; }
+    .mobile-date-input,
+    .mobile-search-input {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 18px;
+      border: 1.5px solid #cbd5e1;
+      background: #fff;
+      color: #0f172a;
+      padding: 0 14px;
+      outline: none;
+      font-weight: 900;
+    }
+    .mobile-search-wrap { position: relative; }
+    .mobile-search-wrap i { position: absolute; left: 14px; bottom: 15px; color: #94a3b8; font-size: 18px; pointer-events: none; }
+    .mobile-search-wrap .mobile-search-input { padding-left: 42px; }
+    .mobile-day-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+    .mobile-day-chip {
+      flex: 0 0 auto;
+      min-height: 44px;
+      border-radius: 999px;
+      padding: 0 14px;
+      border: 1px solid #dbeafe;
+      background: #f8fbff;
+      color: #334155;
+      font-weight: 950;
+    }
+    .mobile-day-chip.active { background: #2563eb; color: #fff; border-color: #2563eb; box-shadow: 0 10px 24px rgba(37,99,235,.22); }
+    .mobile-check-stats { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .mobile-stat-card { border: 1px solid #dbeafe; background: #fff; border-radius: 24px; padding: 14px; box-shadow: 0 12px 30px rgba(15,23,42,.05); }
+    .mobile-stat-card span { display: block; color: #64748b; font-size: 11px; font-weight: 950; }
+    .mobile-stat-card b { display: block; color: #0f172a; font-size: 26px; line-height: 1; font-weight: 950; margin-top: 5px; }
+    .mobile-duty-card {
+      background: #fff;
+      border: 1px solid #dbeafe;
+      border-radius: 28px;
+      padding: 14px;
+      box-shadow: 0 16px 42px rgba(15,23,42,.07);
+      display: grid;
+      gap: 12px;
+    }
+    .mobile-duty-card.is-issue { border-color: #fdba74; background: linear-gradient(180deg, #fff7ed 0%, #ffffff 56%); }
+    .mobile-duty-top { display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 12px; align-items: center; }
+    .mobile-duty-photo,
+    .mobile-duty-initial { width: 56px; height: 56px; border-radius: 20px; flex: 0 0 auto; object-fit: cover; border: 1px solid #cbd5e1; background: #e0edff; }
+    .mobile-duty-initial { display: flex; align-items: center; justify-content: center; color: #2563eb; font-size: 24px; font-weight: 950; }
+    .mobile-duty-name { color: #0f172a; font-size: 20px; font-weight: 950; line-height: 1.12; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mobile-duty-meta { color: #64748b; font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mobile-duty-role { justify-self: end; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 999px; padding: 7px 10px; font-size: 12px; font-weight: 950; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mobile-status-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+    .mobile-status-btn { min-height: 46px; border-radius: 16px; background: #f8fafc; color: #334155; border: 1px solid #e2e8f0; font-weight: 950; }
+    .mobile-status-btn.present.active { background: #16a34a; color: #fff; border-color: #16a34a; }
+    .mobile-status-btn.late.active { background: #f59e0b; color: #fff; border-color: #f59e0b; }
+    .mobile-status-btn.absent.active,
+    .mobile-status-btn.not_found.active { background: #dc2626; color: #fff; border-color: #dc2626; }
+    .mobile-status-btn.leave.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+    .mobile-issue-panel { display: grid; gap: 10px; padding: 12px; border-radius: 22px; background: rgba(255,247,237,.95); border: 1px solid #fed7aa; }
+    .mobile-issue-title { color: #9a3412; font-size: 12px; font-weight: 950; display: flex; align-items: center; gap: 6px; }
+    .mobile-sub-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: center; }
+    .mobile-sub-selected { display: flex; align-items: center; gap: 9px; min-width: 0; background: #fff; border: 1px solid #fed7aa; border-radius: 18px; padding: 8px; }
+    .mobile-sub-selected img,
+    .mobile-sub-initial { width: 42px; height: 42px; border-radius: 15px; object-fit: cover; border: 1px solid #e2e8f0; background: #dbeafe; color: #2563eb; display: flex; align-items: center; justify-content: center; font-weight: 950; }
+    .mobile-sub-pick { min-height: 46px; border-radius: 16px; padding: 0 12px; background: #ea580c; color: #fff; font-weight: 950; }
+    .mobile-manual-input,
+    .mobile-note-area { width: 100%; border-radius: 16px; border: 1.5px solid #fdba74; background: #fff; color: #0f172a; font-weight: 850; outline: none; }
+    .mobile-manual-input { min-height: 44px; padding: 0 12px; }
+    .mobile-note-area { min-height: 82px; padding: 10px 12px; resize: vertical; }
+    .mobile-empty-card { background: #fff; border: 1px dashed #cbd5e1; border-radius: 28px; padding: 30px 16px; text-align: center; color: #64748b; font-weight: 900; }
+
+    body.dark-mode .mobile-check-controls,
+    body.dark-mode .mobile-stat-card,
+    body.dark-mode .mobile-duty-card,
+    body.dark-mode .mobile-empty-card { background: rgba(15,23,42,.94) !important; color: #e5edf8 !important; border-color: rgba(71,85,105,.78) !important; }
+    body.dark-mode .mobile-duty-card.is-issue,
+    body.dark-mode .mobile-issue-panel { background: rgba(69,26,3,.52) !important; border-color: rgba(251,146,60,.45) !important; }
+    body.dark-mode .mobile-date-input,
+    body.dark-mode .mobile-search-input,
+    body.dark-mode .mobile-manual-input,
+    body.dark-mode .mobile-note-area { background: rgba(15,23,42,.96) !important; color: #f8fafc !important; border-color: rgba(71,85,105,.92) !important; }
+    body.dark-mode .mobile-duty-name,
+    body.dark-mode .mobile-stat-card b { color: #f8fafc !important; }
+    body.dark-mode .mobile-duty-meta,
+    body.dark-mode .mobile-stat-card span { color: #a8b3c7 !important; }
+
+    @media (max-width: 768px) {
+      .topbar-shell { padding: 14px !important; border-radius: 24px !important; }
+      .topbar-shell .brand-logo-wide { width: 86px; height: 40px; border-radius: 14px; padding: 6px 9px; }
+      .club-sidebar { border-radius: 24px !important; padding: 12px !important; }
+      .nav-group-title { display: none !important; }
+      .nav-group-items { display: flex; gap: 8px; }
+      .nav-pill { min-height: 44px; padding: 10px 12px !important; border-radius: 16px !important; }
+      .master-duty-hero { border-radius: 24px; padding: 16px; }
+      .master-duty-hero > div { align-items: stretch !important; }
+      .master-duty-hero h2 { font-size: 30px !important; }
+      .master-duty-tabs { gap: 8px; overflow-x: auto; padding-bottom: 3px; }
+      .master-duty-tab { flex: 0 0 auto; min-height: 44px; border-radius: 16px !important; }
+      .mobile-check-hero { border-radius: 24px; padding: 16px; flex-direction: column; }
+      .mobile-check-save { width: 100%; }
+      .mobile-check-control-grid { grid-template-columns: 1fr; }
+      .mobile-check-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .mobile-stat-card { border-radius: 20px; padding: 12px; }
+      .mobile-stat-card b { font-size: 24px; }
+      .mobile-duty-card { border-radius: 22px; padding: 12px; }
+      .mobile-duty-top { grid-template-columns: auto minmax(0,1fr); }
+      .mobile-duty-role { grid-column: 1 / -1; justify-self: stretch; max-width: none; text-align: center; }
+      .mobile-status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mobile-status-btn.present { grid-column: 1 / -1; }
+      .mobile-sub-row { grid-template-columns: 1fr; }
+      .mobile-sub-pick { width: 100%; }
+      .master-check-list { display: grid !important; gap: 10px !important; }
+      .master-check-row { grid-template-columns: 1fr !important; align-items: stretch !important; }
+      .master-check-actions { justify-content: stretch !important; display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .master-check-status { min-height: 44px !important; }
+    }
+  </style>
 </head>
 <body class="text-slate-800 selection:bg-blue-200">
   <div id="root"></div>
@@ -7339,6 +7494,15 @@
           const [checkDay, setCheckDay] = useState(safeDutyDays[0].key);
           const [checkRecords, setCheckRecords] = useState({});
           const [subPicker, setSubPicker] = useState({ open: false, entry: null, query: '' });
+          const [quickSearch, setQuickSearch] = useState('');
+          useEffect(() => {
+              try {
+                  if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches) {
+                      setActiveMode('mobile');
+                  }
+              }
+              catch (error) { }
+          }, []);
           // v74.1.1: helper เฉพาะหน้า Master Duty กันจอขาวจาก initialsOf ที่อยู่นอก scope
           const masterInitialsOf = (person) => {
               try {
@@ -7700,6 +7864,16 @@
               }
               return list;
           }, [roles, weekly, safeCheckDay, studentMap]);
+          const quickFilteredEntries = useMemo(() => {
+              const q = String(quickSearch || '').trim().toLowerCase();
+              if (!q)
+                  return assignedForCheckDay;
+              return assignedForCheckDay.filter(entry => {
+                  const p = entry.person || {};
+                  const searchable = [p.studentId, p.fullName, p.nickname, p.level, p.group, p.major, p.actualInterest, p.interest, entry.roleTitle].filter(Boolean).join(' ').toLowerCase();
+                  return searchable.includes(q);
+              });
+          }, [assignedForCheckDay, quickSearch]);
           const issueCheckStatusKeys = ['late', 'absent', 'leave', 'not_found'];
           const checkRecordKeyOf = (entry) => `${entry.roleKey}_${entry.slot}_${entry.id}`;
           const persistCheckRecords = (next) => {
@@ -7771,8 +7945,44 @@
               return checkRecords?.[key] || {};
           };
           const checkStatusOf = (entry) => checkRecordOf(entry).status || 'present';
+          const checkStats = useMemo(() => {
+              const base = { total: assignedForCheckDay.length, present: 0, late: 0, absent: 0, leave: 0, not_found: 0, issues: 0, checked: 0, pending: 0 };
+              assignedForCheckDay.forEach(entry => {
+                  const record = checkRecordOf(entry);
+                  const status = record.status || 'present';
+                  if (status === 'present')
+                      base.present += 1;
+                  else if (status === 'late')
+                      base.late += 1;
+                  else if (status === 'absent')
+                      base.absent += 1;
+                  else if (status === 'leave')
+                      base.leave += 1;
+                  else if (status === 'not_found')
+                      base.not_found += 1;
+                  if (issueCheckStatusKeys.includes(status))
+                      base.issues += 1;
+                  if (record.status)
+                      base.checked += 1;
+              });
+              base.pending = Math.max(0, base.total - base.checked);
+              return base;
+          }, [assignedForCheckDay, checkRecords]);
           const saveCheckSummary = () => {
               try {
+                  const invalidIssues = assignedForCheckDay.filter(entry => {
+                      const record = checkRecordOf(entry);
+                      const status = record.status || 'present';
+                      if (!issueCheckStatusKeys.includes(status))
+                          return false;
+                      const hasSubstitute = !!(record.substituteId || String(record.substituteName || '').trim());
+                      const hasNote = !!String(record.note || '').trim();
+                      return !hasSubstitute || !hasNote;
+                  });
+                  if (invalidIssues.length) {
+                      alert(`รายการ สาย/ขาด/ลา/ไม่พบตัว ต้องใส่หมายเหตุและคนแทนเวรก่อนบันทึก (${invalidIssues.length} รายการ)`);
+                      return;
+                  }
                   localStorage.setItem(checkStorageKey, JSON.stringify(checkRecords || {}));
                   alert('บันทึกเช็คเวรวันนี้แล้ว');
               }
@@ -7786,16 +7996,7 @@
                   React.createElement("p", { className: "font-bold text-slate-500" }, "\u0E01\u0E33\u0E25\u0E31\u0E07\u0E42\u0E2B\u0E25\u0E14\u0E15\u0E32\u0E23\u0E32\u0E07\u0E40\u0E27\u0E23\u0E2B\u0E25\u0E31\u0E01..."));
           }
           if (legacyOpen) {
-              return (React.createElement("div", { className: "duty-contrast-page space-y-4" },
-                  React.createElement("div", { className: "no-print flex flex-wrap items-center justify-between gap-3 rounded-[1.5rem] bg-slate-950 border border-slate-700 p-4 text-white" },
-                      React.createElement("div", null,
-                          React.createElement("div", { className: "text-xs font-black tracking-[0.2em] text-blue-300 uppercase" }, "LEGACY WEEKLY DUTY"),
-                          React.createElement("h2", { className: "text-2xl font-black" }, "\u0E1B\u0E23\u0E30\u0E27\u0E31\u0E15\u0E34\u0E40\u0E27\u0E23\u0E40\u0E14\u0E34\u0E21 / \u0E23\u0E30\u0E1A\u0E1A\u0E23\u0E32\u0E22\u0E2A\u0E31\u0E1B\u0E14\u0E32\u0E2B\u0E4C"),
-                          React.createElement("p", { className: "text-sm text-slate-300 font-bold mt-1" }, "\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E40\u0E27\u0E23\u0E40\u0E01\u0E48\u0E32\u0E2D\u0E22\u0E39\u0E48\u0E2B\u0E19\u0E49\u0E32\u0E19\u0E35\u0E49 \u0E44\u0E21\u0E48\u0E44\u0E14\u0E49\u0E16\u0E39\u0E01\u0E25\u0E1A \u0E41\u0E25\u0E30\u0E22\u0E31\u0E07\u0E1E\u0E34\u0E21\u0E1E\u0E4C/\u0E14\u0E39\u0E22\u0E49\u0E2D\u0E19\u0E2B\u0E25\u0E31\u0E07\u0E44\u0E14\u0E49\u0E40\u0E2B\u0E21\u0E37\u0E2D\u0E19\u0E40\u0E14\u0E34\u0E21")),
-                      React.createElement("button", { onClick: () => setLegacyOpen(false), className: "px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black" },
-                          React.createElement("i", { className: "ri-arrow-left-line mr-2" }),
-                          "\u0E01\u0E25\u0E31\u0E1A\u0E15\u0E32\u0E23\u0E32\u0E07\u0E40\u0E27\u0E23\u0E2B\u0E25\u0E31\u0E01")),
-                  React.createElement(LegacyDutyHistoryPage, { students: students, currentAcademicYear: currentAcademicYear, yearsList: yearsList, onBackToMaster: () => setLegacyOpen(false) })));
+              return React.createElement(LegacyDutyHistoryPage, { students: students, currentAcademicYear: currentAcademicYear, yearsList: yearsList, onBackToMaster: () => setLegacyOpen(false) });
           }
           return (React.createElement("div", { className: "master-duty-shell" },
               React.createElement("div", { className: "master-duty-hero no-print" },
@@ -7812,12 +8013,12 @@
                               React.createElement("i", { className: "ri-printer-fill mr-2" }),
                               "\u0E1E\u0E34\u0E21\u0E1E\u0E4C / PDF")))),
               React.createElement("div", { className: "master-duty-tabs no-print" },
-                  [['schedule', 'ตารางเวรหลัก', 'ri-table-fill'], ['check', 'เช็คเวร', 'ri-user-follow-fill'], ['print', 'พิมพ์ / PDF', 'ri-file-pdf-2-fill'], ['settings', 'ตั้งค่า', 'ri-settings-3-fill']].map(([id, label, icon]) => (React.createElement("button", { key: id, onClick: () => setActiveMode(id), className: `master-duty-tab ${activeMode === id ? 'active' : ''}` },
+                  [['schedule', 'ตารางเวรหลัก', 'ri-table-fill'], ['mobile', 'เช็คเวรมือถือ', 'ri-smartphone-fill'], ['check', 'เช็คเวรละเอียด', 'ri-user-follow-fill'], ['print', 'พิมพ์ / PDF', 'ri-file-pdf-2-fill'], ['settings', 'ตั้งค่า', 'ri-settings-3-fill']].map(([id, label, icon]) => (React.createElement("button", { key: id, onClick: () => setActiveMode(id), className: `master-duty-tab ${activeMode === id ? 'active' : ''}` },
                       React.createElement("i", { className: `${icon} mr-2` }),
                       label))),
                   React.createElement("button", { onClick: () => setLegacyOpen(true), className: "master-duty-tab ml-auto" },
                       React.createElement("i", { className: "ri-history-fill mr-2" }),
-                      "\u0E1B\u0E23\u0E30\u0E27\u0E31\u0E15\u0E34\u0E40\u0E27\u0E23\u0E40\u0E14\u0E34\u0E21 / \u0E23\u0E32\u0E22\u0E2A\u0E31\u0E1B\u0E14\u0E32\u0E2B\u0E4C")),
+                      "\u0E14\u0E39\u0E1B\u0E23\u0E30\u0E27\u0E31\u0E15\u0E34\u0E40\u0E27\u0E23")),
               React.createElement("div", { className: "master-duty-card no-print" },
                   React.createElement("div", { className: "master-duty-toolbar" },
                       React.createElement("div", { className: "flex flex-wrap items-center gap-3" },
@@ -7827,9 +8028,6 @@
                           React.createElement("button", { onClick: importLatestDuty, className: "px-4 py-3 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100 font-black" },
                               React.createElement("i", { className: "ri-download-cloud-2-fill mr-2" }),
                               "\u0E19\u0E33\u0E40\u0E02\u0E49\u0E32\u0E08\u0E32\u0E01\u0E15\u0E32\u0E23\u0E32\u0E07\u0E25\u0E48\u0E32\u0E2A\u0E38\u0E14"),
-                          React.createElement("button", { onClick: () => setLegacyOpen(true), className: "px-4 py-3 rounded-2xl bg-slate-900 text-white border border-slate-700 font-black" },
-                              React.createElement("i", { className: "ri-history-fill mr-2" }),
-                              "\u0E14\u0E39\u0E40\u0E27\u0E23\u0E40\u0E14\u0E34\u0E21"),
                           React.createElement("button", { onClick: () => setRoleSettingsOpen(v => !v), className: "px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 font-black" },
                               React.createElement("i", { className: "ri-list-settings-fill mr-2" }),
                               "\u0E15\u0E33\u0E41\u0E2B\u0E19\u0E48\u0E07\u0E40\u0E27\u0E23"))),
@@ -8029,6 +8227,59 @@
                       React.createElement("div", { className: "mt-4 flex flex-wrap justify-center gap-2" },
                           React.createElement("button", { onClick: () => setActiveMode('schedule'), className: "px-4 py-3 rounded-2xl bg-blue-600 text-white font-black" }, "\u0E44\u0E1B\u0E15\u0E32\u0E23\u0E32\u0E07\u0E40\u0E27\u0E23\u0E2B\u0E25\u0E31\u0E01"),
                           React.createElement("button", { onClick: importLatestDuty, className: "px-4 py-3 rounded-2xl bg-slate-900 text-white font-black" }, "\u0E19\u0E33\u0E40\u0E02\u0E49\u0E32\u0E08\u0E32\u0E01\u0E15\u0E32\u0E23\u0E32\u0E07\u0E25\u0E48\u0E32\u0E2A\u0E38\u0E14")))))),
+              activeMode === 'mobile' && (React.createElement("div", { className: "mobile-check-page no-print" },
+                  React.createElement("div", { className: "mobile-check-hero" },
+                      React.createElement("div", null,
+                          React.createElement("div", { className: "mobile-check-kicker" }, "Mobile Quick Check"),
+                          React.createElement("div", { className: "mobile-check-title" }, "เช็คเวรมือถือ"),
+                          React.createElement("div", { className: "mobile-check-sub" }, `${checkDayLabel || 'วันนี้'} · ${formatThaiDate(checkDate)} · รายชื่อ ${assignedForCheckDay.length} คน`)),
+                      React.createElement("button", { onClick: saveCheckSummary, className: "mobile-check-save" },
+                          React.createElement("i", { className: "ri-save-3-fill mr-2" }),
+                          "บันทึกเช็คเวร")),
+                  React.createElement("div", { className: "mobile-check-controls" },
+                      React.createElement("div", { className: "mobile-check-control-grid" },
+                          React.createElement("label", null,
+                              React.createElement("span", { className: "mobile-check-label" }, "วันที่เช็คเวร"),
+                              React.createElement("input", { type: "date", value: checkDate, onChange: e => setCheckDate(e.target.value), className: "mobile-date-input" })),
+                          React.createElement("label", { className: "mobile-search-wrap" },
+                              React.createElement("span", { className: "mobile-check-label" }, "ค้นหาชื่อ / ห้อง / ตำแหน่ง"),
+                              React.createElement("i", { className: "ri-search-line" }),
+                              React.createElement("input", { value: quickSearch, onChange: e => setQuickSearch(e.target.value), placeholder: "พิมพ์ชื่อเล่น ชื่อจริง ห้อง หรือเวร", className: "mobile-search-input" }))),
+                      React.createElement("div", { className: "mobile-day-chips" }, safeDutyDays.map(day => React.createElement("button", { key: day.key, type: "button", onClick: () => setCheckDay(day.key), className: `mobile-day-chip ${safeCheckDay === day.key ? 'active' : ''}` }, day.label)))),
+                  React.createElement("div", { className: "mobile-check-stats" },
+                      [['ทั้งหมด', checkStats.total], ['เช็คแล้ว', checkStats.checked], ['ยังไม่เช็ค', checkStats.pending], ['มีปัญหา', checkStats.issues], ['สาย', checkStats.late]].map(([label, value]) => React.createElement("div", { key: label, className: "mobile-stat-card" },
+                          React.createElement("span", null, label),
+                          React.createElement("b", null, value)))),
+                  quickFilteredEntries.length ? React.createElement("div", { className: "mobile-check-list" }, quickFilteredEntries.map(entry => {
+                      const person = entry.person || {};
+                      const record = checkRecordOf(entry);
+                      const status = checkStatusOf(entry);
+                      const needsReplacement = issueCheckStatusKeys.includes(status);
+                      const selectedSubstitute = record.substituteId ? studentMap.get(record.substituteId) : null;
+                      const statuses = [['present', 'มา'], ['late', 'สาย'], ['absent', 'ขาด'], ['leave', 'ลา'], ['not_found', 'ไม่พบตัว']];
+                      return React.createElement("div", { key: `mobile-${entry.roleKey}-${entry.slot}-${entry.id}`, className: `mobile-duty-card ${needsReplacement ? 'is-issue' : ''}` },
+                          React.createElement("div", { className: "mobile-duty-top" },
+                              person.photo ? React.createElement("img", { src: person.photo, onError: e => { e.currentTarget.style.display = 'none'; }, className: "mobile-duty-photo" }) : React.createElement("div", { className: "mobile-duty-initial" }, masterInitialsOf(person)),
+                              React.createElement("div", { className: "min-w-0" },
+                                  React.createElement("div", { className: "mobile-duty-name" }, person.nickname || person.fullName || 'ไม่พบข้อมูล'),
+                                  React.createElement("div", { className: "mobile-duty-meta" }, `${person.fullName || '-'} · ${person.level || '-'} / ${person.group || '-'}`)),
+                              React.createElement("div", { className: "mobile-duty-role" }, entry.roleTitle)),
+                          React.createElement("div", { className: "mobile-status-grid" }, statuses.map(([key, label]) => React.createElement("button", { key, type: "button", onClick: () => setCheckStatus(entry, key), className: `mobile-status-btn ${key} ${status === key ? 'active' : ''}` }, label))),
+                          needsReplacement && React.createElement("div", { className: "mobile-issue-panel" },
+                              React.createElement("div", { className: "mobile-issue-title" }, React.createElement("i", { className: "ri-error-warning-fill" }), "ต้องใส่หมายเหตุ + คนแทนเวร ก่อนบันทึก"),
+                              React.createElement("div", { className: "mobile-sub-row" },
+                                  selectedSubstitute ? React.createElement("div", { className: "mobile-sub-selected" },
+                                      selectedSubstitute.photo ? React.createElement("img", { src: selectedSubstitute.photo, onError: e => { e.currentTarget.style.display = 'none'; } }) : React.createElement("div", { className: "mobile-sub-initial" }, masterInitialsOf(selectedSubstitute)),
+                                      React.createElement("div", { className: "min-w-0" },
+                                          React.createElement("div", { className: "font-black text-slate-950 truncate" }, selectedSubstitute.nickname || selectedSubstitute.fullName || '-'),
+                                          React.createElement("div", { className: "text-xs font-bold text-slate-500 truncate" }, `${selectedSubstitute.fullName || '-'} · ${selectedSubstitute.level || '-'} / ${selectedSubstitute.group || '-'}`)))
+                                      : React.createElement("input", { value: record.substituteName || '', onChange: e => setCheckRecordPatch(entry, { substituteName: e.target.value, substituteId: '' }), placeholder: "พิมพ์ชื่อคนแทนเอง หรือกดเลือกโปรไฟล์", className: "mobile-manual-input" }),
+                                  React.createElement("button", { type: "button", onClick: () => openSubstitutePicker(entry), className: "mobile-sub-pick" }, selectedSubstitute ? 'เปลี่ยนคนแทน' : 'เลือกโปรไฟล์')),
+                              selectedSubstitute && React.createElement("button", { type: "button", onClick: () => setCheckRecordPatch(entry, { substituteId: '', substituteName: '' }), className: "master-sub-clear-btn" }, "ล้างคนแทน"),
+                              React.createElement("textarea", { value: record.note || '', onChange: e => setCheckRecordPatch(entry, { note: e.target.value }), placeholder: "หมายเหตุ เช่น ลาป่วย / มาสาย 08:10 / ไม่มาไม่แจ้ง / ให้เพื่อนทำแทน", className: "mobile-note-area" })));
+                  })) : React.createElement("div", { className: "mobile-empty-card" },
+                      React.createElement("div", { className: "text-xl font-black text-slate-950" }, quickSearch ? 'ไม่พบรายชื่อที่ค้นหา' : 'วันนี้ยังไม่มีรายชื่อเวร'),
+                      React.createElement("p", { className: "mt-2" }, quickSearch ? 'ลองค้นหาด้วยชื่อเล่น ห้อง หรือรหัสนักศึกษาอีกครั้ง' : 'กลับไปที่ตารางเวรหลักเพื่อใส่รายชื่อก่อน')))),
               activeMode === 'print' && (React.createElement("div", { className: "master-duty-card p-6 no-print" },
                   React.createElement("h3", { className: "text-2xl font-black text-slate-950 mb-2" }, "\u0E1E\u0E34\u0E21\u0E1E\u0E4C / PDF \u0E15\u0E32\u0E23\u0E32\u0E07\u0E40\u0E27\u0E23\u0E2B\u0E25\u0E31\u0E01"),
                   React.createElement("p", { className: "text-slate-500 font-bold mb-5" }, "\u0E1E\u0E34\u0E21\u0E1E\u0E4C\u0E08\u0E32\u0E01\u0E15\u0E32\u0E23\u0E32\u0E07\u0E2B\u0E25\u0E31\u0E01\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19 \u0E44\u0E21\u0E48\u0E15\u0E49\u0E2D\u0E07\u0E40\u0E25\u0E37\u0E2D\u0E01\u0E2A\u0E31\u0E1B\u0E14\u0E32\u0E2B\u0E4C"),
