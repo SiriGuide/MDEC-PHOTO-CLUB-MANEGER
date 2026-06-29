@@ -8326,7 +8326,7 @@
                               React.createElement("p", { className: "text-slate-500 font-bold" }, subPicker.entry?.roleTitle ? `ตำแหน่งเวร: ${subPicker.entry.roleTitle}` : 'ค้นหาจากชื่อเล่น ชื่อจริง ห้อง หรือรหัสนักศึกษา')),
                           React.createElement("button", { onClick: closeSubstitutePicker, className: "w-11 h-11 rounded-2xl hover:bg-slate-100 font-black" }, "✕")),
                       React.createElement("div", { className: "p-5 border-b border-slate-200 space-y-3" },
-                          React.createElement("input", { autoFocus: true, value: subPicker.query, onChange: e => setSubPicker(prev => ({ ...prev, query: e.target.value })), placeholder: "ค้นหาชื่อเล่น / ชื่อจริง / ห้อง / รหัสนักศึกษา / สาขา", className: "w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900 bg-white" }),
+                          React.createElement("input", { value: subPicker.query, onChange: e => setSubPicker(prev => ({ ...prev, query: e.target.value })), placeholder: "แตะเพื่อค้นหาชื่อเล่น / ชื่อจริง / ห้อง / รหัสนักศึกษา", className: "w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-bold text-slate-900 bg-white" }),
                           React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-2 text-sm font-bold text-slate-500" },
                               React.createElement("span", null, `พบ ${subPickerResults.length} คนที่เลือกได้`),
                               React.createElement("button", { type: "button", onClick: () => chooseSubstituteStudent(''), className: "px-3 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-100 font-black" }, "ล้างคนแทนเวร"))),
